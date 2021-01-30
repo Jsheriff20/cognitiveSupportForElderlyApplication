@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">MessagingApp</string>
+    <string name="title_activity_capture">captureActivity</string>
+</resources>

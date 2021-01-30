@@ -1,0 +1,2 @@
+include ':app', ':fotoapparat-adapters:rxjava2', ':fotoapparat', ':sample', ':fotoapparat-adapters:rxjava'
+rootProject.name='MessagingApp'

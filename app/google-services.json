@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "45172843851",
+    "project_id": "elderlypeopleapp",
+    "storage_bucket": "elderlypeopleapp.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:45172843851:android:07874fcd581004647974ce",
+        "android_client_info": {
+          "package_name": "messaging.app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "45172843851-5tpljo2vdrf3f8v92kmppe0utu9h3fj9.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "messaging.app",
+            "certificate_hash": "8dbf5ce69b6aa47934917698c1984e04cbb14835"
+          }
+        },
+        {
+          "client_id": "45172843851-3l4695i5jaccba5d4hi4j1f8g9905fjc.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBhWpQt28f-dofvJ1E7BKApntd-X2XVyJs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "45172843851-3l4695i5jaccba5d4hi4j1f8g9905fjc.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
