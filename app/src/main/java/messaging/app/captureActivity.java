@@ -6,6 +6,7 @@ import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.ImageFormat;
+import android.graphics.Matrix;
 import android.graphics.SurfaceTexture;
 import android.hardware.camera2.CameraAccessException;
 import android.hardware.camera2.CameraCaptureSession;
@@ -18,6 +19,7 @@ import android.hardware.camera2.TotalCaptureResult;
 import android.hardware.camera2.params.StreamConfigurationMap;
 import android.media.Image;
 import android.media.ImageReader;
+import android.media.MediaPlayer;
 import android.media.MediaRecorder;
 import android.os.Build;
 import android.os.Bundle;
@@ -60,6 +62,11 @@ import static android.widget.Toast.LENGTH_SHORT;
 
 public class captureActivity extends AppCompatActivity {
 
+    //TODO:
+    //remove saved files once sent
+    //fix variable names
+    // organise code
+    //fix rotation issues
 
     //state orientation of output image
     private static final SparseIntArray ORIENTATIONS = new SparseIntArray();
@@ -133,6 +140,7 @@ public class captureActivity extends AppCompatActivity {
 
         toggleRecordingOnClick();
         captureImageOnClick();
+        setVideoViewListener();
 
     }
 
@@ -200,10 +208,24 @@ public class captureActivity extends AppCompatActivity {
                     mMediaRecorder.stop();
                     mMediaRecorder.reset();
                     startPreview();
+
+
+                    previewCapturedMedia("Video");
+
                 }
                 else{
                     Toast.makeText(getApplicationContext(), "An error has occurred", LENGTH_SHORT).show();
                 }
+            }
+        });
+    }
+
+
+    private void setVideoViewListener(){
+        capturedVideoView.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+            @Override
+            public void onPrepared(MediaPlayer mp) {
+                mp.setLooping(true);
             }
         });
     }
@@ -216,12 +238,6 @@ public class captureActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 lockFocus();
-
-               //TODO:
-                //Wait until the image has been saved
-                //then run the previewCapturedMedia
-
-                previewCapturedMedia("Image");
 
             }
         });
@@ -425,12 +441,9 @@ public class captureActivity extends AppCompatActivity {
         @Override
         public void onCaptureCompleted(@NonNull CameraCaptureSession session, @NonNull CaptureRequest request, @NonNull TotalCaptureResult result) {
             super.onCaptureCompleted(session, request, result);
-
             //process the image captured
-
-            imageCaptured = false;
             process(result);
-            imageCaptured = true;
+
         }
 
 
@@ -455,7 +468,10 @@ public class captureActivity extends AppCompatActivity {
                 if(mediaFile.exists()){
 
                     Bitmap myBitmap = BitmapFactory.decodeFile(mediaFile.getAbsolutePath());
+                    myBitmap = RotateBitmap(myBitmap, totalRotation);
+
                     capturedImageView.setImageBitmap(myBitmap);
+
                 }else{
                     Toast.makeText(getApplicationContext(), "Could not find image", LENGTH_SHORT).show();
                 }
@@ -468,12 +484,28 @@ public class captureActivity extends AppCompatActivity {
                 //get image file
                 mediaFile = new File(mVideoFilePath);
 
+                //update image view
+                if(mediaFile.exists()){
+
+                    capturedVideoView.setVideoPath(mVideoFilePath);
+                    capturedVideoView.start();
+
+
+                }else{
+                    Toast.makeText(getApplicationContext(), "Could not find video", LENGTH_SHORT).show();
+                }
+
+                //display image
+                capturedVideoView.setVisibility(View.VISIBLE);
+
+
                 break;
         }
 
 
 
     }
+
 
     private void setupCamera(int width, int height) {
         CameraManager cameraManager = (CameraManager) getSystemService(Context.CAMERA_SERVICE);
@@ -506,10 +538,6 @@ public class captureActivity extends AppCompatActivity {
                     rotatedWidth = height;
                 }
 
-
-                Log.d("Test", "cameraView.getHeight()" + height);
-                Log.d("Test", "cameraView.getWidth()" + width);
-
                 // select the best preview resolution
                 StreamConfigurationMap map = cameraCharacteristics.get(CameraCharacteristics.SCALER_STREAM_CONFIGURATION_MAP);
                 previewSize = selectOptimalSize(map.getOutputSizes(SurfaceTexture.class), rotatedWidth, rotatedHeight);
@@ -526,6 +554,12 @@ public class captureActivity extends AppCompatActivity {
         }
     }
 
+
+    public static Bitmap RotateBitmap(Bitmap source, float angle){
+        Matrix matrix = new Matrix();
+        matrix.postRotate(angle);
+        return Bitmap.createBitmap(source, 0, 0, source.getWidth(), source.getHeight(), matrix, true);
+    }
 
     private void connectCamera() {
         //create a manger of the camera service
@@ -625,6 +659,7 @@ public class captureActivity extends AppCompatActivity {
             //capture image
             mCaptureSession.capture(captureRequestBuilder.build(), imageCaptureCallback, null);
 
+
         } catch (CameraAccessException e) {
             e.printStackTrace();
         }
@@ -666,6 +701,16 @@ public class captureActivity extends AppCompatActivity {
                     }
                 }
             }
+
+
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+
+                    //display the captured image
+                    previewCapturedMedia("Image");
+                }
+            });
 
         }
     }
