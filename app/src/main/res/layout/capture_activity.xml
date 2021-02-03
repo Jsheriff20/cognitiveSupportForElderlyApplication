@@ -66,4 +66,25 @@
         app:layout_constraintVertical_bias="1.0"
         app:srcCompat="@drawable/stop_icon" />
 
+    <ImageView
+        android:id="@+id/capturedImageView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/cameraView"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/cameraView"
+        app:srcCompat="@drawable/camera_icon" />
+
+    <VideoView
+        android:id="@+id/capturedVideoView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/cameraView"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/cameraView"
+        app:srcCompat="@drawable/video_icon" />
+
+
 </androidx.constraintlayout.widget.ConstraintLayout>
