@@ -7,6 +7,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.ImageFormat;
 import android.graphics.Matrix;
+import android.graphics.RectF;
 import android.graphics.SurfaceTexture;
 import android.hardware.camera2.CameraAccessException;
 import android.hardware.camera2.CameraCaptureSession;
@@ -17,6 +18,7 @@ import android.hardware.camera2.CaptureRequest;
 import android.hardware.camera2.CaptureResult;
 import android.hardware.camera2.TotalCaptureResult;
 import android.hardware.camera2.params.StreamConfigurationMap;
+import android.media.ExifInterface;
 import android.media.Image;
 import android.media.ImageReader;
 import android.media.MediaPlayer;
@@ -32,28 +34,22 @@ import android.util.SparseIntArray;
 import android.view.Surface;
 import android.view.TextureView;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.Toast;
 import android.widget.VideoView;
 
-import androidx.annotation.ContentView;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
-
-import org.w3c.dom.Text;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.lang.reflect.Array;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -64,9 +60,17 @@ public class captureActivity extends AppCompatActivity {
 
     //TODO:
     //remove saved files once sent
+        // function built
     //fix variable names
     // organise code
     //fix rotation issues
+    //disable the ability to rotate application once media is captured
+    //add the ability to use flash
+    //add auto focus
+    //add manual focus
+    // add the ability to retake the captured media
+    // add the ability to zoom
+    //NEED to decide on H264 or HEVC encoding for video
 
     //state orientation of output image
     private static final SparseIntArray ORIENTATIONS = new SparseIntArray();
@@ -107,15 +111,11 @@ public class captureActivity extends AppCompatActivity {
     private File mVideoFolder = null;
     private File mImageFolder = null;
 
-    boolean imageCaptured = false;
-
 
     private Size mImageSize;
     private ImageReader mImageReader;
     private CameraCaptureSession mCaptureSession;
     private int mCaptureState = STATE_PREVIEW;
-
-    private View view;
 
 
     @Override
@@ -153,6 +153,8 @@ public class captureActivity extends AppCompatActivity {
         if (cameraView.isAvailable()) {
             setupCamera(cameraView.getWidth(), cameraView.getHeight());
 
+            //check that the rotation is correct, if not fix it
+            transformImage(cameraView.getWidth(), cameraView.getHeight());
             connectCamera();
         } else {
             cameraView.setSurfaceTextureListener(cameraViewListener);
@@ -237,6 +239,7 @@ public class captureActivity extends AppCompatActivity {
         btnCaptureImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Toast.makeText(captureActivity.this, "Capture", LENGTH_SHORT).show();
                 lockFocus();
 
             }
@@ -246,8 +249,6 @@ public class captureActivity extends AppCompatActivity {
 
 
     private void setupMediaRecorder() throws IOException {
-        //TODO:
-        //need to send the file and then delete it from the storage once sent
 
         //setup video and audio for media recorder
         mMediaRecorder.setVideoSource(MediaRecorder.VideoSource.SURFACE);
@@ -257,8 +258,6 @@ public class captureActivity extends AppCompatActivity {
         mMediaRecorder.setVideoEncodingBitRate(1000000);
         mMediaRecorder.setVideoFrameRate(30);
         mMediaRecorder.setVideoSize(mVideoSize.getWidth(), mVideoSize.getHeight());
-        //TODO:
-        //NEED to decide on H264 or HEVC
         mMediaRecorder.setVideoEncoder(MediaRecorder.VideoEncoder.H264);
         mMediaRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AAC);
         mMediaRecorder.setOrientationHint(totalRotation);
@@ -351,6 +350,9 @@ public class captureActivity extends AppCompatActivity {
         @Override
         public void onSurfaceTextureAvailable(SurfaceTexture surface, int width, int height) {
             setupCamera(width, height);
+
+            //check that the rotation is correct, if not fix it
+            transformImage(width, height);
             connectCamera();
         }
 
@@ -414,41 +416,23 @@ public class captureActivity extends AppCompatActivity {
 
 
     private CameraCaptureSession.CaptureCallback mCaptureCallback = new CameraCaptureSession.CaptureCallback() {
-
-        private void process(CaptureResult result){
-            Log.d("Test", String.valueOf(mCaptureState));
-            switch (mCaptureState){
-                case STATE_PREVIEW:
-                    //Do nothing
-                    break;
-
-                case STATE_WAIT_LOCK:
-
-                    mCaptureState = STATE_PREVIEW;
-                    Integer autoFocusState = result.get(CaptureResult.CONTROL_AF_STATE);
-
-                    //check if focus is locked
-                    if(autoFocusState == CaptureResult.CONTROL_AF_STATE_FOCUSED_LOCKED ||
-                            autoFocusState == CaptureResult.CONTROL_AF_STATE_NOT_FOCUSED_LOCKED){
-                        startCaptureImageRequest();
-                        Log.d("Test", "focus locked");
-
-                    }
-                    break;
-            }
-        }
-
         @Override
         public void onCaptureCompleted(@NonNull CameraCaptureSession session, @NonNull CaptureRequest request, @NonNull TotalCaptureResult result) {
             super.onCaptureCompleted(session, request, result);
-            //process the image captured
-            process(result);
+            startCaptureImageRequest();
 
         }
 
 
     };
 
+
+    private static int exifToDegrees(int exifOrientation) {
+        if (exifOrientation == ExifInterface.ORIENTATION_ROTATE_90) { return 90; }
+        else if (exifOrientation == ExifInterface.ORIENTATION_ROTATE_180) {  return 180; }
+        else if (exifOrientation == ExifInterface.ORIENTATION_ROTATE_270) {  return 270; }
+        return 0;
+    }
 
     private void previewCapturedMedia(String typeOfCapturedMedia){
         File mediaFile;
@@ -467,10 +451,23 @@ public class captureActivity extends AppCompatActivity {
                 //update image view
                 if(mediaFile.exists()){
 
-                    Bitmap myBitmap = BitmapFactory.decodeFile(mediaFile.getAbsolutePath());
-                    myBitmap = RotateBitmap(myBitmap, totalRotation);
+                    ExifInterface exif = null;
+                    try {
+                        exif = new ExifInterface(mediaFile.getPath());
+                        int rotation = exif.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL);
+                        int rotationInDegrees = exifToDegrees(rotation);
+                        Bitmap myBitmap = BitmapFactory.decodeFile(mediaFile.getAbsolutePath());
+                        myBitmap = RotateBitmap(myBitmap, rotationInDegrees);
+                        capturedImageView.setImageBitmap(myBitmap);
 
-                    capturedImageView.setImageBitmap(myBitmap);
+
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+
+
+
+//                    capturedVideoView.setRotation(totalRotation);
 
                 }else{
                     Toast.makeText(getApplicationContext(), "Could not find image", LENGTH_SHORT).show();
@@ -516,10 +513,6 @@ public class captureActivity extends AppCompatActivity {
                 //set camera ID
                 CameraCharacteristics cameraCharacteristics = cameraManager.getCameraCharacteristics(cameraId);
                 //select the first rear camera as suggested via google documentation
-                if (cameraCharacteristics.get(CameraCharacteristics.LENS_FACING) == CameraCharacteristics.LENS_FACING_FRONT) {
-                    continue;
-                }
-//                cameraID = cameraId;
                 cameraID = cameraManager.getCameraIdList()[0];
 
 
@@ -561,6 +554,7 @@ public class captureActivity extends AppCompatActivity {
         return Bitmap.createBitmap(source, 0, 0, source.getWidth(), source.getHeight(), matrix, true);
     }
 
+
     private void connectCamera() {
         //create a manger of the camera service
         CameraManager cameraManager = (CameraManager) getSystemService(Context.CAMERA_SERVICE);
@@ -592,13 +586,13 @@ public class captureActivity extends AppCompatActivity {
 
         try {
             setupMediaRecorder();
-
             SurfaceTexture surfaceTexture = cameraView.getSurfaceTexture();
             surfaceTexture.setDefaultBufferSize(previewSize.getWidth(), previewSize.getHeight());
             Surface cameraPreviewSurface = new Surface(surfaceTexture);
 
             Surface recordingSurface = mMediaRecorder.getSurface();
             captureRequestBuilder = cameraDevice.createCaptureRequest(CameraDevice.TEMPLATE_RECORD);
+            captureRequestBuilder.set(CaptureRequest.CONTROL_AF_MODE, CaptureRequest.CONTROL_AF_MODE_CONTINUOUS_VIDEO);
             captureRequestBuilder.addTarget(cameraPreviewSurface);
             captureRequestBuilder.addTarget(recordingSurface);
 
@@ -640,7 +634,7 @@ public class captureActivity extends AppCompatActivity {
             Log.d("Test", "TRYING startCaptureImageRequest");
             captureRequestBuilder = cameraDevice.createCaptureRequest(CameraDevice.TEMPLATE_STILL_CAPTURE);
             captureRequestBuilder.addTarget(mImageReader.getSurface());
-            captureRequestBuilder.set(CaptureRequest.JPEG_ORIENTATION, totalRotation);
+            captureRequestBuilder.set(CaptureRequest.CONTROL_AF_MODE, CaptureRequest.CONTROL_AF_MODE_CONTINUOUS_PICTURE);
 
             Log.d("Test", "TRYING startCaptureImageRequest 2");
             CameraCaptureSession.CaptureCallback imageCaptureCallback = new CameraCaptureSession.CaptureCallback() {
@@ -724,6 +718,11 @@ public class captureActivity extends AppCompatActivity {
         try {
             captureRequestBuilder = cameraDevice.createCaptureRequest(CameraDevice.TEMPLATE_PREVIEW);
             captureRequestBuilder.addTarget(cameraPreviewSurface);
+            captureRequestBuilder.set(CaptureRequest.CONTROL_AF_MODE, CaptureRequest.CONTROL_AF_MODE_CONTINUOUS_PICTURE);
+            captureRequestBuilder.set(CaptureRequest.JPEG_ORIENTATION, ORIENTATIONS.get(totalRotation));
+
+
+
 
 
             //create camera session
@@ -900,6 +899,7 @@ public class captureActivity extends AppCompatActivity {
 
 
     private void lockFocus(){
+        Toast.makeText(captureActivity.this, "lockFocus", LENGTH_SHORT).show();
         mCaptureState = STATE_WAIT_LOCK;
 
         //focus on the subject
@@ -911,6 +911,46 @@ public class captureActivity extends AppCompatActivity {
         } catch (CameraAccessException e) {
             e.printStackTrace();
         }
+    }
+
+
+    private void deleteMediaFile(String path){
+        File file = new File(path);
+        boolean deleted = file.delete();
+        if(!deleted){
+            Toast.makeText(this, "Error Deleting file", LENGTH_SHORT).show();
+        }
+
+        return;
+    }
+
+
+    private void transformImage(int width, int height){
+        if(previewSize == null || cameraView == null){
+            return;
+        }
+
+        Matrix matrix = new Matrix();
+        int rotation =  getWindowManager().getDefaultDisplay().getRotation();
+        RectF textureRectF = new RectF(0, 0, width, height);
+        RectF previewRectF = new RectF(0, 0, previewSize.getHeight(), previewSize.getWidth());
+        float centerX = textureRectF.centerX();
+        float centerY = textureRectF.centerY();
+
+        if(rotation == Surface.ROTATION_90 || rotation == Surface.ROTATION_270){
+            previewRectF.offset(centerX - previewRectF.centerX(), centerY - previewRectF.centerY());
+            matrix.setRectToRect(textureRectF, previewRectF, Matrix.ScaleToFit.FILL);
+            float scale = Math.max((float) width / previewSize.getWidth(), (float) height / previewSize.getHeight());
+
+            matrix.postScale(scale, scale, centerX, centerY);
+
+            //calculate what rotation to use
+            matrix.postRotate(90 * (rotation - 2), centerX, centerY);
+        }
+
+        //adjust the cameraView for fix
+        cameraView.setTransform(matrix);
+
     }
 }
 
