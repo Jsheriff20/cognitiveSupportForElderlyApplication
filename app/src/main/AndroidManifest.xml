@@ -16,7 +16,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".captureActivity"
+            android:name=".captureActivity.captureActivity"
             android:label="@string/title_activity_capture"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
