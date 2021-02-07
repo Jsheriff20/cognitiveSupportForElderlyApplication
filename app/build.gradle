@@ -5,7 +5,7 @@ android {
     buildToolsVersion "29.0.2"
     defaultConfig {
         applicationId "messaging.app"
-        minSdkVersion 24
+        minSdkVersion 23
         targetSdkVersion 29
         versionCode 1
         versionName "1.0"
@@ -35,4 +35,6 @@ dependencies {
     implementation "androidx.camera:camera-core:${cameraxVersion}"
     implementation "androidx.camera:camera-extensions:1.0.0-alpha12"
     implementation 'androidx.appcompat:appcompat:1.1.0-alpha03'
+    implementation 'com.github.bumptech.glide:glide:4.12.0'
+    annotationProcessor 'com.github.bumptech.glide:compiler:4.12.0'
 }

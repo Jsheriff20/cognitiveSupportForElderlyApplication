@@ -2,6 +2,8 @@ package messaging.app.captureActivity;
 
 import android.Manifest;
 import android.content.Context;
+import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -49,6 +51,7 @@ import java.nio.ByteBuffer;
 import java.util.Arrays;
 
 import messaging.app.R;
+import messaging.app.SendMediaFile;
 
 import static android.widget.Toast.LENGTH_SHORT;
 
@@ -85,6 +88,8 @@ public class captureActivity extends AppCompatActivity {
     private ImageButton btnCaptureImage;
     private ImageButton btnCaptureVideo;
     private ImageButton btnStopVideo;
+    private ImageButton btnCancel;
+    private ImageButton btnSend;
     public TextureView cameraView;
     public VideoView capturedVideoView;
     private ImageView capturedImageView;
@@ -110,7 +115,7 @@ public class captureActivity extends AppCompatActivity {
     private ImageReader mImageReader;
     private CameraCaptureSession mCaptureSession;
 
-    public MediaManagement mediaManagement = new MediaManagement();
+    private MediaManagement mediaManagement = new MediaManagement();
 
 
 
@@ -124,6 +129,8 @@ public class captureActivity extends AppCompatActivity {
         btnCaptureVideo = (ImageButton) findViewById(R.id.btnTakeVideo);
         btnCaptureImage = (ImageButton) findViewById(R.id.btnTakePhoto);
         btnStopVideo = (ImageButton) findViewById(R.id.btnStopVideo);
+        btnCancel = (ImageButton) findViewById(R.id.btnCancel);
+        btnSend = (ImageButton) findViewById(R.id.btnSend);
         capturedVideoView = (VideoView) findViewById(R.id.capturedVideoView);
         capturedImageView = (ImageView) findViewById(R.id.capturedImageView);
 
@@ -131,6 +138,8 @@ public class captureActivity extends AppCompatActivity {
         btnStopVideo.setVisibility(View.INVISIBLE);
         capturedVideoView.setVisibility(View.INVISIBLE);
         capturedImageView.setVisibility(View.INVISIBLE);
+        btnCancel.setVisibility(View.INVISIBLE);
+        btnSend.setVisibility(View.INVISIBLE);
 
         //create directories for files
         createMediaFolders();
@@ -139,6 +148,9 @@ public class captureActivity extends AppCompatActivity {
         toggleRecordingOnClick();
         captureImageOnClick();
         setVideoViewListener();
+        cancelMediaOnClick();
+        viewFriendsListOnClick();
+
     }
 
 
@@ -247,6 +259,64 @@ public class captureActivity extends AppCompatActivity {
     }
 
 
+    private void cancelMediaOnClick(){
+        btnCancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                //hide unwanted view elements
+                btnCancel.setVisibility(View.INVISIBLE);
+                btnSend.setVisibility(View.INVISIBLE);
+                capturedImageView.setVisibility(View.INVISIBLE);
+                capturedVideoView.setVisibility(View.INVISIBLE);
+
+                //clear media
+                capturedVideoView.setVideoURI(null);
+                capturedImageView.setImageResource(0);
+
+                lockOrientation(false);
+
+                //display view elements
+                btnCaptureImage.setVisibility(View.VISIBLE);
+                btnCaptureVideo.setVisibility(View.VISIBLE);
+                cameraView.setVisibility(View.VISIBLE);
+
+
+                //start background thread and initiate all services
+                startBackgroundThread();
+                if (cameraView.isAvailable()) {
+                    setupCamera(cameraView.getWidth(), cameraView.getHeight());
+
+                    //check that the rotation is correct, if not fix it
+                    transformImage(cameraView.getWidth(), cameraView.getHeight());
+                    connectCamera();
+                } else {
+                    cameraView.setSurfaceTextureListener(cameraViewListener);
+                }
+
+                try {
+                    deleteMediaFile(mImageFilePath);
+                    deleteMediaFile(mVideoFilePath);
+                }
+                catch (Exception e){
+                }
+            }
+        });
+    }
+
+
+    private void viewFriendsListOnClick(){
+        btnSend.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getApplicationContext(), SendMediaFile.class);
+                startActivity(intent);
+
+            }
+        });
+    }
+
+
     public TextureView.SurfaceTextureListener cameraViewListener = new TextureView.SurfaceTextureListener() {
         @Override
         public void onSurfaceTextureAvailable(SurfaceTexture surface, int width, int height) {
@@ -282,6 +352,7 @@ public class captureActivity extends AppCompatActivity {
         }
     };
 
+
     private void setupMediaRecorder() throws IOException {
 
         //setup video and audio for media recorder
@@ -296,8 +367,8 @@ public class captureActivity extends AppCompatActivity {
         mMediaRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AAC);
 
         int landscape = 1;
-        boolean inLanscapeMode = ((int) getWindowManager().getDefaultDisplay().getRotation() == landscape);
-        if(inLanscapeMode){
+        boolean inLandscapeMode = ((int) getWindowManager().getDefaultDisplay().getRotation() == landscape);
+        if(inLandscapeMode){
             mMediaRecorder.setOrientationHint(0);
         }else{
             mMediaRecorder.setOrientationHint(mTotalRotation);
@@ -460,11 +531,17 @@ public class captureActivity extends AppCompatActivity {
     private void previewCapturedMedia(String typeOfCapturedMedia){
         File mediaFile;
 
-        //hide unwanted features
+        //hide unwanted view elements
         btnCaptureImage.setVisibility(View.INVISIBLE);
         btnCaptureVideo.setVisibility(View.INVISIBLE);
         cameraView.setVisibility(View.INVISIBLE);
 
+        //display view elements
+        btnCancel.setVisibility(View.VISIBLE);
+        btnSend.setVisibility(View.VISIBLE);
+
+
+        lockOrientation(true);
 
         //display the captured media
         switch (typeOfCapturedMedia){
@@ -487,8 +564,8 @@ public class captureActivity extends AppCompatActivity {
 
 
                         int landscape = 1;
-                        boolean inLanscapeMode = ((int) getWindowManager().getDefaultDisplay().getRotation() == landscape);
-                        if(inLanscapeMode){
+                        boolean inLandscapeMode = ((int) getWindowManager().getDefaultDisplay().getRotation() == landscape);
+                        if(inLandscapeMode){
                             myBitmap = mediaManagement.RotateBitmap(myBitmap, rotationInDegrees);
                         }else{
                             myBitmap = mediaManagement.RotateBitmap(myBitmap, mTotalRotation);
@@ -893,4 +970,19 @@ public class captureActivity extends AppCompatActivity {
 
     }
 
+
+    private void lockOrientation(boolean lock){
+
+        if(lock){
+            int landscape = 1;
+            boolean inLandscapeMode = ((int) getWindowManager().getDefaultDisplay().getRotation() == landscape);
+            if(inLandscapeMode){
+                setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+            }else{
+                setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+            }
+        }else{
+            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
+        }
+    }
 }
