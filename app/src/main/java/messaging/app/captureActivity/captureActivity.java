@@ -60,16 +60,10 @@ public class captureActivity extends AppCompatActivity {
     //TODO:
     //remove saved files once sent
         // function built
-    //fix variable names
-    // organise code
-    //fix rotation issues
-    //disable the ability to rotate application once media is captured
     //add the ability to use flash
-    //add auto focus
     //add manual focus
-    // add the ability to retake the captured media
     // add the ability to zoom
-    //NEED to decide on H264 or HEVC encoding for video
+    //add front facing camera
 
     //state orientation of output image
     private static final SparseIntArray ORIENTATIONS = new SparseIntArray();
@@ -115,6 +109,7 @@ public class captureActivity extends AppCompatActivity {
     private ImageReader mImageReader;
     private CameraCaptureSession mCaptureSession;
 
+    private String mTypeOfMediaCaptured;
     private MediaManagement mediaManagement = new MediaManagement();
 
 
@@ -294,12 +289,15 @@ public class captureActivity extends AppCompatActivity {
                     cameraView.setSurfaceTextureListener(cameraViewListener);
                 }
 
-                try {
-                    deleteMediaFile(mImageFilePath);
-                    deleteMediaFile(mVideoFilePath);
+                switch (mTypeOfMediaCaptured){
+                    case "Image":
+                        deleteMediaFile(mImageFilePath);
+                        break;
+                    case "Video":
+                        deleteMediaFile(mVideoFilePath);
+                        break;
                 }
-                catch (Exception e){
-                }
+                mTypeOfMediaCaptured = null;
             }
         });
     }
@@ -310,6 +308,17 @@ public class captureActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(getApplicationContext(), SendMediaFile.class);
+
+                switch (mTypeOfMediaCaptured){
+                    case "Image":
+                        intent.putExtra("mediaPath", mImageFilePath);
+                        break;
+
+                    case "Video":
+                        intent.putExtra("mediaPath", mVideoFilePath);
+                        break;
+                }
+
                 startActivity(intent);
 
             }
@@ -363,7 +372,7 @@ public class captureActivity extends AppCompatActivity {
         mMediaRecorder.setVideoEncodingBitRate(1000000);
         mMediaRecorder.setVideoFrameRate(30);
         mMediaRecorder.setVideoSize(mVideoSize.getWidth(), mVideoSize.getHeight());
-        mMediaRecorder.setVideoEncoder(MediaRecorder.VideoEncoder.H264);
+        mMediaRecorder.setVideoEncoder(MediaRecorder.VideoEncoder.HEVC);
         mMediaRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AAC);
 
         int landscape = 1;
@@ -530,6 +539,7 @@ public class captureActivity extends AppCompatActivity {
 
     private void previewCapturedMedia(String typeOfCapturedMedia){
         File mediaFile;
+        mTypeOfMediaCaptured = typeOfCapturedMedia;
 
         //hide unwanted view elements
         btnCaptureImage.setVisibility(View.INVISIBLE);

@@ -9,6 +9,11 @@ import java.util.List;
 public class MyApplication extends android.app.Application {
     //do not include the list of friends here, dynamically retrieve it every time its needed to ensure that up to date info is received
 
+
+    private List<friendsDetails> friendsDetailsList = new ArrayList<friendsDetails>();
+    private List<String> selectedRecipientsList = new ArrayList<String>();
+
+
     public MyApplication() {
         this.friendsDetailsList = friendsDetailsList;
     }
@@ -21,6 +26,18 @@ public class MyApplication extends android.app.Application {
         this.friendsDetailsList = friendsDetailsList;
     }
 
-    private List<friendsDetails> friendsDetailsList = new ArrayList<friendsDetails>();
+
+    public void addToSelectedRecipientsList(String recipient){
+        selectedRecipientsList.add(recipient);
+    }
+
+    public List<String> getSelectedRecipientsList() {
+        return selectedRecipientsList;
+    }
+
+    public void setSelectedRecipientsList(List<String> selectedRecipientsList) {
+        this.selectedRecipientsList = selectedRecipientsList;
+    }
+
 
 }
