@@ -1,8 +1,5 @@
 package messaging.app;
 
-import android.app.Application;
-import android.widget.ArrayAdapter;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -10,7 +7,7 @@ public class MyApplication extends android.app.Application {
     //do not include the list of friends here, dynamically retrieve it every time its needed to ensure that up to date info is received
 
 
-    private List<friendsDetails> friendsDetailsList = new ArrayList<friendsDetails>();
+    private List<FriendsDetails> friendsDetailsList = new ArrayList<FriendsDetails>();
     private List<String> selectedRecipientsList = new ArrayList<String>();
 
 
@@ -18,11 +15,11 @@ public class MyApplication extends android.app.Application {
         this.friendsDetailsList = friendsDetailsList;
     }
 
-    public List<friendsDetails> getFriendsDetailsList() {
+    public List<FriendsDetails> getFriendsDetailsList() {
         return friendsDetailsList;
     }
 
-    public void setFriendsDetailsList(List<friendsDetails> friendsDetailsList) {
+    public void setFriendsDetailsList(List<FriendsDetails> friendsDetailsList) {
         this.friendsDetailsList = friendsDetailsList;
     }
 

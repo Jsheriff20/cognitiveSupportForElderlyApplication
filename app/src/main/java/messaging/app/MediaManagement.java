@@ -1,4 +1,4 @@
-package messaging.app.captureActivity;
+package messaging.app;
 
 import android.graphics.Bitmap;
 import android.graphics.Matrix;

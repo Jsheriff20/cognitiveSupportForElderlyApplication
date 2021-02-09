@@ -4,24 +4,26 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.media.Image;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class SendMediaFile extends AppCompatActivity {
+import static android.widget.Toast.LENGTH_SHORT;
+
+public class SendMediaFileActivity extends AppCompatActivity {
 
     String pathToMedia;
-    List<friendsDetails> friendsDetailsList = new ArrayList<friendsDetails>();
+    List<FriendsDetails> friendsDetailsList = new ArrayList<FriendsDetails>();
 
     private RecyclerView recyclerView;
-    private friendsListAdapter mAdapter;
+    private FriendsListAdapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
     private ImageButton btnSend;
 
@@ -36,7 +38,7 @@ public class SendMediaFile extends AppCompatActivity {
         recyclerView = findViewById(R.id.lstFriendsList);
 
         mLayoutManager = new LinearLayoutManager(this);
-        mAdapter = new friendsListAdapter(friendsDetailsList, this);
+        mAdapter = new FriendsListAdapter(friendsDetailsList, this);
 
         recyclerView.setLayoutManager(mLayoutManager);
         recyclerView.setHasFixedSize(true);
@@ -50,8 +52,20 @@ public class SendMediaFile extends AppCompatActivity {
     private void sendMedia(List<Integer> recipientIDs){
 
         Log.d("Test", "sent Media to : " + recipientIDs);
-
+        deleteMediaFile(pathToMedia);
     }
+
+
+    public void deleteMediaFile(String path){
+        File file = new File(path);
+        boolean deleted = file.delete();
+
+        if(!deleted){
+            Toast.makeText(this, "Error Deleting file", LENGTH_SHORT).show();
+        }
+        return;
+    }
+
 
     private void btnSendOnClick(){
         btnSend.setOnClickListener(new View.OnClickListener() {
@@ -72,14 +86,14 @@ public class SendMediaFile extends AppCompatActivity {
     private void getFriendsDetailsList() {
         //TODO:
         //replace this with a for loop that gets all details from a database
-        friendsDetails friend1 = new friendsDetails(0, "Jack", "Grandson", "https://www.w3schools.com/howto/img_avatar.png");
-        friendsDetails friend2 = new friendsDetails(1, "Paul", "Child", "https://www.w3schools.com/howto/img_avatar.png");
-        friendsDetails friend3 = new friendsDetails(2, "Brady", "Uncle", "https://www.w3schools.com/howto/img_avatar.png");
-        friendsDetails friend4 = new friendsDetails(3, "Dawid", "Dad", "https://www.w3schools.com/howto/img_avatar.png");
-        friendsDetails friend5 = new friendsDetails(4, "Sam", "Grandson", "https://www.w3schools.com/howto/img_avatar.png");
-        friendsDetails friend6 = new friendsDetails(5, "Mel", "Child", "https://www.w3schools.com/howto/img_avatar.png");
+        FriendsDetails friend1 = new FriendsDetails(0, "Jack", "Grandson", "https://www.w3schools.com/howto/img_avatar.png");
+        FriendsDetails friend2 = new FriendsDetails(1, "Paul", "Child", "https://www.w3schools.com/howto/img_avatar.png");
+        FriendsDetails friend3 = new FriendsDetails(2, "Brady", "Uncle", "https://www.w3schools.com/howto/img_avatar.png");
+        FriendsDetails friend4 = new FriendsDetails(3, "Dawid", "Dad", "https://www.w3schools.com/howto/img_avatar.png");
+        FriendsDetails friend5 = new FriendsDetails(4, "Sam", "Grandson", "https://www.w3schools.com/howto/img_avatar.png");
+        FriendsDetails friend6 = new FriendsDetails(5, "Mel", "Child", "https://www.w3schools.com/howto/img_avatar.png");
 
-        friendsDetailsList.addAll(Arrays.asList(new friendsDetails[] {friend1, friend2, friend3, friend4, friend5, friend6}));
+        friendsDetailsList.addAll(Arrays.asList(new FriendsDetails[] {friend1, friend2, friend3, friend4, friend5, friend6}));
     }
 
 

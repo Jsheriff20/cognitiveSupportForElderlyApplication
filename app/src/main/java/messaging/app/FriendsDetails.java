@@ -2,7 +2,7 @@ package messaging.app;
 
 import android.graphics.Bitmap;
 
-public class friendsDetails {
+public class FriendsDetails {
 
 
     private int id;
@@ -11,7 +11,7 @@ public class friendsDetails {
     private String imageURL;
 
 
-    public friendsDetails(int id, String name, String description, String imageURL) {
+    public FriendsDetails(int id, String name, String description, String imageURL) {
         this.id = id;
         this.name = name;
         this.description = description;

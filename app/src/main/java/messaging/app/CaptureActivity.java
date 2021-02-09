@@ -1,4 +1,4 @@
-package messaging.app.captureActivity;
+package messaging.app;
 
 import android.Manifest;
 import android.content.Context;
@@ -50,12 +50,9 @@ import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.util.Arrays;
 
-import messaging.app.R;
-import messaging.app.SendMediaFile;
-
 import static android.widget.Toast.LENGTH_SHORT;
 
-public class captureActivity extends AppCompatActivity {
+public class CaptureActivity extends AppCompatActivity {
 
     //TODO:
     //remove saved files once sent
@@ -307,7 +304,7 @@ public class captureActivity extends AppCompatActivity {
         btnSend.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(getApplicationContext(), SendMediaFile.class);
+                Intent intent = new Intent(getApplicationContext(), SendMediaFileActivity.class);
 
                 switch (mTypeOfMediaCaptured){
                     case "Image":
@@ -423,11 +420,10 @@ public class captureActivity extends AppCompatActivity {
     public void deleteMediaFile(String path){
         File file = new File(path);
         boolean deleted = file.delete();
+
         if(!deleted){
             Toast.makeText(this, "Error Deleting file", LENGTH_SHORT).show();
-
         }
-
         return;
     }
 

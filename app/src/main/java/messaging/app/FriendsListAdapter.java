@@ -2,10 +2,6 @@ package messaging.app;
 
 import android.content.Context;
 import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
-import android.graphics.drawable.Drawable;
-import android.media.Image;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,28 +9,22 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
-import java.util.ListIterator;
 
-class friendsListAdapter extends RecyclerView.Adapter<friendsListAdapter.ViewHolder> {
+class FriendsListAdapter extends RecyclerView.Adapter<FriendsListAdapter.ViewHolder> {
 
     Context context;
-    private List<friendsDetails> mFriendsDetailsList;
+    private List<FriendsDetails> mFriendsDetailsList;
     public List mSelectedFriends = new ArrayList();
 
 
-    public friendsListAdapter(List<friendsDetails> friendsDetailsList, Context context) {
+    public FriendsListAdapter(List<FriendsDetails> friendsDetailsList, Context context) {
         mFriendsDetailsList = friendsDetailsList;
         this.context = context;
     }
@@ -53,7 +43,7 @@ class friendsListAdapter extends RecyclerView.Adapter<friendsListAdapter.ViewHol
     @Override
     public void onBindViewHolder(@NonNull final ViewHolder holder, int position) {
 
-        friendsDetails currentListItem = mFriendsDetailsList.get(position);
+        FriendsDetails currentListItem = mFriendsDetailsList.get(position);
         //provide the details of each view element for each friend row
         holder.txtName.setText(currentListItem.getName());
         holder.txtDesc.setText(currentListItem.getDescription());

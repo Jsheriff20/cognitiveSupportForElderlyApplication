@@ -18,9 +18,24 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".SendMediaFile"></activity>
+        <activity android:name=".LoginActivity"/>
+
         <activity
-            android:name=".captureActivity.captureActivity"
+            android:name=".RegisterEmailActivity"
+            android:label="@string/title_activity_register">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity android:name=".RegisterPasswordActivity" />
+        <activity android:name=".RegisterPersonalInfoActivity" />
+        <activity android:name=".RegisterProfileImageActivity" />
+        <activity android:name=".SendMediaFileActivity" />
+
+        <activity
+            android:name=".CaptureActivity"
             android:label="@string/title_activity_capture"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
@@ -29,7 +44,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".MainActivity"></activity>
+        <activity android:name=".MainActivity" />
     </application>
 
 </manifest>
