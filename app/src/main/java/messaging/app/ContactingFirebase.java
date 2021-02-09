@@ -3,6 +3,7 @@ package messaging.app;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -19,34 +20,46 @@ public class ContactingFirebase {
 
 
     Context context;
+    FirebaseDatabase database;
+    DatabaseReference reference;
 
     public ContactingFirebase(Context context) {
         this.context = context;
-    }
+        database = FirebaseDatabase.getInstance();
 
-    FirebaseDatabase database = FirebaseDatabase.getInstance();
-
-    public class contactingFirebaseDatabase {
-        DatabaseReference myRef = database.getReference("userDetails");
     }
 
 
-    public void createUserWithEmailAndPassword(String email, String password) {
+    public void createUserWithEmailAndPassword(String email, String password, final String firstName, final String surname, final Bitmap profileImage) {
         FirebaseAuth auth = FirebaseAuth.getInstance();
         auth.createUserWithEmailAndPassword(email, password)
                 .addOnCompleteListener((Activity) context, new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
-                        Log.d("Test", "onComplete: Create user with email and pass");
 
                         if (!task.isSuccessful()) {
                             Toast.makeText(context, "Fail to register", Toast.LENGTH_SHORT).show();
                         } else {
+                            //get UUID of the user account created
+                            String UUID = (String) task.getResult().getUser().getUid();
+
+                            //add usersData to the database
+                            AddNewUsersData(firstName, surname, profileImage, UUID);
                             Intent intent = new Intent(context, LoginActivity.class);
                             context.startActivity(intent);
                         }
                     }
                 });
+    }
+
+    private void AddNewUsersData(String firstName, String surname, Bitmap profileImage, String UUID) {
+        //create new user in database using UUID already created
+        UserHelperClass userHelperClass = new UserHelperClass(firstName, surname, profileImage);
+
+        reference = database.getReference("userDetails");
+        reference.child(UUID).setValue(userHelperClass);
+
+        //store info in global variables to be used across application
     }
 }
 

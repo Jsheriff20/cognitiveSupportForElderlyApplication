@@ -24,9 +24,17 @@ public class RegisterEmailActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register_email);
 
+
+
         txtEmail = findViewById(R.id.txtEmail);
         btnLoadPasswordRegister = findViewById(R.id.btnLoadPasswordRegister);
         btnLoadLogin = findViewById(R.id.btnLoadLogin);
+
+        //if user has selected "Back" then this information will be displayed
+        if(getIntent().getStringExtra("email") != null ){
+            String email = getIntent().getStringExtra("email");
+            txtEmail.setText(email);
+        }
 
         setBtnLoadPasswordRegisterOnClick();
         setBtnLoadLoginOnClick();

@@ -18,6 +18,7 @@ public class RegisterPasswordActivity extends AppCompatActivity {
     EditText txtConfirmPassword;
     Button btnLoadPersonalInfoRegister;
     Button btnLoadLogin;
+    Button btnBackToRegisterEmail;
     CheckInputsValidity checkInputsValidity = new CheckInputsValidity(this);
 
     //data received from previous activity
@@ -31,9 +32,13 @@ public class RegisterPasswordActivity extends AppCompatActivity {
         txtConfirmPassword = findViewById(R.id.txtConfirmPassword);
         btnLoadPersonalInfoRegister = findViewById(R.id.btnLoadPersonalInfoRegister);
         btnLoadLogin = findViewById(R.id.btnLoadLogin);
+        btnBackToRegisterEmail = findViewById(R.id.btnBackToRegisterEmail);
+
 
         setBtnLoadPersonInfoOnClick();
+        setBtnBackToRegisterEmailOnClick();
         setBtnLoadLoginOnClick();
+
         mEmail = getIntent().getStringExtra("email");
     }
 
@@ -49,6 +54,19 @@ public class RegisterPasswordActivity extends AppCompatActivity {
                     RegisterPasswordActivity.this.startActivity(intent);
                     return;
                 }
+            }
+        });
+    }
+
+
+    private void setBtnBackToRegisterEmailOnClick(){
+        btnBackToRegisterEmail.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(RegisterPasswordActivity.this, RegisterEmailActivity.class);
+                intent.putExtra("email", mEmail);
+                RegisterPasswordActivity.this.startActivity(intent);
+                return;
             }
         });
     }

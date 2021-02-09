@@ -109,7 +109,21 @@
         android:textColor="@color/white"
         android:textSize="24sp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.501"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/btnBackToRegisterPersonalInfo"
+        app:layout_constraintTop_toBottomOf="@+id/btnCaptureProfileImage" />
+
+    <Button
+        android:id="@+id/btnBackToRegisterPersonalInfo"
+        android:layout_width="153dp"
+        android:layout_height="63dp"
+        android:layout_marginTop="96dp"
+        android:background="@drawable/btn_register"
+        android:text="Back"
+        android:textColor="@color/white"
+        android:textSize="24sp"
+        app:layout_constraintEnd_toStartOf="@+id/btnRegister"
+        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/btnCaptureProfileImage" />
 

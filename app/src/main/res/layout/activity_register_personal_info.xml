@@ -17,6 +17,21 @@
         android:textColor="@color/white"
         android:textSize="24sp"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/btnBackToRegisterPassword"
+        app:layout_constraintTop_toBottomOf="@+id/txtSurname" />
+
+    <Button
+        android:id="@+id/btnBackToRegisterPassword"
+        android:layout_width="153dp"
+        android:layout_height="63dp"
+        android:layout_marginTop="20dp"
+        android:background="@drawable/btn_register"
+        android:text="Back"
+        android:textColor="@color/white"
+        android:textSize="24sp"
+        app:layout_constraintEnd_toStartOf="@+id/btnLoadProfileImageRegister"
+        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/txtSurname" />
 

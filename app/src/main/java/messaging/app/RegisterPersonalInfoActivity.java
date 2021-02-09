@@ -15,6 +15,7 @@ public class RegisterPersonalInfoActivity extends AppCompatActivity {
     EditText txtSurname;
     Button btnLoadProfileImageRegister;
     Button btnLoadLogin;
+    Button btnBackToRegisterPassword;
     CheckInputsValidity checkInputsValidity = new CheckInputsValidity(this);
 
     String mEmail;
@@ -28,16 +29,39 @@ public class RegisterPersonalInfoActivity extends AppCompatActivity {
         txtFirstName = findViewById(R.id.txtFirstName);
         txtSurname = findViewById(R.id.txtSurname);
         btnLoadProfileImageRegister = (Button) findViewById(R.id.btnLoadProfileImageRegister);
-        Log.d("Test", "btnLoadProfileImageRegister " + btnLoadProfileImageRegister);
-        Log.d("Test", "findViewById(R.id.btnLoadProfileImageRegister) " + (Button) findViewById(R.id.btnLoadProfileImageRegister));
         btnLoadLogin = findViewById(R.id.btnLoadLogin);
+        btnBackToRegisterPassword = findViewById(R.id.btnBackToRegisterPassword);
 
         //data received from previous activity
         mEmail = getIntent().getStringExtra("email");
         mPassword = getIntent().getStringExtra("password");
 
+
+        //if user has selected "Back" then this information will be displayed
+        if(getIntent().getStringExtra("firstName") != null){
+            txtFirstName.setText(getIntent().getStringExtra("firstName"));
+        }
+        if(getIntent().getStringExtra("surname") != null){
+            txtSurname.setText(getIntent().getStringExtra("surname"));
+        }
+
         setBtnLoadProfileImageRegisterOnClick();
+        setBtnBackToRegisterPasswordOnClick();
         setBtnLoadLoginOnClick();
+    }
+
+
+
+    private void setBtnBackToRegisterPasswordOnClick(){
+        btnBackToRegisterPassword.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(RegisterPersonalInfoActivity.this, RegisterPasswordActivity.class);
+                intent.putExtra("email", mEmail);
+                RegisterPersonalInfoActivity.this.startActivity(intent);
+                return;
+            }
+        });
     }
 
 

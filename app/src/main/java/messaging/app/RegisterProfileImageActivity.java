@@ -1,11 +1,14 @@
 package messaging.app;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 
 import androidx.appcompat.app.AppCompatActivity;
+
+import java.sql.BatchUpdateException;
 
 
 //TODO:
@@ -16,11 +19,13 @@ public class RegisterProfileImageActivity extends AppCompatActivity {
     Button btnCapturePhoto;
     Button btnRegister;
     Button btnLoadLogin;
+    Button btnBackToRegisterPersonalInfo;
 
     String mEmail;
     String mPassword;
     String mFirstName;
     String mSurname;
+    Bitmap mProfileImage = null;
     ContactingFirebase contactingFirebase = new ContactingFirebase(this);
 
     @Override
@@ -32,6 +37,7 @@ public class RegisterProfileImageActivity extends AppCompatActivity {
         btnCapturePhoto = findViewById(R.id.btnCaptureProfileImage);
         btnRegister = findViewById(R.id.btnRegister);
         btnLoadLogin = findViewById(R.id.btnLoadLogin);
+        btnBackToRegisterPersonalInfo = findViewById(R.id.btnBackToRegisterPersonalInfo);
 
         mEmail = getIntent().getStringExtra("email");
         mPassword = getIntent().getStringExtra("password");
@@ -42,8 +48,25 @@ public class RegisterProfileImageActivity extends AppCompatActivity {
         setBtnUploadPhotoOnClick();
         setBtnLoadLoginOnClick();
         setBtnRegisterOnClick();
+        setBtnBackToRegisterPasswordOnClick();
     }
 
+
+
+    private void setBtnBackToRegisterPasswordOnClick(){
+        btnBackToRegisterPersonalInfo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(RegisterProfileImageActivity.this, RegisterPersonalInfoActivity.class);
+                intent.putExtra("email", mEmail);
+                intent.putExtra("password", mPassword);
+                intent.putExtra("firstName", mFirstName);
+                intent.putExtra("surname", mSurname);
+                RegisterProfileImageActivity.this.startActivity(intent);
+                return;
+            }
+        });
+    }
 
     private void setBtnUploadPhotoOnClick(){
         btnUploadPhoto.setOnClickListener(new View.OnClickListener() {
@@ -70,7 +93,7 @@ public class RegisterProfileImageActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                contactingFirebase.createUserWithEmailAndPassword(mEmail, mPassword);
+                contactingFirebase.createUserWithEmailAndPassword(mEmail, mPassword, mFirstName, mSurname, mProfileImage);
             }
         });
     }
