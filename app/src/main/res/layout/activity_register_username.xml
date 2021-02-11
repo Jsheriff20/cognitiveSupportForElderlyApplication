@@ -8,76 +8,77 @@
     tools:context=".RegisterPersonalInfoActivity">
 
     <Button
-        android:id="@+id/btnLoadProfileImageRegister"
+        android:id="@+id/btnBackToRegisterPassword"
         android:layout_width="153dp"
         android:layout_height="63dp"
-        android:layout_marginTop="20dp"
-        android:background="@drawable/btn_register"
-        android:text="Next"
-        android:textColor="@color/white"
-        android:textSize="24sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toEndOf="@+id/btnBackToRegisterUsername"
-        app:layout_constraintTop_toBottomOf="@+id/txtSurname" />
-
-    <Button
-        android:id="@+id/btnBackToRegisterUsername"
-        android:layout_width="153dp"
-        android:layout_height="63dp"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="60dp"
         android:background="@drawable/btn_register"
         android:text="Back"
         android:textColor="@color/white"
         android:textSize="24sp"
-        app:layout_constraintEnd_toStartOf="@+id/btnLoadProfileImageRegister"
+        app:layout_constraintEnd_toStartOf="@+id/btnLoadPersonalInfoRegister"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/txtSurname" />
-
-    <Button
-        android:id="@+id/btnLoadLogin"
-        android:layout_width="122dp"
-        android:layout_height="48dp"
-        android:layout_marginTop="12dp"
-        android:background="@drawable/btn_register"
-        android:text="Login"
-        android:textColor="@color/white"
-        android:textSize="20sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/lblLogin" />
+        app:layout_constraintTop_toBottomOf="@+id/txtUsername" />
 
     <View
         android:id="@+id/divider3"
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:layout_marginStart="20dp"
-        android:layout_marginTop="36dp"
+        android:layout_marginTop="32dp"
         android:layout_marginEnd="20dp"
         android:background="?android:attr/listDivider"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/btnLoadProfileImageRegister" />
+        app:layout_constraintTop_toBottomOf="@+id/btnLoadPersonalInfoRegister" />
+
+    <Button
+        android:id="@+id/btnLoadPersonalInfoRegister"
+        android:layout_width="153dp"
+        android:layout_height="63dp"
+        android:layout_marginTop="60dp"
+        android:background="@drawable/btn_register"
+        android:text="Next"
+        android:textColor="@color/white"
+        android:textSize="24sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/btnBackToRegisterPassword"
+        app:layout_constraintTop_toBottomOf="@+id/txtUsername" />
 
     <TextView
         android:id="@+id/lblLogin"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="48dp"
+        android:layout_marginTop="52dp"
         android:text="Already have an account?"
         android:textAlignment="center"
         android:textColor="#494949"
         android:textSize="21sp"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.497"
+        app:layout_constraintHorizontal_bias="0.491"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/divider3" />
 
+    <Button
+        android:id="@+id/btnLoadLogin"
+        android:layout_width="122dp"
+        android:layout_height="48dp"
+        android:layout_marginTop="8dp"
+        android:background="@drawable/btn_register"
+        android:text="Login"
+        android:textColor="@color/white"
+        android:textSize="20sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.494"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/lblLogin" />
+
     <EditText
-        android:id="@+id/txtSurname"
+        android:id="@+id/txtUsername"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="4dp"
@@ -85,39 +86,14 @@
         android:inputType="text"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/lblSurname" />
+        app:layout_constraintTop_toBottomOf="@+id/lblUsername" />
 
     <TextView
-        android:id="@+id/lblSurname"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
-        android:text="Surname"
-        android:textColor="#000000"
-        android:textSize="21sp"
-        android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/txtFirstName" />
-
-    <EditText
-        android:id="@+id/txtFirstName"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="4dp"
-        android:ems="10"
-        android:inputType="text"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/lblFirstName" />
-
-    <TextView
-        android:id="@+id/lblFirstName"
+        android:id="@+id/lblUsername"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="28dp"
-        android:text="First Name"
+        android:text="Username"
         android:textColor="#000000"
         android:textSize="21sp"
         android:textStyle="bold"

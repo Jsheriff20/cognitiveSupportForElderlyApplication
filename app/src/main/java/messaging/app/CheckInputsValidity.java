@@ -81,4 +81,21 @@ public class CheckInputsValidity {
             return true;
         }
     }
+
+
+    public boolean isUsernameValid(String username){
+        if(username.length() < 2){
+            Toast.makeText(context, "Username is too short", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+        else if(username.length() > 20){
+            Toast.makeText(context, "Username is too long", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+        else if (!username.matches("(?=\\S+$).{2,}")) {
+            Toast.makeText(context, "Your name cannot contain any whitespace", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+        return true;
+    }
 }

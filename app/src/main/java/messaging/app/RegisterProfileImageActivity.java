@@ -23,6 +23,7 @@ public class RegisterProfileImageActivity extends AppCompatActivity {
 
     String mEmail;
     String mPassword;
+    String mUsername;
     String mFirstName;
     String mSurname;
     Bitmap mProfileImage = null;
@@ -41,6 +42,7 @@ public class RegisterProfileImageActivity extends AppCompatActivity {
 
         mEmail = getIntent().getStringExtra("email");
         mPassword = getIntent().getStringExtra("password");
+        mUsername = getIntent().getStringExtra("username");
         mFirstName = getIntent().getStringExtra("firstName");
         mSurname = getIntent().getStringExtra("surname");
 
@@ -60,6 +62,7 @@ public class RegisterProfileImageActivity extends AppCompatActivity {
                 Intent intent = new Intent(RegisterProfileImageActivity.this, RegisterPersonalInfoActivity.class);
                 intent.putExtra("email", mEmail);
                 intent.putExtra("password", mPassword);
+                intent.putExtra("username", mUsername);
                 intent.putExtra("firstName", mFirstName);
                 intent.putExtra("surname", mSurname);
                 RegisterProfileImageActivity.this.startActivity(intent);
@@ -93,7 +96,7 @@ public class RegisterProfileImageActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                contactingFirebase.createUserWithEmailAndPassword(mEmail, mPassword, mFirstName, mSurname, mProfileImage);
+                contactingFirebase.createUserWithEmailAndPassword(mEmail, mPassword, mFirstName, mSurname, mProfileImage, mUsername);
             }
         });
     }

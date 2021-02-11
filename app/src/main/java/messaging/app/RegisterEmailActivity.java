@@ -10,6 +10,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.google.firebase.database.FirebaseDatabase;
+
 import java.util.regex.Pattern;
 
 public class RegisterEmailActivity extends AppCompatActivity {
@@ -18,6 +20,7 @@ public class RegisterEmailActivity extends AppCompatActivity {
     Button btnLoadPasswordRegister;
     Button btnLoadLogin;
     CheckInputsValidity checkInputsValidity = new CheckInputsValidity(this);
+    ContactingFirebase contactingFirebase = new ContactingFirebase(this);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,12 +47,22 @@ public class RegisterEmailActivity extends AppCompatActivity {
         btnLoadPasswordRegister.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(checkInputsValidity.isEmailValid(txtEmail.getText().toString())) {
-                    Intent intent = new Intent(RegisterEmailActivity.this, RegisterPasswordActivity.class);
-                    intent.putExtra("email", txtEmail.getText().toString());
-                    RegisterEmailActivity.this.startActivity(intent);
-                    return;
-                }
+                contactingFirebase.isEmailAvailable(txtEmail.getText().toString(),new ContactingFirebase.OnEmailCheckListener(){
+                    @Override
+                    public void onSuccess(boolean isRegistered){
+
+                        if(isRegistered){
+                            Toast.makeText(RegisterEmailActivity.this, "Email already linked with another account", Toast.LENGTH_SHORT).show();
+                        } else {
+                            if(checkInputsValidity.isEmailValid(txtEmail.getText().toString())) {
+                                Intent intent = new Intent(RegisterEmailActivity.this, RegisterPasswordActivity.class);
+                                intent.putExtra("email", txtEmail.getText().toString());
+                                RegisterEmailActivity.this.startActivity(intent);
+                                return;
+                            }
+                        }
+                    }
+                });
             }
         });
     }

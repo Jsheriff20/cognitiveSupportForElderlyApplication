@@ -15,11 +15,12 @@ public class RegisterPersonalInfoActivity extends AppCompatActivity {
     EditText txtSurname;
     Button btnLoadProfileImageRegister;
     Button btnLoadLogin;
-    Button btnBackToRegisterPassword;
+    Button btnBackToRegisterUsername;
     CheckInputsValidity checkInputsValidity = new CheckInputsValidity(this);
 
     String mEmail;
     String mPassword;
+    String mUsername;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,11 +31,12 @@ public class RegisterPersonalInfoActivity extends AppCompatActivity {
         txtSurname = findViewById(R.id.txtSurname);
         btnLoadProfileImageRegister = (Button) findViewById(R.id.btnLoadProfileImageRegister);
         btnLoadLogin = findViewById(R.id.btnLoadLogin);
-        btnBackToRegisterPassword = findViewById(R.id.btnBackToRegisterPassword);
+        btnBackToRegisterUsername = findViewById(R.id.btnBackToRegisterUsername);
 
         //data received from previous activity
         mEmail = getIntent().getStringExtra("email");
         mPassword = getIntent().getStringExtra("password");
+        mUsername = getIntent().getStringExtra("username");
 
 
         //if user has selected "Back" then this information will be displayed
@@ -46,18 +48,19 @@ public class RegisterPersonalInfoActivity extends AppCompatActivity {
         }
 
         setBtnLoadProfileImageRegisterOnClick();
-        setBtnBackToRegisterPasswordOnClick();
+        setBtnBackToRegisterUsernameOnClick();
         setBtnLoadLoginOnClick();
     }
 
 
 
-    private void setBtnBackToRegisterPasswordOnClick(){
-        btnBackToRegisterPassword.setOnClickListener(new View.OnClickListener() {
+    private void setBtnBackToRegisterUsernameOnClick(){
+        btnBackToRegisterUsername.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(RegisterPersonalInfoActivity.this, RegisterPasswordActivity.class);
+                Intent intent = new Intent(RegisterPersonalInfoActivity.this, RegisterUsernameActivity.class);
                 intent.putExtra("email", mEmail);
+                intent.putExtra("username", mUsername);
                 RegisterPersonalInfoActivity.this.startActivity(intent);
                 return;
             }
@@ -73,6 +76,7 @@ public class RegisterPersonalInfoActivity extends AppCompatActivity {
                     Intent intent = new Intent(RegisterPersonalInfoActivity.this, RegisterProfileImageActivity.class);
                     intent.putExtra("password", mPassword);
                     intent.putExtra("email", mEmail);
+                    intent.putExtra("username", mUsername);
                     intent.putExtra("firstName", txtFirstName.getText().toString());
                     intent.putExtra("surname", txtSurname.getText().toString());
                     RegisterPersonalInfoActivity.this.startActivity(intent);

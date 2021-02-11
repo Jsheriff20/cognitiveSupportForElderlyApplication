@@ -3,17 +3,18 @@ package messaging.app;
 import android.graphics.Bitmap;
 
 public class UserHelperClass {
-    String UUID;
+    String username;
     String firstName;
     String surname;
     Bitmap profileImage;
 
 
 
-    public UserHelperClass(String firstName, String surname, Bitmap profileImage) {
+    public UserHelperClass(String firstName, String surname, Bitmap profileImage, String username){
         this.firstName = firstName;
         this.surname = surname;
         this.profileImage = profileImage;
+        this.username = username;
     }
 
     public UserHelperClass() {
@@ -25,6 +26,14 @@ public class UserHelperClass {
 
     public void setFirstName(String firstName) {
         this.firstName = firstName;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
     }
 
     public String getSurname() {

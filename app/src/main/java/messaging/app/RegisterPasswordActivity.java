@@ -16,7 +16,7 @@ public class RegisterPasswordActivity extends AppCompatActivity {
 
     EditText txtPassword;
     EditText txtConfirmPassword;
-    Button btnLoadPersonalInfoRegister;
+    Button btnLoadRegisterUsername;
     Button btnLoadLogin;
     Button btnBackToRegisterEmail;
     CheckInputsValidity checkInputsValidity = new CheckInputsValidity(this);
@@ -30,7 +30,7 @@ public class RegisterPasswordActivity extends AppCompatActivity {
 
         txtPassword = findViewById(R.id.txtPassword);
         txtConfirmPassword = findViewById(R.id.txtConfirmPassword);
-        btnLoadPersonalInfoRegister = findViewById(R.id.btnLoadPersonalInfoRegister);
+        btnLoadRegisterUsername = findViewById(R.id.btnLoadRegisterUsername);
         btnLoadLogin = findViewById(R.id.btnLoadLogin);
         btnBackToRegisterEmail = findViewById(R.id.btnBackToRegisterEmail);
 
@@ -44,11 +44,11 @@ public class RegisterPasswordActivity extends AppCompatActivity {
 
 
     private void setBtnLoadPersonInfoOnClick(){
-        btnLoadPersonalInfoRegister.setOnClickListener(new View.OnClickListener() {
+        btnLoadRegisterUsername.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if(checkRegisterPasswordIsValid()) {
-                    Intent intent = new Intent(RegisterPasswordActivity.this, RegisterPersonalInfoActivity.class);
+                    Intent intent = new Intent(RegisterPasswordActivity.this, RegisterUsernameActivity.class);
                     intent.putExtra("password", txtPassword.getText().toString());
                     intent.putExtra("email", mEmail);
                     RegisterPasswordActivity.this.startActivity(intent);
