@@ -47,22 +47,22 @@ public class RegisterEmailActivity extends AppCompatActivity {
         btnLoadPasswordRegister.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                contactingFirebase.isEmailAvailable(txtEmail.getText().toString(),new ContactingFirebase.OnEmailCheckListener(){
-                    @Override
-                    public void onSuccess(boolean isRegistered){
+                if(checkInputsValidity.isEmailValid(txtEmail.getText().toString())) {
+                    contactingFirebase.isEmailAvailable(txtEmail.getText().toString(),new ContactingFirebase.OnEmailCheckListener(){
+                        @Override
+                        public void onSuccess(boolean isRegistered){
 
-                        if(isRegistered){
-                            Toast.makeText(RegisterEmailActivity.this, "Email already linked with another account", Toast.LENGTH_SHORT).show();
-                        } else {
-                            if(checkInputsValidity.isEmailValid(txtEmail.getText().toString())) {
+                            if(isRegistered){
+                                Toast.makeText(RegisterEmailActivity.this, "Email already linked with another account", Toast.LENGTH_SHORT).show();
+                            } else {
                                 Intent intent = new Intent(RegisterEmailActivity.this, RegisterPasswordActivity.class);
                                 intent.putExtra("email", txtEmail.getText().toString());
                                 RegisterEmailActivity.this.startActivity(intent);
                                 return;
                             }
                         }
-                    }
-                });
+                    });
+                }
             }
         });
     }

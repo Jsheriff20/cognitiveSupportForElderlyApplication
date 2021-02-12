@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.util.Log;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -19,8 +18,6 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-
-import java.util.ArrayList;
 
 public class ContactingFirebase {
 
@@ -128,7 +125,7 @@ public class ContactingFirebase {
                             Toast.makeText(context, "Password or email is incorrect", Toast.LENGTH_SHORT).show();
 
                         } else {
-                            context.startActivity(new Intent(context, MainActivity.class));
+                            context.startActivity(new Intent(context, SelectAreaOfApplicationActivity.class));
 
                             //TODO:
                             //store info in global variables to be used across application
