@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".SendMediaFileActivity">
+    tools:context=".messages.sendingMedia.SendMediaFileActivity">
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/lstFriendsList"
@@ -19,7 +19,7 @@
 
 
     <ImageButton
-        android:id="@+id/btnSend"
+        android:id="@+id/btnPendingFriends"
         android:layout_width="80dp"
         android:layout_height="80dp"
         android:layout_marginEnd="16dp"

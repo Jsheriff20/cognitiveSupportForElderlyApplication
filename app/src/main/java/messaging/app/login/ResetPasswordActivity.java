@@ -1,4 +1,4 @@
-package messaging.app;
+package messaging.app.login;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -7,6 +7,9 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+
+import messaging.app.ContactingFirebase;
+import messaging.app.R;
 
 public class ResetPasswordActivity extends AppCompatActivity {
 

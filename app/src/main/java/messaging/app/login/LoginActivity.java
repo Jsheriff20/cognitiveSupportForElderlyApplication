@@ -1,4 +1,4 @@
-package messaging.app;
+package messaging.app.login;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -7,6 +7,10 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+
+import messaging.app.ContactingFirebase;
+import messaging.app.R;
+import messaging.app.register.RegisterEmailActivity;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -47,7 +51,7 @@ public class LoginActivity extends AppCompatActivity {
         btnLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                contactingFirebase.LoginUser(txtEmail.getText().toString(), txtPassword.getText().toString());
+                contactingFirebase.loginUser(txtEmail.getText().toString(), txtPassword.getText().toString());
             }
         });
     }

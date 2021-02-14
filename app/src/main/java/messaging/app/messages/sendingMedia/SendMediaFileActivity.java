@@ -1,4 +1,4 @@
-package messaging.app;
+package messaging.app.messages.sendingMedia;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -15,6 +15,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import messaging.app.FriendsDetails;
+import messaging.app.R;
+
 import static android.widget.Toast.LENGTH_SHORT;
 
 public class SendMediaFileActivity extends AppCompatActivity {
@@ -23,22 +26,22 @@ public class SendMediaFileActivity extends AppCompatActivity {
     List<FriendsDetails> friendsDetailsList = new ArrayList<FriendsDetails>();
 
     private RecyclerView recyclerView;
-    private FriendsListAdapter mAdapter;
+    private SendMediaFriendsListAdapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
     private ImageButton btnSend;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_send_media_file);
+        setContentView(R.layout.activity_send_media_friends_list);
 
         pathToMedia = getIntent().getExtras().getString("mediaPath");
 
-        btnSend = (ImageButton) findViewById(R.id.btnSend);
+        btnSend = (ImageButton) findViewById(R.id.btnPendingFriends);
         recyclerView = findViewById(R.id.lstFriendsList);
 
         mLayoutManager = new LinearLayoutManager(this);
-        mAdapter = new FriendsListAdapter(friendsDetailsList, this);
+        mAdapter = new SendMediaFriendsListAdapter(friendsDetailsList, this);
 
         recyclerView.setLayoutManager(mLayoutManager);
         recyclerView.setHasFixedSize(true);

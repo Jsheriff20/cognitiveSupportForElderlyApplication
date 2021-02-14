@@ -4,22 +4,11 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".SendMediaFileActivity">
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/lstFriendsList"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_marginEnd="1dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+    tools:context=".messages.friendsList.ViewFriendsListActivity">
 
 
     <ImageButton
-        android:id="@+id/btnSend"
+        android:id="@+id/btnAddFriend"
         android:layout_width="80dp"
         android:layout_height="80dp"
         android:layout_marginEnd="16dp"
@@ -28,5 +17,16 @@
         android:scaleType="fitCenter"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:srcCompat="@drawable/send_icon" />
+        app:srcCompat="@android:drawable/ic_menu_add" />
+
+    <!--    <androidx.recyclerview.widget.RecyclerView-->
+    <!--        android:id="@+id/lstFriendsList"-->
+    <!--        android:layout_width="0dp"-->
+    <!--        android:layout_height="0dp"-->
+    <!--        android:layout_marginEnd="1dp"-->
+    <!--        app:layout_constraintBottom_toBottomOf="parent"-->
+    <!--        app:layout_constraintEnd_toEndOf="parent"-->
+    <!--        app:layout_constraintHorizontal_bias="0.5"-->
+    <!--        app:layout_constraintStart_toStartOf="parent"-->
+    <!--        app:layout_constraintTop_toTopOf="parent" />-->
 </androidx.constraintlayout.widget.ConstraintLayout>

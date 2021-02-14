@@ -1,7 +1,6 @@
-package messaging.app;
+package messaging.app.register;
 
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -9,6 +8,11 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+
+import messaging.app.CheckInputsValidity;
+import messaging.app.ContactingFirebase;
+import messaging.app.login.LoginActivity;
+import messaging.app.R;
 
 
 //TODO:
@@ -71,7 +75,7 @@ public class RegisterUsernameActivity extends AppCompatActivity {
 
                 if(checkInputsValidity.isUsernameValid(txtUsername.getText().toString())) {
 
-                    if(contactingFirebase.isUsernameTaken(txtUsername.getText().toString())) {
+                    if(contactingFirebase.doesUsernameExist(txtUsername.getText().toString())) {
                         Intent intent = new Intent(RegisterUsernameActivity.this, RegisterPersonalInfoActivity.class);
                         intent.putExtra("password", mPassword);
                         intent.putExtra("email", mEmail);

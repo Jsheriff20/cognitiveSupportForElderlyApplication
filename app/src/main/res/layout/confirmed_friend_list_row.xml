@@ -21,7 +21,7 @@
     <TextView
         android:id="@+id/txtDesc"
         android:layout_width="237dp"
-        android:layout_height="78dp"
+        android:layout_height="73dp"
         android:layout_marginStart="12dp"
         android:layout_marginTop="12dp"
         android:text="Relation"
@@ -31,8 +31,8 @@
 
     <TextView
         android:id="@+id/txtName"
-        android:layout_width="95dp"
-        android:layout_height="32dp"
+        android:layout_width="235dp"
+        android:layout_height="wrap_content"
         android:layout_marginStart="12dp"
         android:layout_marginTop="16dp"
         android:text="Name"
@@ -44,11 +44,31 @@
         android:id="@+id/divider"
         android:layout_width="409dp"
         android:layout_height="1dp"
-        android:layout_marginTop="8dp"
         android:background="?android:attr/listDivider"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/btnRemoveFriend" />
+
+    <Button
+        android:id="@+id/btnRemoveFriend"
+        android:layout_width="165dp"
+        android:layout_height="44dp"
+        android:layout_marginTop="20dp"
+        android:text="Remove"
+        android:background="@drawable/orange_linear_gradient"
+        app:layout_constraintTop_toBottomOf="@+id/imgFriendsImage"
+        tools:layout_editor_absoluteX="16dp" />
+
+    <Button
+        android:id="@+id/btnBlockFriend"
+        android:layout_width="165dp"
+        android:layout_height="44dp"
+        android:layout_marginTop="20dp"
+        android:text="Block"
+        android:background="@drawable/red_linear_gradient"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/btnRemoveFriend"
         app:layout_constraintTop_toBottomOf="@+id/imgFriendsImage" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

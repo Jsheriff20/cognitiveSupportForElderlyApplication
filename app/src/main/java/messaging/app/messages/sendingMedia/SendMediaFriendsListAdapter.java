@@ -1,4 +1,4 @@
-package messaging.app;
+package messaging.app.messages.sendingMedia;
 
 import android.content.Context;
 import android.graphics.Color;
@@ -17,14 +17,17 @@ import com.bumptech.glide.Glide;
 import java.util.ArrayList;
 import java.util.List;
 
-class FriendsListAdapter extends RecyclerView.Adapter<FriendsListAdapter.ViewHolder> {
+import messaging.app.FriendsDetails;
+import messaging.app.R;
+
+class SendMediaFriendsListAdapter extends RecyclerView.Adapter<SendMediaFriendsListAdapter.ViewHolder> {
 
     Context context;
     private List<FriendsDetails> mFriendsDetailsList;
     public List mSelectedFriends = new ArrayList();
 
 
-    public FriendsListAdapter(List<FriendsDetails> friendsDetailsList, Context context) {
+    public SendMediaFriendsListAdapter(List<FriendsDetails> friendsDetailsList, Context context) {
         mFriendsDetailsList = friendsDetailsList;
         this.context = context;
     }
@@ -33,7 +36,7 @@ class FriendsListAdapter extends RecyclerView.Adapter<FriendsListAdapter.ViewHol
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.friend_row, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.send_media_friend_row, parent, false);
         ViewHolder viewHolder = new ViewHolder(view);
 
         return viewHolder;

@@ -21,7 +21,7 @@
     <TextView
         android:id="@+id/txtDesc"
         android:layout_width="237dp"
-        android:layout_height="78dp"
+        android:layout_height="73dp"
         android:layout_marginStart="12dp"
         android:layout_marginTop="12dp"
         android:text="Relation"
@@ -31,8 +31,8 @@
 
     <TextView
         android:id="@+id/txtName"
-        android:layout_width="95dp"
-        android:layout_height="32dp"
+        android:layout_width="237dp"
+        android:layout_height="wrap_content"
         android:layout_marginStart="12dp"
         android:layout_marginTop="16dp"
         android:text="Name"
@@ -42,13 +42,39 @@
 
     <View
         android:id="@+id/divider"
-        android:layout_width="409dp"
+        android:layout_width="fill_parent"
         android:layout_height="1dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="4dp"
+        android:layout_marginEnd="16dp"
         android:background="?android:attr/listDivider"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/imgFriendsImage" />
+
+    <Button
+        android:id="@+id/btnRemoveFriend"
+        android:layout_width="165dp"
+        android:layout_height="44dp"
+        android:background="@drawable/orange_linear_gradient"
+        android:text="Remove"
+        app:layout_constraintBottom_toTopOf="@+id/btnBlockFriend"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/txtName"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/btnBlockFriend"
+        android:layout_width="165dp"
+        android:layout_height="44dp"
+        android:layout_marginTop="8dp"
+        android:background="@drawable/red_linear_gradient"
+        android:text="Block"
+        app:layout_constraintBottom_toTopOf="@+id/divider"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/txtDesc"
+        app:layout_constraintTop_toBottomOf="@+id/btnRemoveFriend" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

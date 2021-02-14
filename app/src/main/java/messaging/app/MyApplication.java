@@ -1,40 +1,21 @@
 package messaging.app;
 
 import java.util.ArrayList;
+import java.util.Dictionary;
 import java.util.List;
 
 public class MyApplication extends android.app.Application {
     //do not include the list of friends here, dynamically retrieve it every time its needed to ensure that up to date info is received
 
 
-    private List<FriendsDetails> friendsDetailsList = new ArrayList<FriendsDetails>();
-    private List<String> selectedRecipientsList = new ArrayList<String>();
+    private String UUID;
+    private String username;
+    private String Email;
+    private String userImage;
+    private String firstName;
+    private String surname;
 
 
     public MyApplication() {
-        this.friendsDetailsList = friendsDetailsList;
     }
-
-    public List<FriendsDetails> getFriendsDetailsList() {
-        return friendsDetailsList;
-    }
-
-    public void setFriendsDetailsList(List<FriendsDetails> friendsDetailsList) {
-        this.friendsDetailsList = friendsDetailsList;
-    }
-
-
-    public void addToSelectedRecipientsList(String recipient){
-        selectedRecipientsList.add(recipient);
-    }
-
-    public List<String> getSelectedRecipientsList() {
-        return selectedRecipientsList;
-    }
-
-    public void setSelectedRecipientsList(List<String> selectedRecipientsList) {
-        this.selectedRecipientsList = selectedRecipientsList;
-    }
-
-
 }

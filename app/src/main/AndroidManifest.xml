@@ -17,23 +17,26 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme.NoActionBar">
-        <activity android:name=".FriendsListActivity"></activity>
-        <activity android:name=".ResetPasswordActivity" />
-        <activity android:name=".LoginActivity">
+        <activity android:name=".messages.friendsList.ViewFriendsListActivity"></activity>
+        <activity android:name=".messages.friendsList.AddFriendActivity" />
+        <activity android:name=".messages.MessagesActivity" />
+        <activity android:name=".messages.sendingMedia.SendMediaFriendsListActivity" />
+        <activity android:name=".login.ResetPasswordActivity" />
+        <activity android:name=".login.LoginActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".RegisterEmailActivity" />
-        <activity android:name=".RegisterPasswordActivity" />
-        <activity android:name=".RegisterUsernameActivity" />
-        <activity android:name=".RegisterPersonalInfoActivity" />
-        <activity android:name=".RegisterProfileImageActivity" />
-        <activity android:name=".SendMediaFileActivity" />
+        <activity android:name=".register.RegisterEmailActivity" />
+        <activity android:name=".register.RegisterPasswordActivity" />
+        <activity android:name=".register.RegisterUsernameActivity" />
+        <activity android:name=".register.RegisterPersonalInfoActivity" />
+        <activity android:name=".register.RegisterProfileImageActivity" />
+        <activity android:name=".messages.sendingMedia.SendMediaFileActivity" />
         <activity
-            android:name=".CaptureActivity"
+            android:name=".messages.capturingMedia.CaptureActivity"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

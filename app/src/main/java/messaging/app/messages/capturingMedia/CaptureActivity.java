@@ -1,4 +1,4 @@
-package messaging.app;
+package messaging.app.messages.capturingMedia;
 
 import android.Manifest;
 import android.content.Context;
@@ -49,6 +49,10 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.util.Arrays;
+
+import messaging.app.MediaManagement;
+import messaging.app.R;
+import messaging.app.messages.sendingMedia.SendMediaFileActivity;
 
 import static android.widget.Toast.LENGTH_SHORT;
 
@@ -122,7 +126,7 @@ public class CaptureActivity extends AppCompatActivity {
         btnCaptureImage = (ImageButton) findViewById(R.id.btnTakePhoto);
         btnStopVideo = (ImageButton) findViewById(R.id.btnStopVideo);
         btnCancel = (ImageButton) findViewById(R.id.btnCancel);
-        btnSend = (ImageButton) findViewById(R.id.btnSend);
+        btnSend = (ImageButton) findViewById(R.id.btnPendingFriends);
         capturedVideoView = (VideoView) findViewById(R.id.capturedVideoView);
         capturedImageView = (ImageView) findViewById(R.id.capturedImageView);
 

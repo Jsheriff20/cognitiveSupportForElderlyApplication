@@ -1,13 +1,16 @@
-package messaging.app;
+package messaging.app.register;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+
+import messaging.app.CheckInputsValidity;
+import messaging.app.login.LoginActivity;
+import messaging.app.R;
 
 public class RegisterPersonalInfoActivity extends AppCompatActivity {
 

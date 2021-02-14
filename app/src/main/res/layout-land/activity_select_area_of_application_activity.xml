@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/white"
+    tools:context=".SelectAreaOfApplicationActivity">
+
+
+    <com.google.android.material.circularreveal.CircularRevealGridLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:columnCount="2"
+        android:rowCount="2"
+        android:alignmentMode="alignMargins"
+        android:layout_margin="10dp">
+
+        <androidx.cardview.widget.CardView
+            android:layout_width="0dp"
+            app:cardElevation="@null"
+            android:layout_height="0dp"
+            android:layout_margin="10dp"
+            android:layout_columnWeight="1"
+            android:layout_rowWeight="1">
+
+            <androidx.appcompat.widget.LinearLayoutCompat
+                android:id="@+id/llayMessages"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginBottom="8dp"
+                android:layout_weight="1"
+                android:background="@drawable/btn_rectangle_red_gradiant"
+                android:orientation="horizontal"
+                android:padding="20dp"
+                android:weightSum="3">
+
+                <ImageView
+                    android:layout_height="match_parent"
+                    android:layout_width="30dp"
+                    android:layout_weight="1"
+                    android:src="@drawable/messages_shadow_icon" />
+
+                <TextView
+                    android:layout_height="match_parent"
+                    android:layout_width="30dp"
+                    android:layout_weight="2"
+                    android:text="Messages"
+                    android:gravity="center"
+                    android:textColor="@color/white"
+                    android:textSize="40dp"/>
+            </androidx.appcompat.widget.LinearLayoutCompat>
+
+        </androidx.cardview.widget.CardView>
+
+
+        <androidx.cardview.widget.CardView
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_margin="10dp"
+            app:cardElevation="@null"
+            android:layout_columnWeight="1"
+            android:layout_rowWeight="1">
+
+            <androidx.appcompat.widget.LinearLayoutCompat
+                android:id="@+id/llayMemories"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginBottom="8dp"
+                android:layout_weight="1"
+                android:background="@drawable/btn_rectangle_orange_gradiant"
+                android:orientation="horizontal"
+                android:padding="20dp"
+                android:weightSum="3">
+
+                <ImageView
+                    android:layout_width="30dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:src="@drawable/clock_shadow_icon" />
+
+                <TextView
+                    android:layout_width="30dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="2"
+                    android:gravity="center"
+                    android:text="Memories"
+                    android:textColor="@color/white"
+                    android:textSize="40dp" />
+            </androidx.appcompat.widget.LinearLayoutCompat>
+
+        </androidx.cardview.widget.CardView>
+
+
+        <androidx.cardview.widget.CardView
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_margin="10dp"
+            app:cardElevation="@null"
+            android:layout_columnWeight="1"
+            android:layout_rowWeight="1">
+
+            <androidx.appcompat.widget.LinearLayoutCompat
+                android:id="@+id/llayGames"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginBottom="8dp"
+                android:layout_weight="1"
+                android:background="@drawable/btn_rectangle_blue_gradiant"
+                android:orientation="horizontal"
+                android:padding="20dp"
+                android:weightSum="3">
+
+                <ImageView
+                    android:layout_width="30dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:src="@drawable/puzzle_shadow_icon" />
+
+                <TextView
+                    android:layout_width="30dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="2"
+                    android:gravity="center"
+                    android:text="Games"
+                    android:textColor="@color/white"
+                    android:textSize="40dp" />
+            </androidx.appcompat.widget.LinearLayoutCompat>
+
+        </androidx.cardview.widget.CardView>
+
+
+        <androidx.cardview.widget.CardView
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_margin="10dp"
+            app:cardElevation="@null"
+            android:layout_columnWeight="1"
+            android:layout_rowWeight="1">
+
+            <androidx.appcompat.widget.LinearLayoutCompat
+                android:id="@+id/llaySettings"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginBottom="8dp"
+                android:layout_weight="1"
+                android:background="@drawable/btn_rectangle_purple_gradiant"
+                android:orientation="horizontal"
+                android:padding="20dp"
+                android:weightSum="3">
+
+                <ImageView
+                    android:layout_width="30dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:src="@drawable/cogs_shadow_icon" />
+
+                <TextView
+                    android:layout_width="30dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="2"
+                    android:gravity="center"
+                    android:text="Settings"
+                    android:textColor="@color/white"
+                    android:textSize="40dp" />
+            </androidx.appcompat.widget.LinearLayoutCompat>
+        </androidx.cardview.widget.CardView>
+    </com.google.android.material.circularreveal.CircularRevealGridLayout>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

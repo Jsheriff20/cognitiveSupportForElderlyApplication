@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical"
-    tools:context=".SelectAreaOfApplicationActivity">
+    <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+    tools:context=".messages.MessagesActivity">
 
     <androidx.appcompat.widget.LinearLayoutCompat
         android:layout_width="match_parent"
@@ -20,64 +20,7 @@
 
 
         <androidx.appcompat.widget.LinearLayoutCompat
-            android:id="@+id/llayMessages"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginBottom="8dp"
-            android:layout_weight="1"
-            android:background="@drawable/btn_rectangle_red_gradiant"
-            android:orientation="horizontal"
-            android:padding="20dp"
-            android:weightSum="3">
-
-            <ImageView
-                android:layout_height="match_parent"
-                android:layout_width="30dp"
-                android:layout_weight="1"
-                android:src="@drawable/messages_shadow_icon" />
-
-            <TextView
-                android:layout_height="match_parent"
-                android:layout_width="30dp"
-                android:layout_weight="2"
-                android:text="Messages"
-                android:gravity="center"
-                android:textColor="@color/white"
-                android:textSize="40dp"/>
-        </androidx.appcompat.widget.LinearLayoutCompat>
-
-
-        <androidx.appcompat.widget.LinearLayoutCompat
-            android:id="@+id/llayMemories"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginBottom="8dp"
-            android:layout_weight="1"
-            android:background="@drawable/btn_rectangle_orange_gradiant"
-            android:orientation="horizontal"
-            android:padding="20dp"
-            android:weightSum="3">
-
-            <ImageView
-                android:layout_height="match_parent"
-                android:layout_width="30dp"
-                android:layout_weight="1"
-                android:src="@drawable/clock_shadow_icon" />
-
-            <TextView
-                android:layout_height="match_parent"
-                android:layout_width="30dp"
-                android:layout_weight="2"
-                android:text="Memories"
-                android:gravity="center"
-                android:textColor="@color/white"
-                android:textSize="40dp"/>
-        </androidx.appcompat.widget.LinearLayoutCompat>
-
-
-
-        <androidx.appcompat.widget.LinearLayoutCompat
-            android:id="@+id/llayGames"
+            android:id="@+id/llayFriends"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginBottom="8dp"
@@ -88,47 +31,103 @@
             android:weightSum="3">
 
             <ImageView
-                android:layout_height="match_parent"
                 android:layout_width="30dp"
+                android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:src="@drawable/puzzle_shadow_icon" />
+                android:src="@drawable/friends_shadow_icon" />
 
             <TextView
-                android:layout_height="match_parent"
                 android:layout_width="30dp"
+                android:layout_height="match_parent"
                 android:layout_weight="2"
-                android:text="Games"
                 android:gravity="center"
+                android:text="Friends"
                 android:textColor="@color/white"
-                android:textSize="40dp"/>
+                android:textSize="40dp" />
         </androidx.appcompat.widget.LinearLayoutCompat>
 
 
         <androidx.appcompat.widget.LinearLayoutCompat
-            android:id="@+id/llaySettings"
+            android:id="@+id/llaySendMessages"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginBottom="8dp"
             android:layout_weight="1"
-            android:background="@drawable/btn_rectangle_purple_gradiant"
+            android:background="@drawable/btn_rectangle_orange_gradiant"
             android:orientation="horizontal"
             android:padding="20dp"
             android:weightSum="3">
 
             <ImageView
-                android:layout_height="match_parent"
                 android:layout_width="30dp"
+                android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:src="@drawable/cogs_shadow_icon" />
+                android:src="@drawable/send_messages_shadow_icon" />
 
             <TextView
-                android:layout_height="match_parent"
                 android:layout_width="30dp"
+                android:layout_height="match_parent"
                 android:layout_weight="2"
-                android:text="Settings"
                 android:gravity="center"
+                android:text="Send Messages"
                 android:textColor="@color/white"
-                android:textSize="40dp"/>
+                android:textSize="40dp" />
+        </androidx.appcompat.widget.LinearLayoutCompat>
+
+
+        <androidx.appcompat.widget.LinearLayoutCompat
+            android:id="@+id/llayViewMessages"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginBottom="8dp"
+            android:layout_weight="1"
+            android:background="@drawable/btn_rectangle_green_gradiant"
+            android:orientation="horizontal"
+            android:padding="20dp"
+            android:weightSum="3">
+
+            <ImageView
+                android:layout_width="30dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:src="@drawable/closed_envelope_shadow_icon" />
+
+            <TextView
+                android:layout_width="30dp"
+                android:layout_height="match_parent"
+                android:layout_weight="2"
+                android:gravity="center"
+                android:text="View Messages"
+                android:textColor="@color/white"
+                android:textSize="40dp" />
+        </androidx.appcompat.widget.LinearLayoutCompat>
+
+
+        <androidx.appcompat.widget.LinearLayoutCompat
+            android:id="@+id/llayAppOptions"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginBottom="8dp"
+            android:layout_weight="1"
+            android:background="@drawable/btn_rectangle_red_gradiant"
+            android:orientation="horizontal"
+            android:padding="20dp"
+            android:weightSum="3">
+
+            <ImageView
+                android:layout_width="30dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:src="@drawable/burger_menu_shadow_icon" />
+
+            <TextView
+                android:layout_width="30dp"
+                android:layout_height="match_parent"
+                android:layout_weight="2"
+                android:gravity="center"
+                android:text="Options"
+                android:textColor="@color/white"
+                android:textSize="40dp" />
         </androidx.appcompat.widget.LinearLayoutCompat>
 
     </androidx.appcompat.widget.LinearLayoutCompat>

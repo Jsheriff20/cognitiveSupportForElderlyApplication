@@ -1,4 +1,4 @@
-package messaging.app;
+package messaging.app.register;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -8,7 +8,9 @@ import android.widget.Button;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import java.sql.BatchUpdateException;
+import messaging.app.ContactingFirebase;
+import messaging.app.login.LoginActivity;
+import messaging.app.R;
 
 
 //TODO:

@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.util.Log;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -19,6 +20,10 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.ArrayList;
+
+import messaging.app.login.LoginActivity;
+
 public class ContactingFirebase {
 
 
@@ -30,12 +35,12 @@ public class ContactingFirebase {
     public ContactingFirebase(Context context) {
         this.context = context;
         database = FirebaseDatabase.getInstance();
-        auth = FirebaseAuth.getInstance();
     }
 
 
     public void createUserWithEmailAndPassword(String email, String password, final String firstName, final String surname, final Bitmap profileImage, final String username) {
 
+        auth = FirebaseAuth.getInstance();
         auth.createUserWithEmailAndPassword(email, password)
                 .addOnCompleteListener((Activity) context, new OnCompleteListener<AuthResult>() {
                     @Override
@@ -48,7 +53,7 @@ public class ContactingFirebase {
                             String UUID = (String) task.getResult().getUser().getUid();
 
                             //add usersData to the database
-                            AddNewUsersData(firstName, surname, profileImage, UUID, username);
+                            addNewUsersData(firstName, surname, profileImage, UUID, username);
                             Intent intent = new Intent(context, LoginActivity.class);
                             context.startActivity(intent);
                         }
@@ -61,7 +66,10 @@ public class ContactingFirebase {
         void onSuccess(boolean isRegistered);
     }
 
+
     public void isEmailAvailable(final String email,final OnEmailCheckListener listener){
+
+        auth = FirebaseAuth.getInstance();
         auth.fetchSignInMethodsForEmail(email).addOnCompleteListener(new OnCompleteListener<SignInMethodQueryResult>()
         {
             @Override
@@ -76,7 +84,7 @@ public class ContactingFirebase {
     }
 
 
-    private void AddNewUsersData(String firstName, String surname, Bitmap profileImage, String UUID, String username) {
+    private void addNewUsersData(String firstName, String surname, Bitmap profileImage, String UUID, String username) {
         //create new user in database using UUID already created
         UserHelperClass userHelperClass = new UserHelperClass(firstName, surname, profileImage, username);
 
@@ -90,9 +98,9 @@ public class ContactingFirebase {
 
 
     boolean usernameExists = false;
-    public boolean isUsernameTaken(final String username){
+    public boolean doesUsernameExist(final String username){
 
-
+        usernameExists = false;
         database.getReference("usernames").addValueEventListener(new ValueEventListener() {
 
             @Override
@@ -115,7 +123,9 @@ public class ContactingFirebase {
     }
 
 
-    public void LoginUser(String email, String password){
+    public void loginUser(String email, String password){
+
+        auth = FirebaseAuth.getInstance();
         auth.signInWithEmailAndPassword(email,password)
                 .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                     @Override
@@ -136,6 +146,7 @@ public class ContactingFirebase {
 
 
     public void resetPassword(String email) {
+        auth = FirebaseAuth.getInstance();
         auth.sendPasswordResetEmail(email)
                 .addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
@@ -150,6 +161,18 @@ public class ContactingFirebase {
                     }
                 });
     }
+
+
+    public void addFriend(String friendsUsername){
+        auth = FirebaseAuth.getInstance();
+        String userAdding = auth.getCurrentUser().getUid();
+        Log.d("Test", "userAdding: " + userAdding);
+
+        //check if blocked by the user
+        //if not add a friend request by a user to the friend request receivers table
+
+    }
+
 }
 
 

@@ -96,6 +96,10 @@ public class CheckInputsValidity {
             Toast.makeText(context, "Your name cannot contain any whitespace", Toast.LENGTH_SHORT).show();
             return false;
         }
+        else if (!username.matches("(?=.*[@#$%^&+=]).{2,}")) {
+            Toast.makeText(context, "Your name cannot contain any special symbols", Toast.LENGTH_SHORT).show();
+            return false;
+        }
         return true;
     }
 }
