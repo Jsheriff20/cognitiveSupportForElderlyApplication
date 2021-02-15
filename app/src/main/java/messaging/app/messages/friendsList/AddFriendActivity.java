@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.media.Image;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -30,20 +31,22 @@ public class AddFriendActivity extends AppCompatActivity {
 
         txtAddingUsername = findViewById(R.id.txtAddingUsername);
         btnSearchFriend = findViewById(R.id.btnSearchFriend);
+
+        setBtnSearchFriendOnClick();
     }
 
     private void setBtnSearchFriendOnClick(){
-        String username = txtAddingUsername.getText().toString();
-        if(checkInputsValidity.isUsernameValid(username) ){
-            if(contactingFirebase.doesUsernameExist(username)){
-                //TODO:
-                //Add user
-                contactingFirebase.addFriend(username);
+        btnSearchFriend.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String username = txtAddingUsername.getText().toString();
+                if(checkInputsValidity.isUsernameValid(username) ){
+                    //TODO:
+                    //Add user
+                    contactingFirebase.addFriend(username);
+                }
             }
-            else{
-                Toast.makeText(this, "Username could not be found", Toast.LENGTH_SHORT).show();
-            }
-        }
+        });
     }
 
 }

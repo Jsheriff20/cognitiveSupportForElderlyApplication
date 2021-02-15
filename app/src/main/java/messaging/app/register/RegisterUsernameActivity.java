@@ -11,6 +11,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import messaging.app.CheckInputsValidity;
 import messaging.app.ContactingFirebase;
+import messaging.app.Formatting;
 import messaging.app.login.LoginActivity;
 import messaging.app.R;
 
@@ -28,6 +29,7 @@ public class RegisterUsernameActivity extends AppCompatActivity {
     String mPassword;
     ContactingFirebase contactingFirebase = new ContactingFirebase(this);
     CheckInputsValidity checkInputsValidity = new CheckInputsValidity(this);
+    Formatting formatting = new Formatting();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,20 +72,24 @@ public class RegisterUsernameActivity extends AppCompatActivity {
         btnLoadPersonalInfo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //TODO:
-                //check if username is available
+                final String username = formatting.removeEndingSpaceFromString(txtUsername.getText().toString());
+                if(checkInputsValidity.isUsernameValid(username)) {
 
-                if(checkInputsValidity.isUsernameValid(txtUsername.getText().toString())) {
-
-                    if(contactingFirebase.doesUsernameExist(txtUsername.getText().toString())) {
-                        Intent intent = new Intent(RegisterUsernameActivity.this, RegisterPersonalInfoActivity.class);
-                        intent.putExtra("password", mPassword);
-                        intent.putExtra("email", mEmail);
-                        intent.putExtra("username", txtUsername.getText().toString());
-                        RegisterUsernameActivity.this.startActivity(intent);
-                    }else{
-                        Toast.makeText(RegisterUsernameActivity.this, "Username is taken", Toast.LENGTH_SHORT).show();
-                    }
+                    contactingFirebase.doesUsernameExist(username, new ContactingFirebase.OnCheckIfUsernameExistsListener() {
+                        @Override
+                        public void onSuccess(boolean exists) {
+                            if(exists){
+                                Toast.makeText(RegisterUsernameActivity.this, "Username is taken", Toast.LENGTH_SHORT).show();
+                            }
+                            else{
+                                Intent intent = new Intent(RegisterUsernameActivity.this, RegisterPersonalInfoActivity.class);
+                                intent.putExtra("password", mPassword);
+                                intent.putExtra("email", mEmail);
+                                intent.putExtra("username", username);
+                                RegisterUsernameActivity.this.startActivity(intent);
+                            }
+                        }
+                    });
                 }
             }
         });

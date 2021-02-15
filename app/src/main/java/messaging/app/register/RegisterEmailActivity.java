@@ -11,6 +11,7 @@ import android.widget.Toast;
 
 import messaging.app.CheckInputsValidity;
 import messaging.app.ContactingFirebase;
+import messaging.app.Formatting;
 import messaging.app.login.LoginActivity;
 import messaging.app.R;
 
@@ -21,6 +22,7 @@ public class RegisterEmailActivity extends AppCompatActivity {
     Button btnLoadLogin;
     CheckInputsValidity checkInputsValidity = new CheckInputsValidity(this);
     ContactingFirebase contactingFirebase = new ContactingFirebase(this);
+    Formatting formatting = new Formatting();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,8 +49,9 @@ public class RegisterEmailActivity extends AppCompatActivity {
         btnLoadPasswordRegister.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(checkInputsValidity.isEmailValid(txtEmail.getText().toString())) {
-                    contactingFirebase.isEmailAvailable(txtEmail.getText().toString(),new ContactingFirebase.OnEmailCheckListener(){
+                final String email = formatting.removeEndingSpaceFromString(txtEmail.getText().toString());
+                if(checkInputsValidity.isEmailValid(email)) {
+                    contactingFirebase.isEmailAvailable(email,new ContactingFirebase.OnEmailCheckListener(){
                         @Override
                         public void onSuccess(boolean isRegistered){
 
@@ -56,7 +59,7 @@ public class RegisterEmailActivity extends AppCompatActivity {
                                 Toast.makeText(RegisterEmailActivity.this, "Email already linked with another account", Toast.LENGTH_SHORT).show();
                             } else {
                                 Intent intent = new Intent(RegisterEmailActivity.this, RegisterPasswordActivity.class);
-                                intent.putExtra("email", txtEmail.getText().toString());
+                                intent.putExtra("email", email);
                                 RegisterEmailActivity.this.startActivity(intent);
                                 return;
                             }
