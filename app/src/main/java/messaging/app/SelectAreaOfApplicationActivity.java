@@ -6,9 +6,11 @@ import androidx.core.content.ContextCompat;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.view.View;
 
 import messaging.app.messages.MessagesActivity;
+import messaging.app.settings.SettingsActivity;
 
 public class SelectAreaOfApplicationActivity extends AppCompatActivity {
 
@@ -30,12 +32,6 @@ public class SelectAreaOfApplicationActivity extends AppCompatActivity {
         setLayoutButtonOnClick();
     }
 
-    @Override
-    protected void onStart() {
-        super.onStart();
-//        contactingFirebase
-        contactingFirebase.getUUIDsUsername();
-    }
 
     private void setLayoutButtonOnClick(){
         llayMessages.setOnClickListener(new View.OnClickListener() {
@@ -73,10 +69,8 @@ public class SelectAreaOfApplicationActivity extends AppCompatActivity {
         llaySettings.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //TODO:
-                //add activity to open
-//                Intent intent = new Intent(SelectAreaOfApplicationActivity.this, .class);
-//                SelectAreaOfApplicationActivity.this.startActivity(intent);
+                Intent intent = new Intent(SelectAreaOfApplicationActivity.this, SettingsActivity.class);
+                SelectAreaOfApplicationActivity.this.startActivity(intent);
             }
         });
     }

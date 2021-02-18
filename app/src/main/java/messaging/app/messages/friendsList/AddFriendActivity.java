@@ -19,6 +19,7 @@ import messaging.app.R;
 public class AddFriendActivity extends AppCompatActivity {
 
     EditText txtAddingUsername;
+    EditText txtRelationship;
     ImageButton btnSearchFriend;
 
     CheckInputsValidity checkInputsValidity = new CheckInputsValidity(this);
@@ -31,6 +32,7 @@ public class AddFriendActivity extends AppCompatActivity {
 
         txtAddingUsername = findViewById(R.id.txtAddingUsername);
         btnSearchFriend = findViewById(R.id.btnSearchFriend);
+        txtRelationship = findViewById(R.id.txtRelationship);
 
         setBtnSearchFriendOnClick();
     }
@@ -40,10 +42,9 @@ public class AddFriendActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 String username = txtAddingUsername.getText().toString();
-                if(checkInputsValidity.isUsernameValid(username) ){
-                    //TODO:
-                    //Add user
-                    contactingFirebase.addFriend(username);
+                String relationship = txtRelationship.getText().toString();
+                if(checkInputsValidity.isUsernameValid(username) && checkInputsValidity.isRelationshipValid(relationship)){
+                    contactingFirebase.addFriend(username, relationship);
                 }
             }
         });

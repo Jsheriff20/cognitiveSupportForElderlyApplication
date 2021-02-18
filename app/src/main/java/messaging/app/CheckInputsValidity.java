@@ -102,4 +102,21 @@ public class CheckInputsValidity {
         }
         return true;
     }
+
+
+    public boolean isRelationshipValid(String relationship){
+        if(relationship.length() > 15){
+            Toast.makeText(context, "The relationship is too long", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+        else if (relationship.matches("(?=.*[@#$%^&+=]).{0,15}")) {
+            Toast.makeText(context, "The relationship cannot contain any special symbols", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+        else if (relationship.matches("(?=.*[0-9]).{0,15}")) {
+            Toast.makeText(context, "The relationship cannot contain any digits", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+        return true;
+    }
 }

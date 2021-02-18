@@ -10,6 +10,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
@@ -26,9 +27,11 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import messaging.app.login.LoginActivity;
+import messaging.app.messages.friendsList.friendRequestHelper;
 
 public class ContactingFirebase {
 
@@ -62,16 +65,41 @@ public class ContactingFirebase {
                             Toast.makeText(context, "Fail to register", Toast.LENGTH_SHORT).show();
                         } else {
                             //get UUID of the user account created
-                            String UUID = (String) task.getResult().getUser().getUid();
+                            final String UUID = (String) task.getResult().getUser().getUid();
 
-                            //TODO
-                            //add username and profile image to current user
-                            UserProfileChangeRequest request = new UserProfileChangeRequest.Builder().setDisplayName(username).build();
 
-                            //add usersData to the database
-                            addNewUsersData(firstName, surname, profileImage, profileImageRotation, UUID, username);
-                            Intent intent = new Intent(context, LoginActivity.class);
-                            context.startActivity(intent);
+                            final UserProfileChangeRequest request = new UserProfileChangeRequest.Builder().setDisplayName(username).build();
+                            mCurrentUser = mAuth.getCurrentUser();
+                            mCurrentUser.updateProfile(request).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                @Override
+                                public void onSuccess(Void aVoid) {
+                                    //add usersData to the database
+                                    addNewUsersData(firstName, surname, profileImage, profileImageRotation, UUID, username, new OnAddNewUserDataListener() {
+                                        @Override
+                                        public void onSuccess(boolean success) {
+                                            if(success) {
+                                                //load activity
+                                                Intent intent = new Intent(context, SelectAreaOfApplicationActivity.class);
+                                                context.startActivity(intent);
+                                            }
+                                            else{
+                                                mCurrentUser.delete();
+                                                Toast.makeText(context, "Registration failed!", Toast.LENGTH_SHORT).show();
+                                                return;
+                                            }
+                                        }
+                                    });
+
+                                }
+                            }).addOnFailureListener(new OnFailureListener() {
+                                @Override
+                                public void onFailure(@NonNull Exception e) {
+                                    mCurrentUser.delete();
+                                    Toast.makeText(context, "Registration failed!", Toast.LENGTH_SHORT).show();
+                                    return;
+                                }
+                            });
+
                         }
                     }
                 });
@@ -97,8 +125,10 @@ public class ContactingFirebase {
 
     }
 
-
-    private void addNewUsersData(final String firstName, final String surname, Uri profileImageUri, final int profileImageRotation, final String UUID, final String username) {
+    public interface OnAddNewUserDataListener{
+        void onSuccess(boolean success);
+    }
+    private void addNewUsersData(final String firstName, final String surname, Uri profileImageUri, final int profileImageRotation, final String UUID, final String username, final OnAddNewUserDataListener listener) {
 
         String path = "images/" + UUID + "_profileImage.jpg";
 
@@ -113,17 +143,25 @@ public class ContactingFirebase {
         }).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
-                //get profile image's download url
-                String profileImageUrl = mStorageRef.getDownloadUrl().toString();
+                try {
+                    //get profile image's download url
+                    String profileImageUrl = mStorageRef.getDownloadUrl().toString();
 
-                //create new user in database using UUID already created
-                UserHelperClass userHelperClass = new UserHelperClass(firstName, surname, profileImageUrl, profileImageRotation, username);
+                    //create new user in database using UUID already created
+                    UserHelperClass userHelperClass = new UserHelperClass(firstName, surname, profileImageUrl, profileImageRotation, username);
 
-                mDatabaseRef = mDatabase.getReference("userDetails");
-                mDatabaseRef.child(UUID).setValue(userHelperClass);
+                    mDatabaseRef = mDatabase.getReference("userDetails");
+                    mDatabaseRef.child(UUID).setValue(userHelperClass);
 
-                mDatabaseRef = mDatabase.getReference("usernames");
-                mDatabaseRef.child(username).setValue(UUID);
+                    mDatabaseRef = mDatabase.getReference("usernames");
+                    mDatabaseRef.child(username).setValue(UUID);
+
+                    listener.onSuccess(true);
+                }
+                catch (Exception e){
+                    listener.onSuccess(false);
+
+                }
             }
         });
 
@@ -192,7 +230,7 @@ public class ContactingFirebase {
     }
 
 
-    public void addFriend(final String friendsUsername){
+    public void addFriend(final String friendsUsername, final String relationship){
         mAuth = FirebaseAuth.getInstance();
         String userAddingsUUID = mAuth.getCurrentUser().getUid();
 
@@ -224,7 +262,7 @@ public class ContactingFirebase {
                                         }
                                         else{
                                             //if all is good add the user as a friend
-                                            sendFriendRequest(friendsUsername, new OnCheckIfFriendRequestSentListener() {
+                                            sendFriendRequest(friendsUsername, relationship, new OnCheckIfFriendRequestSentListener() {
                                                 @Override
                                                 public void onSuccess(boolean requestSentSuccessfully) {
                                                     if(requestSentSuccessfully){
@@ -259,7 +297,6 @@ public class ContactingFirebase {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
 
-                Log.d("Test", "snapshot.getValue(): " + snapshot.getValue());
                 if(!snapshot.getValue().toString().equals(null)) {
                     listener.onSuccess(formatting.removeEndingSpaceFromString((String) snapshot.getValue()));
                 }
@@ -326,7 +363,7 @@ public class ContactingFirebase {
     public interface OnCheckIfFriendRequestSentListener{
         void onSuccess(boolean requestSentSuccessfully);
     }
-    public void sendFriendRequest(final String friendsUsername, final OnCheckIfFriendRequestSentListener listener) {
+    public void sendFriendRequest(final String friendsUsername, final String relationship, final OnCheckIfFriendRequestSentListener listener) {
 
         getUsernamesUUID(friendsUsername, new OnGetUUIDListener() {
             @Override
@@ -339,7 +376,17 @@ public class ContactingFirebase {
 
                 try {
                     mDatabaseRef = mDatabase.getReference("userDetails");
-                    mDatabaseRef.child(usersUUID + "/sentFriendRequests/" + friendsUUID).setValue(friendsUsername);
+                    Map<String, String> usernameMap = new HashMap<String, String>();
+                    usernameMap.put("username", friendsUsername);
+
+                    Map<String, String> relationshipMap = new HashMap<String, String>();
+                    relationshipMap.put("relationship", relationship);
+
+                    friendRequestHelper friendRequest = new friendRequestHelper(friendsUsername, relationship);
+
+
+
+                    mDatabaseRef.child(usersUUID + "/sentFriendRequests/" + friendsUUID).setValue(friendRequest);
 
                     mDatabaseRef = mDatabase.getReference("userDetails");
                     getUUIDsUsername(usersUUID, new OnGetUsernameListener() {
@@ -371,6 +418,7 @@ public class ContactingFirebase {
             public void onDataChange(@NonNull DataSnapshot snapshot) {
 
                 Map<String, String> friendRequests = snapshot.getValue (Map.class);
+                Log.d(TAG, "onDataChange: " + friendRequests);
 
 
                 listener.onSuccess(friendRequests);
@@ -380,6 +428,15 @@ public class ContactingFirebase {
             public void onCancelled(@NonNull DatabaseError error) {
             }
         });
+    }
+
+
+    public String getCurrentUsersUUID(){
+        return mAuth.getCurrentUser().getUid();
+    }
+
+    public void logoutUser(){
+        mAuth.getInstance().signOut();
     }
 }
 
