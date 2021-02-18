@@ -53,6 +53,7 @@ import java.util.Arrays;
 import messaging.app.MediaManagement;
 import messaging.app.R;
 import messaging.app.messages.sendingMedia.SendMediaFileActivity;
+import messaging.app.register.RegisterProfileImageActivity;
 
 import static android.widget.Toast.LENGTH_SHORT;
 
@@ -113,12 +114,15 @@ public class CaptureActivity extends AppCompatActivity {
     private String mTypeOfMediaCaptured;
     private MediaManagement mediaManagement = new MediaManagement();
 
-
+    private boolean mCaptureForProfileImage;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.capture_activity);
+
+
+        mCaptureForProfileImage = getIntent().getBooleanExtra("captureForProfileImage", false);
 
         //assign variables to each view element
         cameraView = (TextureView) findViewById(R.id.cameraView);
@@ -137,15 +141,25 @@ public class CaptureActivity extends AppCompatActivity {
         btnCancel.setVisibility(View.INVISIBLE);
         btnSend.setVisibility(View.INVISIBLE);
 
+        //if capturing for profile image hide additional features
+        //also initiate onclick listeners
+        if(mCaptureForProfileImage){
+            btnCaptureVideo.setVisibility(View.INVISIBLE);
+            confirmProfileImageSelectionOnClick();
+        }
+        else{
+            //create listeners
+            viewFriendsListOnClick();
+            setVideoViewListener();
+            toggleRecordingOnClick();
+        }
+
         //create directories for files
         createMediaFolders();
 
         //create events
-        toggleRecordingOnClick();
         captureImageOnClick();
-        setVideoViewListener();
         cancelMediaOnClick();
-        viewFriendsListOnClick();
 
     }
 
@@ -299,6 +313,25 @@ public class CaptureActivity extends AppCompatActivity {
                         break;
                 }
                 mTypeOfMediaCaptured = null;
+            }
+        });
+    }
+
+
+    private void confirmProfileImageSelectionOnClick(){
+        btnSend.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getApplicationContext(), RegisterProfileImageActivity.class);
+                intent.putExtras(getIntent().getExtras());
+                intent.putExtra("profileImage", mImageFilePath);
+
+                int landscape = 1;
+                boolean inLandscapeMode = ((int) getWindowManager().getDefaultDisplay().getRotation() == landscape);
+                if(!inLandscapeMode) {
+                    intent.putExtra("profileImageRotation", mTotalRotation);
+                }
+                startActivity(intent);
             }
         });
     }

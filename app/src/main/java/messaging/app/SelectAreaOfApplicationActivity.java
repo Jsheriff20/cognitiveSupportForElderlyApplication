@@ -2,6 +2,7 @@ package messaging.app;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.LinearLayoutCompat;
+import androidx.core.content.ContextCompat;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -15,6 +16,7 @@ public class SelectAreaOfApplicationActivity extends AppCompatActivity {
     LinearLayoutCompat llayMemories;
     LinearLayoutCompat llayGames;
     LinearLayoutCompat llaySettings;
+    ContactingFirebase contactingFirebase = new ContactingFirebase(this);
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -26,6 +28,13 @@ public class SelectAreaOfApplicationActivity extends AppCompatActivity {
         llaySettings = findViewById(R.id.llaySettings);
 
         setLayoutButtonOnClick();
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+//        contactingFirebase
+        contactingFirebase.getUUIDsUsername();
     }
 
     private void setLayoutButtonOnClick(){
@@ -47,6 +56,7 @@ public class SelectAreaOfApplicationActivity extends AppCompatActivity {
 //                SelectAreaOfApplicationActivity.this.startActivity(intent);
             }
         });
+
 
 
         llayGames.setOnClickListener(new View.OnClickListener() {

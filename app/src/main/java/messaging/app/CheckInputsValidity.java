@@ -21,7 +21,7 @@ public class CheckInputsValidity {
 
         Pattern pat = Pattern.compile(emailRegex);
 
-        if(!pat.matcher(email).matches() || email == null){
+        if(!pat.matcher(email).matches() || email == null || email.length() < 2){
             Toast.makeText(context, "Email is invalid", Toast.LENGTH_SHORT).show();
             return false;
         }

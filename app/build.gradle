@@ -20,8 +20,11 @@ android {
 }
 
 dependencies {
+
+    implementation platform('com.google.firebase:firebase-bom:26.5.0')
     implementation 'com.google.firebase:firebase-auth:19.2.0'
     implementation 'androidx.wear:wear:1.0.0'
+    implementation 'com.google.firebase:firebase-storage:19.2.1'
     def cameraxVersion = "1.0.0-alpha02"
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation 'androidx.appcompat:appcompat:1.0.2'

@@ -38,6 +38,7 @@ public class MessagesActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(MessagesActivity.this, CaptureActivity.class);
+                intent.putExtra("captureForProfileImage", false);
                 MessagesActivity.this.startActivity(intent);
             }
         });

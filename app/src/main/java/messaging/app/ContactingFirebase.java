@@ -3,29 +3,32 @@ package messaging.app;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
+import android.net.Uri;
 import android.util.Log;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.SignInMethodQueryResult;
+import com.google.firebase.auth.UserProfileChangeRequest;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 
-import java.util.ArrayList;
+import java.util.Map;
 
 import messaging.app.login.LoginActivity;
-import messaging.app.register.RegisterEmailActivity;
-import messaging.app.register.RegisterPasswordActivity;
 
 public class ContactingFirebase {
 
@@ -33,21 +36,24 @@ public class ContactingFirebase {
     String TAG = "Test";
 
     Context context;
-    FirebaseDatabase database;
-    DatabaseReference reference;
-    FirebaseAuth auth;
+    FirebaseDatabase mDatabase;
+    DatabaseReference mDatabaseRef;
+    FirebaseAuth mAuth;
+    FirebaseStorage mStorage;
+    StorageReference mStorageRef;
+    FirebaseUser mCurrentUser;
     Formatting formatting = new Formatting();
 
     public ContactingFirebase(Context context) {
         this.context = context;
-        database = FirebaseDatabase.getInstance();
+        mDatabase = FirebaseDatabase.getInstance();
     }
 
 
-    public void createUserWithEmailAndPassword(String email, String password, final String firstName, final String surname, final Bitmap profileImage, final String username) {
+    public void createUserWithEmailAndPassword(String email, String password, final String firstName, final String surname, final Uri profileImage, final int profileImageRotation, final String username) {
 
-        auth = FirebaseAuth.getInstance();
-        auth.createUserWithEmailAndPassword(email, password)
+        mAuth = FirebaseAuth.getInstance();
+        mAuth.createUserWithEmailAndPassword(email, password)
                 .addOnCompleteListener((Activity) context, new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
@@ -58,8 +64,12 @@ public class ContactingFirebase {
                             //get UUID of the user account created
                             String UUID = (String) task.getResult().getUser().getUid();
 
+                            //TODO
+                            //add username and profile image to current user
+                            UserProfileChangeRequest request = new UserProfileChangeRequest.Builder().setDisplayName(username).build();
+
                             //add usersData to the database
-                            addNewUsersData(firstName, surname, profileImage, UUID, username);
+                            addNewUsersData(firstName, surname, profileImage, profileImageRotation, UUID, username);
                             Intent intent = new Intent(context, LoginActivity.class);
                             context.startActivity(intent);
                         }
@@ -73,8 +83,8 @@ public class ContactingFirebase {
     }
     public void isEmailAvailable(final String email, final OnEmailCheckListener listener){
 
-        auth = FirebaseAuth.getInstance();
-        auth.fetchSignInMethodsForEmail(email).addOnCompleteListener(new OnCompleteListener<SignInMethodQueryResult>()
+        mAuth = FirebaseAuth.getInstance();
+        mAuth.fetchSignInMethodsForEmail(email).addOnCompleteListener(new OnCompleteListener<SignInMethodQueryResult>()
         {
             @Override
             public void onComplete(@NonNull Task<SignInMethodQueryResult> task) {
@@ -88,15 +98,35 @@ public class ContactingFirebase {
     }
 
 
-    private void addNewUsersData(String firstName, String surname, Bitmap profileImage, String UUID, String username) {
-        //create new user in database using UUID already created
-        UserHelperClass userHelperClass = new UserHelperClass(firstName, surname, profileImage, username);
+    private void addNewUsersData(final String firstName, final String surname, Uri profileImageUri, final int profileImageRotation, final String UUID, final String username) {
 
-        reference = database.getReference("userDetails");
-        reference.child(UUID).setValue(userHelperClass);
+        String path = "images/" + UUID + "_profileImage.jpg";
 
-        reference = database.getReference("usernames");
-        reference.child(username).setValue(UUID);
+        mStorage = FirebaseStorage.getInstance();
+        mStorageRef = mStorage.getReference().child(path);
+
+        //upload profile image to storage
+        mStorageRef.putFile(profileImageUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+            @Override
+            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+            }
+        }).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
+                //get profile image's download url
+                String profileImageUrl = mStorageRef.getDownloadUrl().toString();
+
+                //create new user in database using UUID already created
+                UserHelperClass userHelperClass = new UserHelperClass(firstName, surname, profileImageUrl, profileImageRotation, username);
+
+                mDatabaseRef = mDatabase.getReference("userDetails");
+                mDatabaseRef.child(UUID).setValue(userHelperClass);
+
+                mDatabaseRef = mDatabase.getReference("usernames");
+                mDatabaseRef.child(username).setValue(UUID);
+            }
+        });
+
 
     }
 
@@ -106,7 +136,7 @@ public class ContactingFirebase {
     }
     public void doesUsernameExist(final String username, final OnCheckIfUsernameExistsListener listener) {
 
-        database.getReference("usernames").addValueEventListener(new ValueEventListener() {
+        mDatabase.getReference("usernames").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
 
@@ -127,9 +157,8 @@ public class ContactingFirebase {
 
 
     public void loginUser(String email, String password){
-
-        auth = FirebaseAuth.getInstance();
-        auth.signInWithEmailAndPassword(email,password)
+        mAuth = FirebaseAuth.getInstance();
+        mAuth.signInWithEmailAndPassword(email,password)
                 .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
@@ -139,9 +168,6 @@ public class ContactingFirebase {
 
                         } else {
                             context.startActivity(new Intent(context, SelectAreaOfApplicationActivity.class));
-
-                            //TODO:
-                            //store info in global variables to be used across application
                         }
                     }
                 });
@@ -149,8 +175,8 @@ public class ContactingFirebase {
 
 
     public void resetPassword(String email) {
-        auth = FirebaseAuth.getInstance();
-        auth.sendPasswordResetEmail(email)
+        mAuth = FirebaseAuth.getInstance();
+        mAuth.sendPasswordResetEmail(email)
                 .addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
@@ -167,8 +193,8 @@ public class ContactingFirebase {
 
 
     public void addFriend(final String friendsUsername){
-        auth = FirebaseAuth.getInstance();
-        String userAddingsUUID = auth.getCurrentUser().getUid();
+        mAuth = FirebaseAuth.getInstance();
+        String userAddingsUUID = mAuth.getCurrentUser().getUid();
 
         //check user is not adding themselves
         getUUIDsUsername(userAddingsUUID,new OnGetUsernameListener(){
@@ -229,7 +255,7 @@ public class ContactingFirebase {
     }
     public void getUUIDsUsername(final String UUID, final OnGetUsernameListener listener) {
 
-        database.getReference("userDetails").child(UUID + "/username").addValueEventListener(new ValueEventListener() {
+        mDatabase.getReference("userDetails").child(UUID + "/username").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
 
@@ -252,7 +278,7 @@ public class ContactingFirebase {
     }
     public void getUsernamesUUID(final String username, final OnGetUUIDListener listener) {
 
-        database.getReference("usernames").child(username).addValueEventListener(new ValueEventListener() {
+        mDatabase.getReference("usernames").child(username).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
 
@@ -274,9 +300,9 @@ public class ContactingFirebase {
         getUsernamesUUID(blockedByUsername, new OnGetUUIDListener() {
             @Override
             public void onSuccess(String blockedByUUID) {
-                String usersUUID = auth.getCurrentUser().getUid();
+                String usersUUID = mAuth.getCurrentUser().getUid();
 
-                database.getReference("userDetails").child(usersUUID + "/blockedBy/" + blockedByUUID).addValueEventListener(new ValueEventListener() {
+                mDatabase.getReference("userDetails").child(usersUUID + "/blockedBy/" + blockedByUUID).addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
 
@@ -297,7 +323,6 @@ public class ContactingFirebase {
     }
 
 
-
     public interface OnCheckIfFriendRequestSentListener{
         void onSuccess(boolean requestSentSuccessfully);
     }
@@ -305,19 +330,24 @@ public class ContactingFirebase {
 
         getUsernamesUUID(friendsUsername, new OnGetUUIDListener() {
             @Override
-            public void onSuccess(String friendsUUID) {
-                String usersUUID = auth.getCurrentUser().getUid();
+            public void onSuccess(final String friendsUUID) {
+                final String usersUUID = mAuth.getCurrentUser().getUid();
 
 
                 //TODO:
                 //check if friend request has been received by friend already. If so automatically accept the friend request.
 
                 try {
-                    reference = database.getReference("userDetails");
-                    reference.child(usersUUID + "/sentFriendRequests/" + friendsUUID).setValue(true);
+                    mDatabaseRef = mDatabase.getReference("userDetails");
+                    mDatabaseRef.child(usersUUID + "/sentFriendRequests/" + friendsUUID).setValue(friendsUsername);
 
-                    reference = database.getReference("userDetails");
-                    reference.child(friendsUUID + "/friendRequests/" + usersUUID).setValue(true);
+                    mDatabaseRef = mDatabase.getReference("userDetails");
+                    getUUIDsUsername(usersUUID, new OnGetUsernameListener() {
+                        @Override
+                        public void onSuccess(String username) {
+                            mDatabaseRef.child(friendsUUID + "/friendRequests/" + usersUUID).setValue(username);
+                        }
+                    });
 
                     listener.onSuccess(true);
                 }
@@ -326,6 +356,28 @@ public class ContactingFirebase {
                     listener.onSuccess(false);
                 }
 
+            }
+        });
+    }
+
+
+    public interface OnGetFriendRequestsListener{
+        void onSuccess(Map friendRequests);
+    }
+    public void getFriendRequestsUUID(final String UUID, final OnGetFriendRequestsListener listener) {
+
+        mDatabase.getReference("userDetails").child(UUID + "/friendRequests").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+
+                Map<String, String> friendRequests = snapshot.getValue (Map.class);
+
+
+                listener.onSuccess(friendRequests);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
             }
         });
     }
