@@ -92,8 +92,8 @@ class SendMediaFriendsListAdapter extends RecyclerView.Adapter<SendMediaFriendsL
             super(itemView);
 
             imgFriendsImage = itemView.findViewById(R.id.imgFriendsImage);
-            txtName = itemView.findViewById(R.id.txtName);
-            txtDesc = itemView.findViewById(R.id.txtDesc);
+            txtName = itemView.findViewById(R.id.lblReceivedFriendRequestUsername);
+            txtDesc = itemView.findViewById(R.id.lblSentFriendRequestRelationship);
             friendRowLayout = itemView.findViewById(R.id.friendRowLayout);
         }
 

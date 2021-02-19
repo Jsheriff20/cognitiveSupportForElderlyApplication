@@ -715,7 +715,7 @@ public class CaptureActivity extends AppCompatActivity {
                         //if permissions are denied say why permission is needed
                         Toast.makeText(this, "Please enable Camera Access", LENGTH_SHORT).show();
                     }
-                    requestPermissions(new String[]{Manifest.permission.CAMERA, Manifest.permission.RECORD_AUDIO}, REQUEST_CAMERA_PERMISSION_RESULT);
+                    requestPermissions(new String[]{Manifest.permission.CAMERA, Manifest.permission.RECORD_AUDIO, Manifest.permission.READ_EXTERNAL_STORAGE}, REQUEST_CAMERA_PERMISSION_RESULT);
                 }
 
             }

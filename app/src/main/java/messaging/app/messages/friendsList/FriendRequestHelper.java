@@ -2,16 +2,16 @@ package messaging.app.messages.friendsList;
 
 import java.util.Map;
 
-public class friendRequestHelper {
+public class FriendRequestHelper {
     private String username;
     private String relationship;
 
-    public friendRequestHelper(String username, String relationship) {
+    public FriendRequestHelper(String username, String relationship) {
         this.username = username;
         this.relationship = relationship;
     }
 
-    public friendRequestHelper() {
+    public FriendRequestHelper() {
     }
 
     public String getUsername() {
