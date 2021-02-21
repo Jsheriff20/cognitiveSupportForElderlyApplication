@@ -11,7 +11,6 @@ import messaging.app.R;
 import messaging.app.SelectAreaOfApplicationActivity;
 import messaging.app.messages.capturingMedia.CaptureActivity;
 import messaging.app.messages.friendsList.ViewFriendsListActivity;
-import messaging.app.messages.sendingMedia.SendMediaFriendsListActivity;
 
 public class MessagesActivity extends AppCompatActivity {
 

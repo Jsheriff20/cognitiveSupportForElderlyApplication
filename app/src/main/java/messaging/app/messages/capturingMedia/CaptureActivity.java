@@ -29,6 +29,7 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.HandlerThread;
+import android.util.Log;
 import android.util.Size;
 import android.util.SparseIntArray;
 import android.view.Surface;
@@ -557,8 +558,6 @@ public class CaptureActivity extends AppCompatActivity {
             startCaptureImageRequest();
 
         }
-
-
     };
 
 
@@ -567,6 +566,13 @@ public class CaptureActivity extends AppCompatActivity {
         else if (exifOrientation == ExifInterface.ORIENTATION_ROTATE_180) {  return 180; }
         else if (exifOrientation == ExifInterface.ORIENTATION_ROTATE_270) {  return 270; }
         return 0;
+    }
+
+    private static String degreesToExif(int orientation) {
+        if (orientation == 90) { return String.valueOf(ExifInterface.ORIENTATION_ROTATE_90); }
+        else if (orientation == 180) {  return String.valueOf(0); }
+        else if (orientation == 270) {  return String.valueOf(0); }
+        return String.valueOf(0);
     }
 
 
@@ -602,18 +608,11 @@ public class CaptureActivity extends AppCompatActivity {
                         int rotation = exif.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL);
                         int rotationInDegrees = exifToDegrees(rotation);
 
-
                         Bitmap myBitmap = BitmapFactory.decodeFile(mediaFile.getAbsolutePath());
+                        myBitmap = mediaManagement.RotateBitmap(myBitmap, rotationInDegrees);
 
-
-                        int landscape = 1;
-                        boolean inLandscapeMode = ((int) getWindowManager().getDefaultDisplay().getRotation() == landscape);
-                        if(inLandscapeMode){
-                            myBitmap = mediaManagement.RotateBitmap(myBitmap, rotationInDegrees);
-                        }else{
-                            myBitmap = mediaManagement.RotateBitmap(myBitmap, mTotalRotation);
-                        }
                         capturedImageView.setImageBitmap(myBitmap);
+
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
@@ -671,6 +670,7 @@ public class CaptureActivity extends AppCompatActivity {
                 //check the device's orientation and change cameras orientation
                 int deviceOrientation = getWindowManager().getDefaultDisplay().getRotation();
                 mTotalRotation = sensorToDeviceRotation(cameraCharacteristics, deviceOrientation);
+                Log.d("Test", "setupCamera: " + mTotalRotation);
 
                 //check if rotation is portrait (if it is it will be true)
                 boolean inPortraitMode = mTotalRotation == 90 || mTotalRotation == 270;
@@ -827,6 +827,7 @@ public class CaptureActivity extends AppCompatActivity {
             //save image's bytes as a file
             FileOutputStream fileOutputStream = null;
             try {
+
                 fileOutputStream = new FileOutputStream(mImageFilePath);
                 fileOutputStream.write(bytes);
             } catch (FileNotFoundException e) {
@@ -835,6 +836,15 @@ public class CaptureActivity extends AppCompatActivity {
                 e.printStackTrace();
             }
             finally {
+
+                ExifInterface exif = null;
+                try {
+                    exif = new ExifInterface(mImageFilePath);
+                    exif.setAttribute(ExifInterface.TAG_ORIENTATION, degreesToExif(mTotalRotation));
+                    exif.saveAttributes();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
                 mImage.close();
                 if(fileOutputStream != null){
                     try {

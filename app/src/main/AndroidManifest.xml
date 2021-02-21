@@ -8,6 +8,7 @@
     <uses-permission android:name="android.permission.INTERNET" />
 
     <uses-feature android:name="android.hardware.camera2.full" />
+
     <application
         android:name=".MyApplication"
         android:allowBackup="true"
@@ -17,11 +18,11 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme.NoActionBar">
-        <activity android:name=".settings.SettingsActivity"></activity>
+        <activity android:name=".messages.friendsList.EditFriendActivity"></activity>
+        <activity android:name=".settings.SettingsActivity" />
         <activity android:name=".messages.friendsList.ViewFriendsListActivity" />
         <activity android:name=".messages.friendsList.AddFriendActivity" />
         <activity android:name=".messages.MessagesActivity" />
-        <activity android:name=".messages.sendingMedia.SendMediaFriendsListActivity" />
         <activity android:name=".login.ResetPasswordActivity" />
         <activity android:name=".login.LoginActivity">
             <intent-filter>

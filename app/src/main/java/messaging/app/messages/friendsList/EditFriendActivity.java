@@ -1,4 +1,4 @@
-package messaging.app.messages.sendingMedia;
+package messaging.app.messages.friendsList;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -6,11 +6,11 @@ import android.os.Bundle;
 
 import messaging.app.R;
 
-public class SendMediaFriendsListActivity extends AppCompatActivity {
+public class EditFriendActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_send_media_friends_list);
+        setContentView(R.layout.activity_edit_friend);
     }
 }

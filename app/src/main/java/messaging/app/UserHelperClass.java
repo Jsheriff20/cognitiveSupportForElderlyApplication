@@ -8,26 +8,25 @@ public class UserHelperClass {
     String firstName;
     String surname;
     String profileImage;
-    int profileImageRotation;
+    String profileImageRotation;
 
-
-
-    public UserHelperClass(String firstName, String surname, String profileImage, int profileImageRotation, String username){
-        this.firstName = firstName;
-        this.surname = surname;
-        this.profileImage = profileImage;
-        this.username = username;
-        this.profileImageRotation = profileImageRotation;
-    }
 
     public UserHelperClass() {
     }
 
-    public int getProfileImageRotation() {
+    public UserHelperClass(String username, String firstName, String surname, String profileImage, String profileImageRotation) {
+        this.username = username;
+        this.firstName = firstName;
+        this.surname = surname;
+        this.profileImage = profileImage;
+        this.profileImageRotation = profileImageRotation;
+    }
+
+    public String getProfileImageRotation() {
         return profileImageRotation;
     }
 
-    public void setProfileImageRotation(int profileImageRotation) {
+    public void setProfileImageRotation(String profileImageRotation) {
         this.profileImageRotation = profileImageRotation;
     }
 

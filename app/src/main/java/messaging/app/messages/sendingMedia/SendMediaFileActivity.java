@@ -15,7 +15,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import messaging.app.FriendsDetails;
+import messaging.app.AccountDetails;
 import messaging.app.R;
 
 import static android.widget.Toast.LENGTH_SHORT;
@@ -23,7 +23,7 @@ import static android.widget.Toast.LENGTH_SHORT;
 public class SendMediaFileActivity extends AppCompatActivity {
 
     String pathToMedia;
-    List<FriendsDetails> friendsDetailsList = new ArrayList<FriendsDetails>();
+    List<AccountDetails> friendsDetailsList = new ArrayList<AccountDetails>();
 
     private RecyclerView recyclerView;
     private SendMediaFriendsListAdapter mAdapter;
@@ -89,14 +89,13 @@ public class SendMediaFileActivity extends AppCompatActivity {
     private void getFriendsDetailsList() {
         //TODO:
         //replace this with a for loop that gets all details from a database
-        FriendsDetails friend1 = new FriendsDetails(0, "Jack", "Grandson", "https://www.w3schools.com/howto/img_avatar.png");
-        FriendsDetails friend2 = new FriendsDetails(1, "Paul", "Child", "https://www.w3schools.com/howto/img_avatar.png");
-        FriendsDetails friend3 = new FriendsDetails(2, "Brady", "Uncle", "https://www.w3schools.com/howto/img_avatar.png");
-        FriendsDetails friend4 = new FriendsDetails(3, "Dawid", "Dad", "https://www.w3schools.com/howto/img_avatar.png");
-        FriendsDetails friend5 = new FriendsDetails(4, "Sam", "Grandson", "https://www.w3schools.com/howto/img_avatar.png");
-        FriendsDetails friend6 = new FriendsDetails(5, "Mel", "Child", "https://www.w3schools.com/howto/img_avatar.png");
-
-        friendsDetailsList.addAll(Arrays.asList(new FriendsDetails[] {friend1, friend2, friend3, friend4, friend5, friend6}));
+        AccountDetails friend1 = new AccountDetails("0", "Jack", "Sheriff", "Grandson", "https://www.w3schools.com/howto/img_avatar.png", 0, "Test" );
+        AccountDetails friend2 = new AccountDetails("0", "Jack", "Sheriff", "Grandson", "https://www.w3schools.com/howto/img_avatar.png", 0, "Test" );
+        AccountDetails friend3 = new AccountDetails("0", "Jack", "Sheriff", "Grandson", "https://www.w3schools.com/howto/img_avatar.png", 0, "Test" );
+        AccountDetails friend4 = new AccountDetails("0", "Jack", "Sheriff", "Grandson", "https://www.w3schools.com/howto/img_avatar.png", 0, "Test" );
+        AccountDetails friend5 = new AccountDetails("0", "Jack", "Sheriff", "Grandson", "https://www.w3schools.com/howto/img_avatar.png", 0, "Test" );
+        AccountDetails friend6 = new AccountDetails("0", "Jack", "Sheriff", "Grandson", "https://www.w3schools.com/howto/img_avatar.png", 0, "Test" );
+        friendsDetailsList.addAll(Arrays.asList(new AccountDetails[] {friend1, friend2, friend3, friend4, friend5, friend6}));
     }
 
 

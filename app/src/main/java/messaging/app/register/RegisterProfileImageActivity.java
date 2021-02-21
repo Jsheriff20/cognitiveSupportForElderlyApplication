@@ -199,7 +199,7 @@ public class RegisterProfileImageActivity extends AppCompatActivity {
         btnRegister.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                contactingFirebase.createUserWithEmailAndPassword(mEmail, mPassword, mFirstName, mSurname, mProfileImage, mProfileImageRotation, mUsername);
+                contactingFirebase.createUserWithEmailAndPassword(mEmail, mPassword, mFirstName, mSurname, mProfileImage, mUsername);
             }
         });
     }

@@ -3,12 +3,14 @@ package messaging.app;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.media.ExifInterface;
 import android.net.Uri;
 import android.util.Log;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 
+import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -26,8 +28,10 @@ import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.StorageTask;
 import com.google.firebase.storage.UploadTask;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -57,7 +61,7 @@ public class ContactingFirebase {
     }
 
 
-    public void createUserWithEmailAndPassword(String email, String password, final String firstName, final String surname, final Uri profileImage, final int profileImageRotation, final String username) {
+    public void createUserWithEmailAndPassword(String email, String password, final String firstName, final String surname, final Uri profileImage, final String username) {
 
         mAuth = FirebaseAuth.getInstance();
         mAuth.createUserWithEmailAndPassword(email, password)
@@ -78,7 +82,7 @@ public class ContactingFirebase {
                                 @Override
                                 public void onSuccess(Void aVoid) {
                                     //add usersData to the database
-                                    addNewUsersData(firstName, surname, profileImage, profileImageRotation, UUID, username, new OnAddNewUserDataListener() {
+                                    addNewUsersData(firstName, surname, profileImage, UUID, username, new OnAddNewUserDataListener() {
                                         @Override
                                         public void onSuccess(boolean success) {
                                             if (success) {
@@ -117,7 +121,7 @@ public class ContactingFirebase {
         getSentFriendRequest.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                for (DataSnapshot ds :snapshot.getChildren()){
+                for (DataSnapshot ds : snapshot.getChildren()) {
                     ds.getRef().removeValue();
                 }
                 getReceivedFriendRequest.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -151,7 +155,7 @@ public class ContactingFirebase {
         getSentFriendRequest.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                for (DataSnapshot ds :snapshot.getChildren()){
+                for (DataSnapshot ds : snapshot.getChildren()) {
                     ds.getRef().removeValue();
                 }
                 getReceivedFriendRequest.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -172,6 +176,36 @@ public class ContactingFirebase {
                 Log.e(TAG, "onCancelled: " + error);
             }
         });
+    }
+
+
+    public interface OnGetFriendsDetailsListener {
+        void onSuccess(List friendsDetails);
+    }
+
+    public void getFriendsDetails(final OnGetFriendsDetailsListener listener) {
+
+        mDatabase.getReference("userDetails").child(getCurrentUsersUUID() + "/friends").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+
+                //get friends
+                List friendsDetailsList = new ArrayList<AccountDetails>();
+                for (DataSnapshot ds : snapshot.getChildren()) {
+
+                    AccountDetails friendsDetails = getAccountDetailsFromSnapshot(ds);
+                    friendsDetails.setUUID(ds.getKey());
+                    friendsDetailsList.add(friendsDetails);
+                }
+                listener.onSuccess(friendsDetailsList);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+            }
+        });
+
+
     }
 
     public interface OnEmailCheckListener {
@@ -197,27 +231,43 @@ public class ContactingFirebase {
         void onSuccess(boolean success);
     }
 
-    private void addNewUsersData(final String firstName, final String surname, Uri profileImageUri, final int profileImageRotation, final String UUID, final String username, final OnAddNewUserDataListener listener) {
+    private void addNewUsersData(final String firstName, final String surname, final Uri profileImageUri, final String UUID, final String username, final OnAddNewUserDataListener listener) {
 
-        String path = "images/" + UUID + "_profileImage.jpg";
+        String fileName = UUID + "_profileImage.jpg";
 
         mStorage = FirebaseStorage.getInstance();
-        mStorageRef = mStorage.getReference().child(path);
+        mStorageRef = mStorage.getReference("images").child(fileName);
+
+
+
 
         //upload profile image to storage
-        mStorageRef.putFile(profileImageUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-            @Override
-            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-            }
-        }).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
+        mStorageRef.putFile(profileImageUri).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
-                try {
+                if(task.isSuccessful()){
+
                     //get profile image's download url
-                    String profileImageUrl = mStorageRef.getDownloadUrl().toString();
+                    String profileImageUrl = task.getResult().getUploadSessionUri().toString();
+
+
+                    //get image rotation
+                    String rotation = "0";
+                    try {
+                        ExifInterface exif = null;
+                        exif = new ExifInterface(profileImageUri.getPath());
+                        rotation = String.valueOf(exif.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL));
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
 
                     //create new user in database using UUID already created
-                    UserHelperClass userHelperClass = new UserHelperClass(firstName, surname, profileImageUrl, profileImageRotation, username);
+                    UserHelperClass userHelperClass = new UserHelperClass(username, firstName, surname, profileImageUrl, rotation);
+                    Log.d(TAG, "getFirstName: " + userHelperClass.getFirstName());
+                    Log.d(TAG, "getProfileImage: " + userHelperClass.getProfileImage());
+                    Log.d(TAG, "getProfileImageRotation: " + userHelperClass.getProfileImageRotation());
+                    Log.d(TAG, "getSurname: " + userHelperClass.getSurname());
+                    Log.d(TAG, "getUsername: " + userHelperClass.getUsername());
 
                     mDatabaseRef = mDatabase.getReference("userDetails");
                     mDatabaseRef.child(UUID).setValue(userHelperClass);
@@ -225,15 +275,18 @@ public class ContactingFirebase {
                     mDatabaseRef = mDatabase.getReference("usernames");
                     mDatabaseRef.child(username).setValue(UUID);
 
-                    listener.onSuccess(true);
-                } catch (Exception e) {
-                    listener.onSuccess(false);
 
+                    listener.onSuccess(true);
                 }
             }
-        });
+        })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        listener.onSuccess(false);
 
-
+                    }
+                });
     }
 
 
@@ -300,6 +353,7 @@ public class ContactingFirebase {
 
 
     public void addFriend(final String friendsUsername, final String relationship) {
+
         mAuth = FirebaseAuth.getInstance();
 
         //check user is not adding themselves
@@ -312,33 +366,47 @@ public class ContactingFirebase {
             doesUsernameExist(friendsUsername, new OnCheckIfUsernameExistsListener() {
                 @Override
                 public void onSuccess(boolean exists) {
-
                     if (exists) {
-                        //check adding user is not blocked by the recipient user
-                        isUserBlockedBy(friendsUsername, new OnCheckIfUserIsBlockedByListener() {
+
+                        //check to see if user is already friends with the user
+                        isUserAlreadyFriendsWith(friendsUsername, new OnCheckIfUserIsAlreadyFriendsWithListener() {
                             @Override
-                            public void onSuccess(boolean blocked) {
+                            public void onSuccess(boolean alreadyFriends) {
 
-                                if (blocked) {
-                                    Toast.makeText(context, "You have been blocked by this user", Toast.LENGTH_SHORT).show();
-                                } else {
-                                    //check if friend has already sent a friend request to the user. If so auto accept
-                                    getUsernamesUUID(friendsUsername, new OnGetUUIDListener() {
-                                        @Override
-                                        public void onSuccess(final String friendsUUID) {
-                                            checkReceivedFriendRequestFrom(friendsUUID, new OnCheckReceivedFriendRequestFromListener() {
-                                                @Override
-                                                public void onSuccess(boolean haveExistingFriendRequest) {
+                                if (alreadyFriends) {
+                                    Toast.makeText(context, "You and " + friendsUsername + " are already friends", Toast.LENGTH_SHORT).show();
+                                    return;
+                                }
+                                //check adding user is not blocked by the recipient user
+                                isUserBlockedBy(friendsUsername, new OnCheckIfUserIsBlockedByListener() {
+                                    @Override
+                                    public void onSuccess(boolean blocked) {
 
-                                                    if(haveExistingFriendRequest){
-                                                        Toast.makeText(context, "Friend request to " + friendsUsername + " was automatically accepted", Toast.LENGTH_SHORT).show();
-                                                        acceptFriendRequest(friendsUUID, friendsUsername);
-                                                    }
-                                                    else{
+                                        if (blocked) {
+                                            Toast.makeText(context, "You have been blocked by this user", Toast.LENGTH_SHORT).show();
+                                            return;
+                                        }
+
+                                        //check if friend has already sent a friend request to the user. If so auto accept
+                                        getUsernamesUUID(friendsUsername, new OnGetUUIDListener() {
+                                            @Override
+                                            public void onSuccess(final String friendsUUID) {
+                                                Log.d(TAG, "addFriend: 0");
+                                                checkReceivedFriendRequestFrom(friendsUUID, new OnCheckReceivedFriendRequestFromListener() {
+                                                    @Override
+                                                    public void onSuccess(boolean haveExistingFriendRequest) {
+
+                                                        Log.d(TAG, "addFriend: 1");
+                                                        if (haveExistingFriendRequest) {
+                                                            Toast.makeText(context, "Friend request to " + friendsUsername + " was automatically accepted", Toast.LENGTH_SHORT).show();
+                                                            acceptFriendRequest(friendsUUID, friendsUsername);
+                                                            return;
+                                                        }
                                                         //if all is good add the user as a friend
                                                         sendFriendRequest(friendsUsername, relationship, new OnCheckIfFriendRequestSentListener() {
                                                             @Override
                                                             public void onSuccess(boolean requestSentSuccessfully) {
+                                                                Log.d(TAG, "addFriend: 2");
                                                                 if (requestSentSuccessfully) {
                                                                     Toast.makeText(context, "Friend request to " + friendsUsername + " was sent successfully", Toast.LENGTH_SHORT).show();
                                                                 } else {
@@ -347,11 +415,11 @@ public class ContactingFirebase {
                                                             }
                                                         });
                                                     }
-                                                }
-                                            });
-                                        }
-                                    });
-                                }
+                                                });
+                                            }
+                                        });
+                                    }
+                                });
                             }
                         });
                     } else {
@@ -366,6 +434,7 @@ public class ContactingFirebase {
     public interface OnGetUsernameListener {
         void onSuccess(String username);
     }
+
     public void getUUIDsUsername(final String UUID, final OnGetUsernameListener listener) {
 
         mDatabase.getReference("userDetails").child(UUID + "/username").addListenerForSingleValueEvent(new ValueEventListener() {
@@ -388,6 +457,7 @@ public class ContactingFirebase {
     public interface OnGetUUIDListener {
         void onSuccess(String UUID);
     }
+
     public void getUsernamesUUID(final String username, final OnGetUUIDListener listener) {
 
         mDatabase.getReference("usernames").child(username).addListenerForSingleValueEvent(new ValueEventListener() {
@@ -407,6 +477,7 @@ public class ContactingFirebase {
     public interface OnCheckIfUserIsBlockedByListener {
         void onSuccess(boolean blocked);
     }
+
     public void isUserBlockedBy(final String blockedByUsername, final OnCheckIfUserIsBlockedByListener listener) {
 
         getUsernamesUUID(blockedByUsername, new OnGetUUIDListener() {
@@ -434,19 +505,46 @@ public class ContactingFirebase {
     }
 
 
+    public interface OnCheckIfUserIsAlreadyFriendsWithListener {
+        void onSuccess(boolean alreadyFriends);
+    }
+
+    public void isUserAlreadyFriendsWith(final String friendsWithUsername, final OnCheckIfUserIsAlreadyFriendsWithListener listener) {
+
+        getUsernamesUUID(friendsWithUsername, new OnGetUUIDListener() {
+            @Override
+            public void onSuccess(String friendsWithUUID) {
+
+                mDatabase.getReference("userDetails").child(getCurrentUsersUUID() + "/friends/" + friendsWithUUID).addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+
+                        if (snapshot.getValue() == null) {
+                            listener.onSuccess(false);
+                        } else {
+                            listener.onSuccess(true);
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+                    }
+                });
+            }
+        });
+    }
+
+
     public interface OnCheckIfFriendRequestSentListener {
         void onSuccess(boolean requestSentSuccessfully);
     }
+
     public void sendFriendRequest(final String friendsUsername, final String relationship, final OnCheckIfFriendRequestSentListener listener) {
 
         getUsernamesUUID(friendsUsername, new OnGetUUIDListener() {
             @Override
             public void onSuccess(final String friendsUUID) {
                 final String usersUUID = mAuth.getCurrentUser().getUid();
-
-
-                //TODO:
-                //check if friend request has been received by friend already. If so automatically accept the friend request.
 
                 try {
                     //build friend request
@@ -476,9 +574,11 @@ public class ContactingFirebase {
 
 
     private List sentFriendRequests = new ArrayList<HashMap<String, FriendRequestHelper>>();
+
     public interface OnGetSentFriendRequestsListener {
         void onSuccess(List friendRequests);
     }
+
     public void getSentFriendRequests(final OnGetSentFriendRequestsListener listener) {
         String UUID = getCurrentUsersUUID();
 
@@ -490,7 +590,7 @@ public class ContactingFirebase {
                 FriendRequestHelper friendRequest;
 
 
-                for(DataSnapshot ds : snapshot.getChildren()){
+                for (DataSnapshot ds : snapshot.getChildren()) {
                     //build friend request
                     friendRequest = ds.getValue(FriendRequestHelper.class);
                     UUIDMap.put(ds.getKey(), friendRequest);
@@ -510,9 +610,11 @@ public class ContactingFirebase {
 
 
     private List receivedFriendRequests = new ArrayList<HashMap<String, String>>();
+
     public interface OnGetReceivedFriendRequestsListener {
         void onSuccess(List friendRequests);
     }
+
     public void getReceivedFriendRequests(final OnGetReceivedFriendRequestsListener listener) {
         String UUID = getCurrentUsersUUID();
 
@@ -523,7 +625,7 @@ public class ContactingFirebase {
                 HashMap UUIDMap = new HashMap<String, String>();
 
 
-                for(DataSnapshot ds : snapshot.getChildren()){
+                for (DataSnapshot ds : snapshot.getChildren()) {
                     //build friend request
                     UUIDMap.put(ds.getKey(), ds.getValue());
 
@@ -542,20 +644,21 @@ public class ContactingFirebase {
     public interface OnCheckReceivedFriendRequestFromListener {
         void onSuccess(boolean result);
     }
+
     public void checkReceivedFriendRequestFrom(final String friendRequestFromUUID, final OnCheckReceivedFriendRequestFromListener listener) {
 
         mDatabase.getReference("userDetails").child(getCurrentUsersUUID() + "/friendRequests").orderByValue().addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
 
-                for(DataSnapshot ds : snapshot.getChildren()){
-                    if(ds.getKey().equals(friendRequestFromUUID)){
+                for (DataSnapshot ds : snapshot.getChildren()) {
+                    if (ds.getKey().equals(friendRequestFromUUID)) {
                         listener.onSuccess(true);
-                    }
-                    else{
+                    } else {
                         listener.onSuccess(false);
                     }
                 }
+                listener.onSuccess(false);
 
             }
 
@@ -565,15 +668,80 @@ public class ContactingFirebase {
         });
     }
 
-    public void acceptFriendRequest(String friendsUUID, String friendsUsername){
+    public void acceptFriendRequest(final String friendsUUID, final String friendsUsername) {
 
         //cancel the friend requests
         cancelReceivedFriendRequest(friendsUUID);
 
-        //add each other as a friend on each account
-        mDatabaseRef = mDatabase.getReference("userDetails");
-        mDatabaseRef.child(friendsUUID + "/friends/username" + getCurrentUsersUUID()).setValue(getCurrentUsersUsername());
-        mDatabaseRef.child(getCurrentUsersUUID() + "/friends/username" + friendsUUID).setValue(friendsUsername);
+        //get details of accounts
+        getAccountDetails(getCurrentUsersUUID(), new OnGetAccountDetailsListener() {
+            @Override
+            public void onSuccess(AccountDetails accountDetails) {
+                final AccountDetails currentUsersDetails = accountDetails;
+
+                getAccountDetails(friendsUUID, new OnGetAccountDetailsListener() {
+                    @Override
+                    public void onSuccess(AccountDetails accountDetails) {
+                        AccountDetails friendsDetails = accountDetails;
+
+                        //add each other as a friend on each account
+                        mDatabaseRef = mDatabase.getReference("userDetails");
+                        mDatabaseRef.child(friendsUUID + "/friends/" + getCurrentUsersUUID()).setValue(currentUsersDetails);
+                        mDatabaseRef.child(getCurrentUsersUUID() + "/friends/" + friendsUUID).setValue(friendsDetails);
+                    }
+                });
+            }
+        });
+
+    }
+
+    public AccountDetails getAccountDetailsFromSnapshot(DataSnapshot snapshot) {
+        AccountDetails accountDetails = new AccountDetails();
+
+        for (DataSnapshot ds : snapshot.getChildren()) {
+            switch (ds.getKey()) {
+                case "profileImageUrl":
+                    accountDetails.setProfileImageUrl((String) ds.getValue());
+                    break;
+                case "profileImageRotation":
+                    long rotation = (long) ds.getValue();
+                    accountDetails.setProfileImageRotation((int) rotation);
+                    break;
+                case "firstName":
+                    accountDetails.setFirstName((String) ds.getValue());
+                    break;
+                case "surname":
+                    accountDetails.setSurname((String) ds.getValue());
+                    break;
+                case "relationship":
+                    accountDetails.setRelationship((String) ds.getValue());
+                    break;
+                case "username":
+                    accountDetails.setUsername((String) ds.getValue());
+                    break;
+                default:
+                    Log.e(TAG, "could not find match for value: " + ds.getKey());
+            }
+        }
+        return accountDetails;
+    }
+
+    public interface OnGetAccountDetailsListener {
+        void onSuccess(AccountDetails accountDetails);
+    }
+
+    public void getAccountDetails(final String UUID, final OnGetAccountDetailsListener listener) {
+
+        mDatabase.getReference("userDetails").child(UUID).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                listener.onSuccess(getAccountDetailsFromSnapshot(snapshot));
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+            }
+        });
     }
 
 

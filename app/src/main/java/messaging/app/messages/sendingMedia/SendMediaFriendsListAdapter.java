@@ -17,17 +17,17 @@ import com.bumptech.glide.Glide;
 import java.util.ArrayList;
 import java.util.List;
 
-import messaging.app.FriendsDetails;
+import messaging.app.AccountDetails;
 import messaging.app.R;
 
 class SendMediaFriendsListAdapter extends RecyclerView.Adapter<SendMediaFriendsListAdapter.ViewHolder> {
 
     Context context;
-    private List<FriendsDetails> mFriendsDetailsList;
+    private List<AccountDetails> mFriendsDetailsList;
     public List mSelectedFriends = new ArrayList();
 
 
-    public SendMediaFriendsListAdapter(List<FriendsDetails> friendsDetailsList, Context context) {
+    public SendMediaFriendsListAdapter(List<AccountDetails> friendsDetailsList, Context context) {
         mFriendsDetailsList = friendsDetailsList;
         this.context = context;
     }
@@ -46,12 +46,12 @@ class SendMediaFriendsListAdapter extends RecyclerView.Adapter<SendMediaFriendsL
     @Override
     public void onBindViewHolder(@NonNull final ViewHolder holder, int position) {
 
-        FriendsDetails currentListItem = mFriendsDetailsList.get(position);
+        AccountDetails currentListItem = mFriendsDetailsList.get(position);
         //provide the details of each view element for each friend row
-        holder.txtName.setText(currentListItem.getName());
-        holder.txtDesc.setText(currentListItem.getDescription());
-        holder.id = currentListItem.getId();
-        Glide.with(context).load(currentListItem.getImageURL()).into(holder.imgFriendsImage);
+        holder.txtName.setText(currentListItem.getFirstName() + " " + currentListItem.getSurname());
+        holder.txtDesc.setText(currentListItem.getRelationship());
+        holder.id = currentListItem.getUUID();
+        Glide.with(context).load(currentListItem.getProfileImageUrl()).into(holder.imgFriendsImage);
 
 
         holder.friendRowLayout.setOnClickListener(new View.OnClickListener() {
@@ -86,7 +86,7 @@ class SendMediaFriendsListAdapter extends RecyclerView.Adapter<SendMediaFriendsL
         TextView txtName;
         TextView txtDesc;
         ConstraintLayout friendRowLayout;
-        int id;
+        String id;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -94,7 +94,7 @@ class SendMediaFriendsListAdapter extends RecyclerView.Adapter<SendMediaFriendsL
             imgFriendsImage = itemView.findViewById(R.id.imgFriendsImage);
             txtName = itemView.findViewById(R.id.lblReceivedFriendRequestUsername);
             txtDesc = itemView.findViewById(R.id.lblSentFriendRequestRelationship);
-            friendRowLayout = itemView.findViewById(R.id.friendRowLayout);
+            friendRowLayout = itemView.findViewById(R.id.sendMediaFriendRowLayout);
         }
 
     }
