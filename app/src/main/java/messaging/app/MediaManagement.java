@@ -3,6 +3,7 @@ package messaging.app;
 import android.graphics.Bitmap;
 import android.graphics.Matrix;
 import android.graphics.RectF;
+import android.media.ExifInterface;
 import android.util.Log;
 import android.util.Size;
 import android.view.Surface;
@@ -95,6 +96,13 @@ public class MediaManagement {
         Matrix matrix = new Matrix();
         matrix.postRotate(angle);
         return Bitmap.createBitmap(source, 0, 0, source.getWidth(), source.getHeight(), matrix, true);
+    }
+
+    public static int exifToDegrees(int exifOrientation) {
+        if (exifOrientation == ExifInterface.ORIENTATION_ROTATE_90) { return 90; }
+        else if (exifOrientation == ExifInterface.ORIENTATION_ROTATE_180) {  return 180; }
+        else if (exifOrientation == ExifInterface.ORIENTATION_ROTATE_270) {  return 270; }
+        return 0;
     }
 }
 

@@ -560,14 +560,6 @@ public class CaptureActivity extends AppCompatActivity {
         }
     };
 
-
-    private static int exifToDegrees(int exifOrientation) {
-        if (exifOrientation == ExifInterface.ORIENTATION_ROTATE_90) { return 90; }
-        else if (exifOrientation == ExifInterface.ORIENTATION_ROTATE_180) {  return 180; }
-        else if (exifOrientation == ExifInterface.ORIENTATION_ROTATE_270) {  return 270; }
-        return 0;
-    }
-
     private static String degreesToExif(int orientation) {
         if (orientation == 90) { return String.valueOf(ExifInterface.ORIENTATION_ROTATE_90); }
         else if (orientation == 180) {  return String.valueOf(0); }
@@ -606,7 +598,7 @@ public class CaptureActivity extends AppCompatActivity {
                         //display the media in the correct rotation
                         exif = new ExifInterface(mediaFile.getPath());
                         int rotation = exif.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL);
-                        int rotationInDegrees = exifToDegrees(rotation);
+                        int rotationInDegrees = mediaManagement.exifToDegrees(rotation);
 
                         Bitmap myBitmap = BitmapFactory.decodeFile(mediaFile.getAbsolutePath());
                         myBitmap = mediaManagement.RotateBitmap(myBitmap, rotationInDegrees);

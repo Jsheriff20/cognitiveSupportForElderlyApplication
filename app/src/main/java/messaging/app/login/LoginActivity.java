@@ -84,11 +84,13 @@ public class LoginActivity extends AppCompatActivity {
         });
     }
 
+
     private void setBtnLoginOnClick(){
         btnLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(!checkInputsValidity.isEmailValid(txtEmail.getText().toString())){
+                String email = formatting.removeEndingSpaceFromString(txtEmail.getText().toString());
+                if(!checkInputsValidity.isEmailValid(email)){
                     return;
                 }
                 else if(txtPassword.getText().toString().length() < 1){
@@ -96,7 +98,7 @@ public class LoginActivity extends AppCompatActivity {
                     return;
                 }
                 else {
-                    contactingFirebase.loginUser(txtEmail.getText().toString(), txtPassword.getText().toString());
+                    contactingFirebase.loginUser(email, txtPassword.getText().toString());
                 }
             }
         });

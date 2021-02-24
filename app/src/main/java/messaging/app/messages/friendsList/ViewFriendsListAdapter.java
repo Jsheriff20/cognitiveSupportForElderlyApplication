@@ -27,6 +27,7 @@ import java.net.URL;
 import java.util.List;
 
 import messaging.app.AccountDetails;
+import messaging.app.MediaManagement;
 import messaging.app.R;
 import messaging.app.register.RegisterPasswordActivity;
 import messaging.app.register.RegisterUsernameActivity;
@@ -35,6 +36,8 @@ public class ViewFriendsListAdapter extends RecyclerView.Adapter<ViewFriendsList
 
     Context context;
     private List mFriendsDetailsList;
+
+    MediaManagement mediaManagement = new MediaManagement();
 
 
     public ViewFriendsListAdapter(List friendsDetailsList, Context context) {
@@ -61,9 +64,9 @@ public class ViewFriendsListAdapter extends RecyclerView.Adapter<ViewFriendsList
         holder.lblRelationship.setText(friendsDetails.getRelationship());
         holder.UUID = friendsDetails.getUUID();
         holder.username = friendsDetails.getUsername();
-        holder.profileImageRotation = friendsDetails.getProfileImageRotation();
+        holder.profileImageRotation = mediaManagement.exifToDegrees(friendsDetails.getProfileImageRotation());
         holder.profileImageUrl = friendsDetails.getProfileImageUrl();
-        Picasso.get().load(holder.profileImageUrl).rotate(holder.profileImageRotation).into(holder.imgProfileImage);
+        Picasso.with(context).load(holder.profileImageUrl).rotate(holder.profileImageRotation).into(holder.imgProfileImage);
 
         Log.d("Test", "profileImageRotation: " + holder.profileImageRotation);
         Log.d("Test", "profileImageUrl: " + holder.profileImageUrl);
@@ -78,7 +81,7 @@ public class ViewFriendsListAdapter extends RecyclerView.Adapter<ViewFriendsList
             public void onClick(View v) {
                 Intent intent = new Intent(context, EditFriendActivity.class);
                 intent.putExtra("name", holder.lblName.getText().toString());
-                intent.putExtra("relationship", holder.lblName.getText().toString());
+                intent.putExtra("relationship", holder.lblRelationship.getText().toString());
                 intent.putExtra("UUID", holder.UUID);
                 intent.putExtra("username", holder.username);
                 intent.putExtra("profileImageUrl", holder.profileImageUrl);

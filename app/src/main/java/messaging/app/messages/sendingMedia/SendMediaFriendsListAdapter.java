@@ -13,11 +13,13 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import messaging.app.AccountDetails;
+import messaging.app.MediaManagement;
 import messaging.app.R;
 
 class SendMediaFriendsListAdapter extends RecyclerView.Adapter<SendMediaFriendsListAdapter.ViewHolder> {
@@ -25,6 +27,7 @@ class SendMediaFriendsListAdapter extends RecyclerView.Adapter<SendMediaFriendsL
     Context context;
     private List<AccountDetails> mFriendsDetailsList;
     public List mSelectedFriends = new ArrayList();
+    MediaManagement mediaManagement = new MediaManagement();
 
 
     public SendMediaFriendsListAdapter(List<AccountDetails> friendsDetailsList, Context context) {
@@ -48,10 +51,11 @@ class SendMediaFriendsListAdapter extends RecyclerView.Adapter<SendMediaFriendsL
 
         AccountDetails currentListItem = mFriendsDetailsList.get(position);
         //provide the details of each view element for each friend row
-        holder.txtName.setText(currentListItem.getFirstName() + " " + currentListItem.getSurname());
-        holder.txtDesc.setText(currentListItem.getRelationship());
-        holder.id = currentListItem.getUUID();
-        Glide.with(context).load(currentListItem.getProfileImageUrl()).into(holder.imgFriendsImage);
+        holder.lblName.setText(currentListItem.getFirstName() + " " + currentListItem.getSurname());
+        holder.lblRelationship.setText(currentListItem.getRelationship());
+        holder.UUID = currentListItem.getUUID();
+        holder.profileImageRotation = mediaManagement.exifToDegrees(currentListItem.getProfileImageRotation());
+        Picasso.with(context).load(currentListItem.getProfileImageUrl()).rotate(holder.profileImageRotation).into(holder.imgFriendsImage);
 
 
         holder.friendRowLayout.setOnClickListener(new View.OnClickListener() {
@@ -59,12 +63,12 @@ class SendMediaFriendsListAdapter extends RecyclerView.Adapter<SendMediaFriendsL
             public void onClick(View v) {
 
                 //manage selected friends and the background colour
-                if(mSelectedFriends.contains(holder.id)){
-                    mSelectedFriends.remove(mSelectedFriends.indexOf(holder.id));
+                if(mSelectedFriends.contains(holder.UUID)){
+                    mSelectedFriends.remove(mSelectedFriends.indexOf(holder.UUID));
                     holder.friendRowLayout.setBackgroundColor(Color.rgb(255,255,255));
 
                 }else{
-                    mSelectedFriends.add(holder.id);
+                    mSelectedFriends.add(holder.UUID);
                     holder.friendRowLayout.setBackgroundColor(Color.rgb(173,216,230));
 
                 }
@@ -83,17 +87,18 @@ class SendMediaFriendsListAdapter extends RecyclerView.Adapter<SendMediaFriendsL
     //friend row layout
     public class ViewHolder extends RecyclerView.ViewHolder{
         ImageView imgFriendsImage;
-        TextView txtName;
-        TextView txtDesc;
+        TextView lblName;
+        TextView lblRelationship;
         ConstraintLayout friendRowLayout;
-        String id;
+        String UUID;
+        int profileImageRotation;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
 
             imgFriendsImage = itemView.findViewById(R.id.imgFriendsImage);
-            txtName = itemView.findViewById(R.id.lblReceivedFriendRequestUsername);
-            txtDesc = itemView.findViewById(R.id.lblSentFriendRequestRelationship);
+            lblName = itemView.findViewById(R.id.lblSendMessageName);
+            lblRelationship = itemView.findViewById(R.id.lblSendMessageRelationship);
             friendRowLayout = itemView.findViewById(R.id.sendMediaFriendRowLayout);
         }
 

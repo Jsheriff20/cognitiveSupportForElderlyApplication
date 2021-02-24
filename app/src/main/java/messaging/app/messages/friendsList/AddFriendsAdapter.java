@@ -139,8 +139,9 @@ public class AddFriendsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                 receivedFriendRequestsViewHolder.btnConfirmFriendRequest.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
+                        String newRelationship = ((ReceivedFriendRequestsViewHolder) holder).txtReceivedFriendRequestRelationship.getText().toString();
                         //accept friend request
-                        contactingFirebase.acceptFriendRequest(receivedFriendRequestsViewHolder.UUID, receivedFriendRequestsViewHolder.receivedUsername);
+                        contactingFirebase.acceptFriendRequest(receivedFriendRequestsViewHolder.UUID, newRelationship);
 
                         //hide the friend request
                         receivedFriendRequestsViewHolder.itemView.setVisibility(View.GONE);

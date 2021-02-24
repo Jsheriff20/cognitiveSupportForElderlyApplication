@@ -16,19 +16,22 @@ import java.util.Arrays;
 import java.util.List;
 
 import messaging.app.AccountDetails;
+import messaging.app.ContactingFirebase;
 import messaging.app.R;
+import messaging.app.messages.friendsList.ViewFriendsListAdapter;
 
 import static android.widget.Toast.LENGTH_SHORT;
 
 public class SendMediaFileActivity extends AppCompatActivity {
 
     String pathToMedia;
-    List<AccountDetails> friendsDetailsList = new ArrayList<AccountDetails>();
 
     private RecyclerView recyclerView;
     private SendMediaFriendsListAdapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
     private ImageButton btnSend;
+
+    ContactingFirebase contactingFirebase = new ContactingFirebase(this);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,16 +44,31 @@ public class SendMediaFileActivity extends AppCompatActivity {
         recyclerView = findViewById(R.id.lstFriendsList);
 
         mLayoutManager = new LinearLayoutManager(this);
-        mAdapter = new SendMediaFriendsListAdapter(friendsDetailsList, this);
 
         recyclerView.setLayoutManager(mLayoutManager);
         recyclerView.setHasFixedSize(true);
         recyclerView.setAdapter(mAdapter);
 
-        getFriendsDetailsList();
+        displayFriendsDetailsList();
 
         btnSendOnClick();
     }
+
+
+    private void displayFriendsDetailsList() {
+        contactingFirebase.getFriendsDetails(new ContactingFirebase.OnGetFriendsDetailsListener() {
+            @Override
+            public void onSuccess(List friendsDetailsList) {
+                //display to user
+                mAdapter = new SendMediaFriendsListAdapter(friendsDetailsList, getApplicationContext());
+
+                recyclerView.setLayoutManager(mLayoutManager);
+                recyclerView.setHasFixedSize(true);
+                recyclerView.setAdapter(mAdapter);
+            }
+        });
+    }
+
 
     private void sendMedia(List<Integer> recipientIDs){
 
@@ -85,18 +103,6 @@ public class SendMediaFileActivity extends AppCompatActivity {
         });
     }
 
-
-    private void getFriendsDetailsList() {
-        //TODO:
-        //replace this with a for loop that gets all details from a database
-        AccountDetails friend1 = new AccountDetails("0", "Jack", "Sheriff", "Grandson", "https://www.w3schools.com/howto/img_avatar.png", 0, "Test" );
-        AccountDetails friend2 = new AccountDetails("0", "Jack", "Sheriff", "Grandson", "https://www.w3schools.com/howto/img_avatar.png", 0, "Test" );
-        AccountDetails friend3 = new AccountDetails("0", "Jack", "Sheriff", "Grandson", "https://www.w3schools.com/howto/img_avatar.png", 0, "Test" );
-        AccountDetails friend4 = new AccountDetails("0", "Jack", "Sheriff", "Grandson", "https://www.w3schools.com/howto/img_avatar.png", 0, "Test" );
-        AccountDetails friend5 = new AccountDetails("0", "Jack", "Sheriff", "Grandson", "https://www.w3schools.com/howto/img_avatar.png", 0, "Test" );
-        AccountDetails friend6 = new AccountDetails("0", "Jack", "Sheriff", "Grandson", "https://www.w3schools.com/howto/img_avatar.png", 0, "Test" );
-        friendsDetailsList.addAll(Arrays.asList(new AccountDetails[] {friend1, friend2, friend3, friend4, friend5, friend6}));
-    }
 
 
 

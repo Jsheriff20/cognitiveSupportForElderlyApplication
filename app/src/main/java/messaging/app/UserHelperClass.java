@@ -1,32 +1,29 @@
 package messaging.app;
 
-import android.graphics.Bitmap;
-import android.net.Uri;
-
 public class UserHelperClass {
     String username;
     String firstName;
     String surname;
-    String profileImage;
-    String profileImageRotation;
+    String profileImageUrl;
+    int profileImageRotation;
 
 
     public UserHelperClass() {
     }
 
-    public UserHelperClass(String username, String firstName, String surname, String profileImage, String profileImageRotation) {
+    public UserHelperClass(String username, String firstName, String surname, String profileImageUrl, int profileImageRotation) {
         this.username = username;
         this.firstName = firstName;
         this.surname = surname;
-        this.profileImage = profileImage;
+        this.profileImageUrl = profileImageUrl;
         this.profileImageRotation = profileImageRotation;
     }
 
-    public String getProfileImageRotation() {
+    public int getProfileImageRotation() {
         return profileImageRotation;
     }
 
-    public void setProfileImageRotation(String profileImageRotation) {
+    public void setProfileImageRotation(int profileImageRotation) {
         this.profileImageRotation = profileImageRotation;
     }
 
@@ -54,11 +51,11 @@ public class UserHelperClass {
         this.surname = surname;
     }
 
-    public String getProfileImage() {
-        return profileImage;
+    public String getProfileImageUrl() {
+        return profileImageUrl;
     }
 
-    public void setProfileImage(String profileImage) {
-        this.profileImage = profileImage;
+    public void setProfileImageUrl(String profileImageUrl) {
+        this.profileImageUrl = profileImageUrl;
     }
 }
