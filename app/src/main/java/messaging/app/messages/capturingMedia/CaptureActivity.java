@@ -53,7 +53,7 @@ import java.util.Arrays;
 
 import messaging.app.MediaManagement;
 import messaging.app.R;
-import messaging.app.messages.sendingMedia.SendMediaFileActivity;
+import messaging.app.messages.sendingMedia.SendMediaTabsActivity;
 import messaging.app.register.RegisterProfileImageActivity;
 
 import static android.widget.Toast.LENGTH_SHORT;
@@ -342,7 +342,7 @@ public class CaptureActivity extends AppCompatActivity {
         btnSend.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(getApplicationContext(), SendMediaFileActivity.class);
+                Intent intent = new Intent(getApplicationContext(), SendMediaTabsActivity.class);
 
                 switch (mTypeOfMediaCaptured){
                     case "Image":

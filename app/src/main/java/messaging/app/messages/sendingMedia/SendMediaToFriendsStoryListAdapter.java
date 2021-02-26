@@ -12,7 +12,6 @@ import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.bumptech.glide.Glide;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -22,17 +21,24 @@ import messaging.app.AccountDetails;
 import messaging.app.MediaManagement;
 import messaging.app.R;
 
-class SendMediaFriendsListAdapter extends RecyclerView.Adapter<SendMediaFriendsListAdapter.ViewHolder> {
+public class SendMediaToFriendsStoryListAdapter extends RecyclerView.Adapter<SendMediaToFriendsStoryListAdapter.ViewHolder> {
 
     Context context;
     private List<AccountDetails> mFriendsDetailsList;
     public List mSelectedFriends = new ArrayList();
     MediaManagement mediaManagement = new MediaManagement();
+    onFriendsStorySelectRecyclerViewClickedUUIDListener listener;
+
+    public interface onFriendsStorySelectRecyclerViewClickedUUIDListener{
+        //message type will either be story or friend (the direct message)
+        void onSelected(String UUID, String messageType);
+    }
 
 
-    public SendMediaFriendsListAdapter(List<AccountDetails> friendsDetailsList, Context context) {
+    public SendMediaToFriendsStoryListAdapter(List<AccountDetails> friendsDetailsList, Context context, onFriendsStorySelectRecyclerViewClickedUUIDListener listener) {
         mFriendsDetailsList = friendsDetailsList;
         this.context = context;
+        this.listener = listener;
     }
 
 
@@ -69,9 +75,10 @@ class SendMediaFriendsListAdapter extends RecyclerView.Adapter<SendMediaFriendsL
 
                 }else{
                     mSelectedFriends.add(holder.UUID);
-                    holder.friendRowLayout.setBackgroundColor(Color.rgb(173,216,230));
+                    holder.friendRowLayout.setBackgroundColor(Color.rgb(230,187,173));
 
                 }
+                listener.onSelected(holder.UUID, "story");
             }
         });
 

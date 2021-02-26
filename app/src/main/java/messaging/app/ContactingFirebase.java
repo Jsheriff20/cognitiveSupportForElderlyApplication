@@ -191,6 +191,21 @@ public class ContactingFirebase {
     }
 
 
+    public void sendMessages(ArrayList<String> directMessagesUUID, ArrayList<String> storyMessagesUUID) {
+        //TODO:
+        //upload to storage
+        //add direct message data to recipients messages
+            //
+            //
+            //
+        //add story message data to recipients story
+        //
+        //
+        //
+        //
+    }
+
+
     public interface OnUpdateFriendRelationshipListener {
         void onSuccess(boolean success);
     }

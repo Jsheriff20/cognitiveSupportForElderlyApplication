@@ -18,7 +18,11 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme.NoActionBar">
-        <activity android:name=".messages.friendsList.EditFriendActivity"></activity>
+        <activity
+            android:name=".messages.sendingMedia.SendMediaTabsActivity"
+            android:label="@string/title_activity_send_media_tabs"
+            android:theme="@style/AppTheme.NoActionBar.NoActionBar"></activity>
+        <activity android:name=".messages.friendsList.EditFriendActivity" />
         <activity android:name=".settings.SettingsActivity" />
         <activity android:name=".messages.friendsList.ViewFriendsListActivity" />
         <activity android:name=".messages.friendsList.AddFriendActivity" />
@@ -36,7 +40,6 @@
         <activity android:name=".register.RegisterUsernameActivity" />
         <activity android:name=".register.RegisterPersonalInfoActivity" />
         <activity android:name=".register.RegisterProfileImageActivity" />
-        <activity android:name=".messages.sendingMedia.SendMediaFileActivity" />
         <activity android:name=".messages.capturingMedia.CaptureActivity" />
         <activity android:name=".SelectAreaOfApplicationActivity" />
     </application>

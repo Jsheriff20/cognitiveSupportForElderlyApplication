@@ -7,4 +7,8 @@
     values-round/strings.xml for round devices.
     -->
     <string name="hello_world">Hello Square World!</string>
+    <string name="title_activity_send_media_file_to_friends">SendMediaFileToFriendsActivity</string>
+    <string name="tab_text_1">Conversation</string>
+    <string name="tab_text_2">Story</string>
+    <string name="title_activity_send_media_tabs">SendMediaTabsActivity</string>
 </resources>
