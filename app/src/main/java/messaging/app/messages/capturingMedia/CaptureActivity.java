@@ -53,6 +53,7 @@ import java.util.Arrays;
 
 import messaging.app.MediaManagement;
 import messaging.app.R;
+import messaging.app.messages.sendingMedia.AddMessageToMediaActivity;
 import messaging.app.messages.sendingMedia.SendMediaTabsActivity;
 import messaging.app.register.RegisterProfileImageActivity;
 
@@ -86,7 +87,7 @@ public class CaptureActivity extends AppCompatActivity {
     private ImageButton btnCaptureVideo;
     private ImageButton btnStopVideo;
     private ImageButton btnCancel;
-    private ImageButton btnSend;
+    private ImageButton btnLoadMessageActivity;
     public TextureView cameraView;
     public VideoView capturedVideoView;
     private ImageView capturedImageView;
@@ -131,7 +132,7 @@ public class CaptureActivity extends AppCompatActivity {
         btnCaptureImage = (ImageButton) findViewById(R.id.btnTakePhoto);
         btnStopVideo = (ImageButton) findViewById(R.id.btnStopVideo);
         btnCancel = (ImageButton) findViewById(R.id.btnCancel);
-        btnSend = (ImageButton) findViewById(R.id.btnPendingFriends);
+        btnLoadMessageActivity = (ImageButton) findViewById(R.id.btnEnterMessageActivity);
         capturedVideoView = (VideoView) findViewById(R.id.capturedVideoView);
         capturedImageView = (ImageView) findViewById(R.id.capturedImageView);
 
@@ -140,7 +141,7 @@ public class CaptureActivity extends AppCompatActivity {
         capturedVideoView.setVisibility(View.INVISIBLE);
         capturedImageView.setVisibility(View.INVISIBLE);
         btnCancel.setVisibility(View.INVISIBLE);
-        btnSend.setVisibility(View.INVISIBLE);
+        btnLoadMessageActivity.setVisibility(View.INVISIBLE);
 
         //if capturing for profile image hide additional features
         //also initiate onclick listeners
@@ -150,7 +151,7 @@ public class CaptureActivity extends AppCompatActivity {
         }
         else{
             //create listeners
-            viewFriendsListOnClick();
+            setLoadMessageActivityOnClick();
             setVideoViewListener();
             toggleRecordingOnClick();
         }
@@ -277,7 +278,7 @@ public class CaptureActivity extends AppCompatActivity {
 
                 //hide unwanted view elements
                 btnCancel.setVisibility(View.INVISIBLE);
-                btnSend.setVisibility(View.INVISIBLE);
+                btnLoadMessageActivity.setVisibility(View.INVISIBLE);
                 capturedImageView.setVisibility(View.INVISIBLE);
                 capturedVideoView.setVisibility(View.INVISIBLE);
 
@@ -320,12 +321,13 @@ public class CaptureActivity extends AppCompatActivity {
 
 
     private void confirmProfileImageSelectionOnClick(){
-        btnSend.setOnClickListener(new View.OnClickListener() {
+        btnLoadMessageActivity.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(getApplicationContext(), RegisterProfileImageActivity.class);
                 intent.putExtras(getIntent().getExtras());
                 intent.putExtra("profileImage", mImageFilePath);
+                intent.putExtra("typeOfMediaCaptured", mTypeOfMediaCaptured);
 
                 int landscape = 1;
                 boolean inLandscapeMode = ((int) getWindowManager().getDefaultDisplay().getRotation() == landscape);
@@ -338,11 +340,12 @@ public class CaptureActivity extends AppCompatActivity {
     }
 
 
-    private void viewFriendsListOnClick(){
-        btnSend.setOnClickListener(new View.OnClickListener() {
+    private void setLoadMessageActivityOnClick(){
+        btnLoadMessageActivity.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(getApplicationContext(), SendMediaTabsActivity.class);
+                Intent intent = new Intent(getApplicationContext(), AddMessageToMediaActivity.class);
+                intent.putExtra("typeOfMediaCaptured", mTypeOfMediaCaptured);
 
                 switch (mTypeOfMediaCaptured){
                     case "Image":
@@ -407,6 +410,8 @@ public class CaptureActivity extends AppCompatActivity {
         mMediaRecorder.setVideoEncodingBitRate(1000000);
         mMediaRecorder.setVideoFrameRate(30);
         mMediaRecorder.setVideoSize(mVideoSize.getWidth(), mVideoSize.getHeight());
+        mMediaRecorder.setAudioSamplingRate(44100);
+        mMediaRecorder.setAudioEncodingBitRate(96000); //change to 128000 if needed
         mMediaRecorder.setVideoEncoder(MediaRecorder.VideoEncoder.HEVC);
         mMediaRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AAC);
 
@@ -579,7 +584,7 @@ public class CaptureActivity extends AppCompatActivity {
 
         //display view elements
         btnCancel.setVisibility(View.VISIBLE);
-        btnSend.setVisibility(View.VISIBLE);
+        btnLoadMessageActivity.setVisibility(View.VISIBLE);
 
 
         lockOrientation(true);
@@ -641,9 +646,6 @@ public class CaptureActivity extends AppCompatActivity {
 
                 break;
         }
-
-
-
     }
 
 

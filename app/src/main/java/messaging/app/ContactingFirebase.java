@@ -33,6 +33,7 @@ import com.google.firebase.storage.UploadTask;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -191,19 +192,119 @@ public class ContactingFirebase {
     }
 
 
-    public void sendMessages(ArrayList<String> directMessagesUUID, ArrayList<String> storyMessagesUUID) {
-        //TODO:
-        //upload to storage
-        //add direct message data to recipients messages
-            //
-            //
-            //
-        //add story message data to recipients story
-        //
-        //
-        //
-        //
+    //TODO:
+    //upload to storage
+    //add direct message data to recipients messages
+    //
+    //
+    //
+    //add story message data to recipients story
+    //
+    //
+    //
+    //
+
+    String failedToSendTo = "Failed to media message to: ";
+    public void sendMessages(ArrayList<String> directMessagesUUID, ArrayList<String> storyMessagesUUID, Uri sendingMediaUri, String fileType, String message){
+        failedToSendTo = "Failed to media message to: ";
+        String fileExtension;
+        if(fileType.equals("Image")){
+            fileExtension = ".jpg";
+        }
+        else{
+            fileExtension = ".mp4";
+        }
+
+
+        for (final String UUID : directMessagesUUID){
+            sendMessage(UUID, sendingMediaUri, fileExtension, message, "directlyToFriend", new OnSendMessageListener() {
+                @Override
+                public void onSuccess(boolean success) {
+                }
+            });
+        }
+
+        for(final String UUID : storyMessagesUUID){
+            sendMessage(UUID, sendingMediaUri, fileExtension, message, "toStory", new OnSendMessageListener() {
+                @Override
+                public void onSuccess(boolean success) {
+                }
+            });
+        }
     }
+
+
+    public interface OnSendMessageListener {
+        void onSuccess(boolean success);
+    }
+
+    private void sendMessage(final String friendsUUID, final Uri sendingMediaUri, final String fileExtension, final String message, final String sendingTo, final OnSendMessageListener listener) {
+        Date now = new Date();
+        long ut3 = now.getTime() / 1000L;
+        final String timestamp = Long.toString(ut3);
+        String fileName = getCurrentUsersUUID() + "_messageTo_" + friendsUUID + "_from_" + timestamp + fileExtension;
+
+        mStorage = FirebaseStorage.getInstance();
+        mStorageRef = mStorage.getReference("sentMedia").child(fileName);
+
+
+        //upload profile image to storage
+        mStorageRef.putFile(sendingMediaUri).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
+                if (task.isSuccessful()) {
+
+                    //get profile image's download url
+                    task.getResult().getStorage().getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                        @Override
+                        public void onSuccess(Uri uri) {
+                            String mediaUrl = uri.toString();
+
+                            //get image rotation
+                            int rotation = 0;
+                            try {
+                                ExifInterface exif = null;
+                                exif = new ExifInterface(sendingMediaUri.getPath());
+                                rotation = exif.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL);
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+
+                            mDatabaseRef = mDatabase.getReference("userDetails");
+                            if(sendingTo == "directlyToFriend") {
+                                mDatabaseRef.child(friendsUUID + "/messages/" + getCurrentUsersUUID() + "/" + timestamp + "/fileExtension").setValue(fileExtension);
+                                mDatabaseRef.child(friendsUUID + "/messages/" + getCurrentUsersUUID() + "/" + timestamp + "/mediaMessageUrl").setValue(mediaUrl);
+                                mDatabaseRef.child(friendsUUID + "/messages/" + getCurrentUsersUUID() + "/" + timestamp + "/mediaMessageRotation").setValue(rotation);
+                                mDatabaseRef.child(friendsUUID + "/messages/" + getCurrentUsersUUID() + "/" + timestamp + "/textMessage").setValue(message);
+                            }
+                            else {
+                                mDatabaseRef.child(friendsUUID + "/story/" + getCurrentUsersUUID() + "/" + timestamp + "/fileExtension").setValue(fileExtension);
+                                mDatabaseRef.child(friendsUUID + "/story/" + getCurrentUsersUUID() + "/" + timestamp + "/mediaMessageUrl").setValue(mediaUrl);
+                                mDatabaseRef.child(friendsUUID + "/story/" + getCurrentUsersUUID() + "/" + timestamp + "/mediaMessageRotation").setValue(rotation);
+                                mDatabaseRef.child(friendsUUID + "/story/" + getCurrentUsersUUID() + "/" + timestamp + "/textMessage").setValue(message);
+                            }
+
+                            listener.onSuccess(true);
+                        }
+                    }).addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            listener.onSuccess(false);
+                        }
+                    });
+
+                }
+            }
+        })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        listener.onSuccess(false);
+
+                    }
+                });
+    }
+
 
 
     public interface OnUpdateFriendRelationshipListener {
@@ -301,6 +402,7 @@ public class ContactingFirebase {
         });
 
     }
+
 
     public interface OnAddNewUserDataListener {
         void onSuccess(boolean success);

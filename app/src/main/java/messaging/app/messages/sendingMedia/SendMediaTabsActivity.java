@@ -1,5 +1,7 @@
 package messaging.app.messages.sendingMedia;
 
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -23,6 +25,8 @@ import java.util.Map;
 
 import messaging.app.ContactingFirebase;
 import messaging.app.R;
+import messaging.app.messages.MessagesActivity;
+import messaging.app.messages.capturingMedia.CaptureActivity;
 import messaging.app.messages.sendingMedia.ui.main.SectionsPagerAdapter;
 
 import static android.widget.Toast.LENGTH_SHORT;
@@ -31,6 +35,8 @@ public class SendMediaTabsActivity extends AppCompatActivity implements Sections
     ContactingFirebase contactingFirebase = new ContactingFirebase(this);
 
     String pathToMedia;
+    String typeOfMediaCaptured;
+    String message;
     private ImageButton btnSend;
     ArrayList<String> directMessagesUUID = new ArrayList<String>();
     ArrayList<String> storyMessagesUUID = new ArrayList<String>();;
@@ -46,6 +52,8 @@ public class SendMediaTabsActivity extends AppCompatActivity implements Sections
         tabs.setupWithViewPager(viewPager);
 
         pathToMedia = getIntent().getExtras().getString("mediaPath");
+        typeOfMediaCaptured = getIntent().getExtras().getString("typeOfMediaCaptured");
+        message = getIntent().getExtras().getString("message");
         btnSend = (ImageButton) findViewById(R.id.btnSend);
 
 
@@ -56,9 +64,13 @@ public class SendMediaTabsActivity extends AppCompatActivity implements Sections
 
     private void sendMedia(ArrayList<String> directMessagesUUID,  ArrayList<String> storyMessagesUUID){
 
-        contactingFirebase.sendMessages(directMessagesUUID, storyMessagesUUID);
+        Uri media = Uri.fromFile(new File(pathToMedia));
+        contactingFirebase.sendMessages(directMessagesUUID, storyMessagesUUID, media, typeOfMediaCaptured, message);
 
         deleteMediaFile(pathToMedia);
+
+        Intent intent = new Intent(SendMediaTabsActivity.this, CaptureActivity.class);
+        SendMediaTabsActivity.this.startActivity(intent);
     }
 
 

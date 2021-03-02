@@ -101,7 +101,7 @@
         app:srcCompat="@drawable/cancel_red_shadow_icon" />
 
     <ImageButton
-        android:id="@+id/btnPendingFriends"
+        android:id="@+id/btnEnterMessageActivity"
         android:layout_width="80dp"
         android:layout_height="80dp"
         android:layout_marginEnd="24dp"

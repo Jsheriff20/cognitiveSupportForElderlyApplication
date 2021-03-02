@@ -18,10 +18,11 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme.NoActionBar">
+        <activity android:name=".messages.sendingMedia.AddMessageToMediaActivity"></activity>
         <activity
             android:name=".messages.sendingMedia.SendMediaTabsActivity"
             android:label="@string/title_activity_send_media_tabs"
-            android:theme="@style/AppTheme.NoActionBar.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar.NoActionBar" />
         <activity android:name=".messages.friendsList.EditFriendActivity" />
         <activity android:name=".settings.SettingsActivity" />
         <activity android:name=".messages.friendsList.ViewFriendsListActivity" />
