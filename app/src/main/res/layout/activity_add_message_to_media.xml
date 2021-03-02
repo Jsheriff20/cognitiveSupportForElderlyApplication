@@ -16,7 +16,7 @@
         android:ems="10"
         android:hint="Message"
         android:inputType="textMultiLine"
-        android:maxLength="100"
+        android:maxLength="200"
         android:textSize="24sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
