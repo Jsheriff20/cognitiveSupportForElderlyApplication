@@ -52,9 +52,10 @@ public class SendMediaTabsActivity extends AppCompatActivity implements Sections
         tabs.setupWithViewPager(viewPager);
 
         pathToMedia = getIntent().getExtras().getString("mediaPath");
+        Log.d("Test", "mediaPath: " + pathToMedia);
         typeOfMediaCaptured = getIntent().getExtras().getString("typeOfMediaCaptured");
         message = getIntent().getExtras().getString("message");
-        btnSend = (ImageButton) findViewById(R.id.btnSend);
+        btnSend = findViewById(R.id.btnSend);
 
 
         btnSendOnClick();
@@ -64,25 +65,14 @@ public class SendMediaTabsActivity extends AppCompatActivity implements Sections
 
     private void sendMedia(ArrayList<String> directMessagesUUID,  ArrayList<String> storyMessagesUUID){
 
-        Uri media = Uri.fromFile(new File(pathToMedia));
-        contactingFirebase.sendMessages(directMessagesUUID, storyMessagesUUID, media, typeOfMediaCaptured, message);
+        contactingFirebase.sendMessages(directMessagesUUID, storyMessagesUUID, pathToMedia, typeOfMediaCaptured, message);
 
-        deleteMediaFile(pathToMedia);
 
         Intent intent = new Intent(SendMediaTabsActivity.this, CaptureActivity.class);
         SendMediaTabsActivity.this.startActivity(intent);
     }
 
 
-    public void deleteMediaFile(String path){
-        File file = new File(path);
-        boolean deleted = file.delete();
-
-        if(!deleted){
-            Toast.makeText(this, "Error Deleting file", LENGTH_SHORT).show();
-        }
-        return;
-    }
 
 
     private void btnSendOnClick(){

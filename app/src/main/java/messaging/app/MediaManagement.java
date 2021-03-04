@@ -1,5 +1,6 @@
 package messaging.app;
 
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Matrix;
 import android.graphics.RectF;
@@ -7,11 +8,15 @@ import android.media.ExifInterface;
 import android.util.Log;
 import android.util.Size;
 import android.view.Surface;
+import android.widget.Toast;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+
+import static android.widget.Toast.LENGTH_SHORT;
 
 public class MediaManagement {
 
@@ -103,6 +108,17 @@ public class MediaManagement {
         else if (exifOrientation == ExifInterface.ORIENTATION_ROTATE_180) {  return 180; }
         else if (exifOrientation == ExifInterface.ORIENTATION_ROTATE_270) {  return 270; }
         return 0;
+    }
+
+
+    public void deleteMediaFile(String path, Context context){
+        File file = new File(path);
+        boolean deleted = file.delete();
+
+        if(!deleted){
+            Toast.makeText(context, "Error Deleting file", LENGTH_SHORT).show();
+        }
+        return;
     }
 }
 

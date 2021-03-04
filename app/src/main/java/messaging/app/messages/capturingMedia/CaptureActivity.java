@@ -117,6 +117,7 @@ public class CaptureActivity extends AppCompatActivity {
     private MediaManagement mediaManagement = new MediaManagement();
 
     private boolean mCaptureForProfileImage;
+    private String mReplyingToUUID = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -125,6 +126,9 @@ public class CaptureActivity extends AppCompatActivity {
 
 
         mCaptureForProfileImage = getIntent().getBooleanExtra("captureForProfileImage", false);
+        if(getIntent().getStringExtra("replyingTo") != null){
+            mReplyingToUUID = getIntent().getStringExtra("replyingTo");
+        }
 
         //assign variables to each view element
         cameraView = (TextureView) findViewById(R.id.cameraView);
@@ -347,6 +351,11 @@ public class CaptureActivity extends AppCompatActivity {
                 Intent intent = new Intent(getApplicationContext(), AddMessageToMediaActivity.class);
                 intent.putExtra("typeOfMediaCaptured", mTypeOfMediaCaptured);
 
+                if(mReplyingToUUID != null){
+                    intent.putExtra("replyingTo",  mReplyingToUUID);
+                }
+                Log.d("test", "test: " + mReplyingToUUID);
+
                 switch (mTypeOfMediaCaptured){
                     case "Image":
                         intent.putExtra("mediaPath", mImageFilePath);
@@ -478,6 +487,7 @@ public class CaptureActivity extends AppCompatActivity {
 
         mVideoFolder = new File(movieDir, "capturesFromElderlyApp");
         mImageFolder = new File(imageDir, "capturesFromElderlyApp");
+        Log.d("Test", "mVideoFolder.exists(): " + mVideoFolder.exists());
 
         if(!mVideoFolder.exists()) {
             mVideoFolder.mkdirs();

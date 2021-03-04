@@ -31,8 +31,11 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Locale;
 
+import messaging.app.ContactingFirebase;
 import messaging.app.MediaManagement;
 import messaging.app.R;
+import messaging.app.messages.ViewingMessages.ListOfReceivedMediaActivity;
+import messaging.app.messages.capturingMedia.CaptureActivity;
 
 import static android.widget.Toast.LENGTH_SHORT;
 
@@ -54,6 +57,10 @@ public class AddMessageToMediaActivity extends AppCompatActivity {
     private boolean permissionToRecordAccepted = false;
     private SpeechRecognizer speechRecognizer;
 
+    private String mReplyingToUUID = null;
+
+    ContactingFirebase contactingFirebase = new ContactingFirebase(this);
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,6 +76,10 @@ public class AddMessageToMediaActivity extends AppCompatActivity {
         txtMessage = findViewById(R.id.txtMessage);
         imgCapturedImagePreview = findViewById(R.id.imgCapturedImagePreview);
         vidCapturedVideoPreview = findViewById(R.id.vidCapturedVideoPreview);
+
+        if(getIntent().getStringExtra("replyingTo") != null){
+            mReplyingToUUID = getIntent().getStringExtra("replyingTo");
+        }
 
 
         if(userWantsToSendTheirAudioRecording) {
@@ -94,14 +105,34 @@ public class AddMessageToMediaActivity extends AppCompatActivity {
 
                 mMessage = txtMessage.getText().toString();
 
-                Intent intent = new Intent(getApplicationContext(), SendMediaTabsActivity.class);
-                intent.putExtra("typeOfMediaCaptured", mTypeOfMediaCaptured);
-                intent.putExtra("mediaPath", mMediaPath);
-                intent.putExtra("message", mMessage);
+                if(mReplyingToUUID == null) {
+                    Intent intent = new Intent(getApplicationContext(), SendMediaTabsActivity.class);
+                    intent.putExtra("typeOfMediaCaptured", mTypeOfMediaCaptured);
+                    intent.putExtra("mediaPath", mMediaPath);
+                    intent.putExtra("message", mMessage);
 
-                startActivity(intent);
+
+                    startActivity(intent);
+                }
+                else{
+                    sendMedia(mReplyingToUUID, mMediaPath, mTypeOfMediaCaptured, mMessage);
+                }
             }
         });
+    }
+
+    private void sendMedia(String friendsUUID, String pathToMedia, String typeOfMediaCaptured, String message ){
+
+        ArrayList<String> directMessagesUUID = new ArrayList<String>();
+        ArrayList<String> storyMessagesUUID = new ArrayList<String>();;
+
+        directMessagesUUID.add(friendsUUID);
+
+        contactingFirebase.sendMessages(directMessagesUUID, storyMessagesUUID, pathToMedia, typeOfMediaCaptured, message);
+
+
+        Intent intent = new Intent(AddMessageToMediaActivity.this, ListOfReceivedMediaActivity.class);
+        AddMessageToMediaActivity.this.startActivity(intent);
     }
 
 

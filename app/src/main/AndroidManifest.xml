@@ -18,7 +18,9 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme.NoActionBar">
-        <activity android:name=".messages.sendingMedia.AddMessageToMediaActivity"></activity>
+        <activity android:name=".messages.ViewingMessages.ListOfReceivedMediaActivity"></activity>
+        <activity android:name=".messages.ViewingMessages.ViewMessagesActivity" />
+        <activity android:name=".messages.sendingMedia.AddMessageToMediaActivity" />
         <activity
             android:name=".messages.sendingMedia.SendMediaTabsActivity"
             android:label="@string/title_activity_send_media_tabs"

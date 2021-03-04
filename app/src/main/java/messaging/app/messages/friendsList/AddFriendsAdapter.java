@@ -126,13 +126,8 @@ public class AddFriendsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
             case 1:
                 final ReceivedFriendRequestsViewHolder receivedFriendRequestsViewHolder = (ReceivedFriendRequestsViewHolder) holder;
                 receivedFriendRequestsViewHolder.position = position - (mSentFriendRequests.size());
-                Log.d("Test", "receivedFriendRequestsViewHolder.position: " + receivedFriendRequestsViewHolder.position);
-                Log.d("Test", "position: " + position);
-                Log.d("Test", "mSentFriendRequests.size(): " + mSentFriendRequests.size());
 
                 receivedFriendRequestsViewHolder.UUID = (String) mReceivedFriendRequests.get(receivedFriendRequestsViewHolder.position).keySet().toArray()[0];
-                Log.d("Test", "receivedFriendRequestsViewHolder.UUID: " + receivedFriendRequestsViewHolder.UUID);
-                Log.d("Test", "mReceivedFriendRequests.get(receivedFriendRequestsViewHolder.position).keySet(): " + mReceivedFriendRequests.get(receivedFriendRequestsViewHolder.position).keySet());
                 receivedFriendRequestsViewHolder.receivedUsername = (String) mReceivedFriendRequests.get(receivedFriendRequestsViewHolder.position).get(receivedFriendRequestsViewHolder.UUID);
                 receivedFriendRequestsViewHolder.lblReceivedFriendRequestUsername.setText(receivedFriendRequestsViewHolder.receivedUsername);
 
@@ -172,6 +167,7 @@ public class AddFriendsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                         mReceivedFriendRequests.remove(receivedFriendRequestsViewHolder.position);
                     }
                 });
+                break;
 
         }
     }

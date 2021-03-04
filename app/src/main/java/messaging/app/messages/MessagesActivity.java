@@ -9,6 +9,7 @@ import android.view.View;
 
 import messaging.app.R;
 import messaging.app.SelectAreaOfApplicationActivity;
+import messaging.app.messages.ViewingMessages.ListOfReceivedMediaActivity;
 import messaging.app.messages.capturingMedia.CaptureActivity;
 import messaging.app.messages.friendsList.ViewFriendsListActivity;
 
@@ -53,10 +54,8 @@ public class MessagesActivity extends AppCompatActivity {
         llayViewMessages.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //TODO:
-                //add activity to open
-//                Intent intent = new Intent(MessagesActivity.this, .class);
-//                MessagesActivity.this.startActivity(intent);
+                Intent intent = new Intent(MessagesActivity.this, ListOfReceivedMediaActivity.class);
+                MessagesActivity.this.startActivity(intent);
             }
         });
 

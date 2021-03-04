@@ -68,9 +68,6 @@ public class ViewFriendsListAdapter extends RecyclerView.Adapter<ViewFriendsList
         holder.profileImageUrl = friendsDetails.getProfileImageUrl();
         Picasso.with(context).load(holder.profileImageUrl).rotate(holder.profileImageRotation).into(holder.imgProfileImage);
 
-        Log.d("Test", "profileImageRotation: " + holder.profileImageRotation);
-        Log.d("Test", "profileImageUrl: " + holder.profileImageUrl);
-
 
         //TODO:
         //display profile image
