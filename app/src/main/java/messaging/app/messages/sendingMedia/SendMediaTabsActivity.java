@@ -52,7 +52,6 @@ public class SendMediaTabsActivity extends AppCompatActivity implements Sections
         tabs.setupWithViewPager(viewPager);
 
         pathToMedia = getIntent().getExtras().getString("mediaPath");
-        Log.d("Test", "mediaPath: " + pathToMedia);
         typeOfMediaCaptured = getIntent().getExtras().getString("typeOfMediaCaptured");
         message = getIntent().getExtras().getString("message");
         btnSend = findViewById(R.id.btnSend);

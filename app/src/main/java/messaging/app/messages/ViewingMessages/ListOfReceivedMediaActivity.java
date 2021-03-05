@@ -5,11 +5,9 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Bundle;
-import android.util.Log;
 
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import messaging.app.ContactingFirebase;
 import messaging.app.R;
@@ -17,7 +15,7 @@ import messaging.app.R;
 public class ListOfReceivedMediaActivity extends AppCompatActivity {
 
     private RecyclerView recyclerView;
-    private ViewingMessagesAdapter mAdapter;
+    private ViewingMessagesReceivedAdapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
     ContactingFirebase contactingFirebase = new ContactingFirebase(this);
 
@@ -39,7 +37,7 @@ public class ListOfReceivedMediaActivity extends AppCompatActivity {
 
                 //display to user
                 mLayoutManager = new LinearLayoutManager(getApplicationContext());
-                mAdapter = new ViewingMessagesAdapter(receivedMediaDetails, numberOfStories, getApplicationContext());
+                mAdapter = new ViewingMessagesReceivedAdapter(receivedMediaDetails, numberOfStories, getApplicationContext());
 
                 recyclerView.setLayoutManager(mLayoutManager);
                 recyclerView.setHasFixedSize(true);

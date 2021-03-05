@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.media.ExifInterface;
 import android.net.Uri;
+import android.provider.ContactsContract;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -38,6 +39,7 @@ import java.util.List;
 import java.util.Map;
 
 import messaging.app.login.LoginActivity;
+import messaging.app.messages.ViewingMessages.MessageData;
 import messaging.app.messages.friendsList.FriendRequestHelper;
 
 public class ContactingFirebase {
@@ -205,7 +207,7 @@ public class ContactingFirebase {
         final Uri sendingMediaUri = Uri.fromFile(new File(pathToMedia));
 
 
-        getUUIDsFullNameAndProfileImage(getCurrentUsersUUID(), new OnGetUUIDsFullNameAndProfileImageListener(){
+        getUUIDsFullNameAndProfileImage(getCurrentUsersUUID(), new OnGetUUIDsFullNameAndProfileImageListener() {
             @Override
             public void onSuccess(final String sendersFullName, String profileImageURL, String profileImageRotation) {
                 for (final String UUID : directMessagesUUID) {
@@ -230,6 +232,7 @@ public class ContactingFirebase {
             }
         });
     }
+
 
 
     public interface OnSendMessageListener {
@@ -272,7 +275,7 @@ public class ContactingFirebase {
                                 mDatabaseRef.child("messages/" + friendsUUID + "/" + getCurrentUsersUUID() + "/fullName").setValue(sendersFullName);
                                 mDatabaseRef.child("messages/" + friendsUUID + "/" + getCurrentUsersUUID() + "/unopened").setValue(true);
                                 mDatabaseRef.child("messages/" + friendsUUID + "/" + getCurrentUsersUUID() + "/profileImageUrl").setValue(profileImageURL);
-                                mDatabaseRef.child("messages/" + friendsUUID + "/" + getCurrentUsersUUID() + "/profileImageRotation").setValue(profileImageRotation);
+                                mDatabaseRef.child("messages/" + friendsUUID + "/" + getCurrentUsersUUID() + "/profileImageRotation").setValue(rotation);
                                 mDatabaseRef.child("messages/" + friendsUUID + "/" + getCurrentUsersUUID() + "/" + timestamp + "/fileExtension").setValue(fileExtension);
                                 mDatabaseRef.child("messages/" + friendsUUID + "/" + getCurrentUsersUUID() + "/" + timestamp + "/unopened").setValue(true);
                                 mDatabaseRef.child("messages/" + friendsUUID + "/" + getCurrentUsersUUID() + "/" + timestamp + "/mediaMessageUrl").setValue(mediaUrl);
@@ -316,6 +319,7 @@ public class ContactingFirebase {
     List<HashMap<String, String>> existingReceivedMediaDetails = new ArrayList<HashMap<String, String>>() {
     };
     int numberOfUnopenedStories = 0;
+
     public void getExistingReceivedMediaDetails(final OnGetExistingReceivedMediaDetailsListener listener) {
 
         String UUID = getCurrentUsersUUID();
@@ -326,21 +330,27 @@ public class ContactingFirebase {
         getNumberOfStories.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                for(DataSnapshot ds : snapshot.getChildren()){
-                    for(DataSnapshot subDS : ds.getChildren()){
-                        if(subDS.getKey().equals("unopened") && subDS.getValue().equals(true)){
-                            numberOfUnopenedStories++;
+                for (DataSnapshot ds : snapshot.getChildren()) {
+                    String timestamp = ds.getKey();
+
+                    //check if the story message is old, if it is delete it. If not add it to the count
+                    if (isStoryMessageOld(timestamp)) {
+                        deleteStoryMessage(timestamp);
+                    } else {
+                        for (DataSnapshot subDS : ds.getChildren()) {
+                            if (subDS.getKey().equals("unopened") && subDS.getValue().equals(true)) {
+                                numberOfUnopenedStories++;
+                            }
                         }
                     }
                 }
-
 
 
                 //get info about friends messages
                 getUnopenedFriendsMessages.addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
-                        for (DataSnapshot ds : snapshot.getChildren()){
+                        for (DataSnapshot ds : snapshot.getChildren()) {
 
                             HashMap friendsMessagesHashMap = new HashMap();
                             boolean firstLoop = true;
@@ -349,26 +359,23 @@ public class ContactingFirebase {
                             friendsMessagesHashMap.put("UUID", ds.getKey());
 
                             //get the other data
-                            for(DataSnapshot subDS : ds.getChildren()){
+                            for (DataSnapshot subDS : ds.getChildren()) {
                                 //if this is the first child, then this is the most recent message sent
-                                if(firstLoop){
+                                if (firstLoop) {
                                     friendsMessagesHashMap.put("lastMessageTimeStamp", subDS.getKey());
                                     firstLoop = false;
                                 }
 
 
-                                if(subDS.getKey().equals("unopened")){
+                                if (subDS.getKey().equals("unopened")) {
                                     boolean unopenedMessage = (boolean) subDS.getValue();
                                     String strUnopenedMessage = unopenedMessage ? "1" : "0";
                                     friendsMessagesHashMap.put("unopenedMessage", strUnopenedMessage);
-                                }
-                                else if(subDS.getKey().equals("fullName")){
+                                } else if (subDS.getKey().equals("fullName")) {
                                     friendsMessagesHashMap.put("fullName", subDS.getValue());
-                                }
-                                else if(subDS.getKey().equals("profileImageUrl")){
+                                } else if (subDS.getKey().equals("profileImageUrl")) {
                                     friendsMessagesHashMap.put("profileImageUrl", subDS.getValue());
-                                }
-                                else if(subDS.getKey().equals("profileImageRotation")){
+                                } else if (subDS.getKey().equals("profileImageRotation")) {
                                     friendsMessagesHashMap.put("profileImageRotation", subDS.getValue().toString());
                                 }
 
@@ -704,6 +711,125 @@ public class ContactingFirebase {
     }
 
 
+    public interface OnGetMessagesFromListener {
+        void onSuccess(ArrayList<MessageData> messageDataList);
+    }
+
+    public void getMessagesFromUUID(final String friendsUUID, final OnGetMessagesFromListener listener) {
+
+        mDatabase.getReference("messages").child(getCurrentUsersUUID() + "/" + friendsUUID).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                ArrayList<MessageData> messageDataList = new ArrayList<MessageData>();
+
+                MessageData messageData;
+                String fullName = null;
+                for (DataSnapshot ds : snapshot.getChildren()) {
+                    messageData = new MessageData();
+                    int dsSize = (int) ds.getChildrenCount();
+
+                    if (ds.getKey().equals("fullName")) {
+                        fullName = (String) ds.getValue();
+                    }
+
+
+                    for (DataSnapshot subDS : ds.getChildren()) {
+
+                        //get the data of the message
+                        switch (subDS.getKey()) {
+                            case "fileExtension":
+                                messageData.setFileExtension((String) subDS.getValue());
+                                break;
+                            case "mediaMessageRotation":
+                                long rotation = (long) subDS.getValue();
+                                messageData.setMediaMessageRotation((int) rotation);
+                                break;
+                            case "mediaMessageUrl":
+                                messageData.setMediaMessageUrl((String) subDS.getValue());
+                                break;
+                            case "textMessage":
+                                messageData.setTextMessage((String) subDS.getValue());
+                                break;
+                            case "unopened":
+                                messageData.setUnopened((boolean) subDS.getValue());
+                                break;
+                        }
+                    }
+                    //if the count is more than one then it must be a message
+                    if (dsSize > 0) {
+                        messageData.setFullName(fullName);
+                        messageData.setTimeStamp(ds.getKey());
+                        messageDataList.add(messageData);
+                    }
+                }
+
+                for (MessageData data : messageDataList) {
+                    data.setFullName(fullName);
+                }
+                listener.onSuccess(messageDataList);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+            }
+        });
+    }
+
+
+    public interface OnGetStoryForUUIDListener {
+        void onSuccess(ArrayList<MessageData> storyMessagesDataList);
+    }
+
+    public void getStoryForUUID(final OnGetStoryForUUIDListener listener) {
+
+        mDatabase.getReference("stories").child(getCurrentUsersUUID()).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                ArrayList<MessageData> messageDataList = new ArrayList<MessageData>();
+
+                for (DataSnapshot ds : snapshot.getChildren()) {
+                    MessageData messageData = new MessageData();
+
+                    for (DataSnapshot subDS : ds.getChildren()) {
+                        //get the data of the message
+                        switch (subDS.getKey()) {
+                            case "fileExtension":
+                                messageData.setFileExtension((String) subDS.getValue());
+                                break;
+                            case "mediaMessageRotation":
+                                long rotation = (long) subDS.getValue();
+                                messageData.setMediaMessageRotation((int) rotation);
+                                break;
+                            case "mediaMessageUrl":
+                                messageData.setMediaMessageUrl((String) subDS.getValue());
+                                break;
+                            case "textMessage":
+                                messageData.setTextMessage((String) subDS.getValue());
+                                break;
+                            case "unopened":
+                                messageData.setUnopened((boolean) subDS.getValue());
+                                break;
+                            case "fullName":
+                                messageData.setFullName((String) subDS.getValue());
+                                break;
+                        }
+                    }
+
+                    messageData.setTimeStamp(ds.getKey());
+                    messageDataList.add(messageData);
+
+                }
+
+                listener.onSuccess(messageDataList);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+            }
+        });
+    }
+
+
     public interface OnGetUsernameListener {
         void onSuccess(String username);
     }
@@ -745,19 +871,16 @@ public class ContactingFirebase {
                 for (DataSnapshot ds : snapshot.getChildren()) {
                     if (ds.getKey().equals("firstName")) {
                         firstName = ds.getValue().toString();
-                    }
-                    else if (ds.getKey().equals("surname")) {
+                    } else if (ds.getKey().equals("surname")) {
                         surname = ds.getValue().toString();
-                    }
-                    else if (ds.getKey().equals("profileImageUrl")) {
+                    } else if (ds.getKey().equals("profileImageUrl")) {
                         profileImageUrl = ds.getValue().toString();
-                    }
-                    else if (ds.getKey().equals("profileImageRotation")) {
+                    } else if (ds.getKey().equals("profileImageRotation")) {
                         profileImageRotation = ds.getValue().toString();
                     }
                 }
 
-                listener.onSuccess(firstName + " " + surname, profileImageUrl ,profileImageRotation);
+                listener.onSuccess(firstName + " " + surname, profileImageUrl, profileImageRotation);
 
             }
 
@@ -1074,6 +1197,77 @@ public class ContactingFirebase {
 
     public void logoutUser() {
         mAuth.getInstance().signOut();
+    }
+
+
+    private boolean isStoryMessageOld(String timestamp) {
+        Date now = new Date();
+        long currentUnixTime = now.getTime() / 1000L;
+
+
+        long messageSentUnixTime = Long.parseLong(timestamp);
+        long unixTimeAgo = currentUnixTime - messageSentUnixTime;
+        if (unixTimeAgo < 259200) {
+            return false;
+        }
+        return true;
+    }
+
+
+    private void deleteStoryMessage(String timestamp) {
+
+        mDatabaseRef = mDatabase.getReference("stories");
+        Query getStoryMessage = mDatabaseRef.child(getCurrentUsersUUID() + "/" + timestamp);
+
+        getStoryMessage.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                snapshot.getRef().removeValue();
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+    }
+
+
+    public void deleteMessage(final String timestamp, final String friendsUUID) {
+
+        mDatabaseRef = mDatabase.getReference("messages");
+        Query getStoryMessage = mDatabaseRef.child(getCurrentUsersUUID() + "/" + friendsUUID);
+
+        getStoryMessage.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                boolean existingMessage = false;
+
+                for(DataSnapshot ds : snapshot.getChildren()){
+                    //if its the message, delete it
+                    if(ds.getKey().equals(timestamp)){
+                        ds.getRef().removeValue();
+                    }
+                    else if(!ds.getKey().equals("fullName") && !ds.getKey().equals("profileImageRotation")  &&
+                            !ds.getKey().equals("profileImageUrl")  && !ds.getKey().equals("unopened")){
+
+                        //if there is an existing message found, break out of for loop;
+                        existingMessage = true;
+                        break;
+                    }
+                }
+
+                //if the last message was opened then set unopened messages to false
+                if(!existingMessage){
+                    mDatabaseRef.child(getCurrentUsersUUID() + "/" + friendsUUID + "/unopened").setValue(false);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
     }
 }
 
