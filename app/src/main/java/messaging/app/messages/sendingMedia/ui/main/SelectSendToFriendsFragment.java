@@ -30,16 +30,16 @@ public class SelectSendToFriendsFragment extends Fragment implements SendMediaTo
     ContactingFirebase contactingFirebase = new ContactingFirebase(mContext);
     onSelectedRowListener listener;
 
+    public SelectSendToFriendsFragment(Context context, onSelectedRowListener listener) {
+        this.mContext = context;
+        this.listener = listener;
+    }
 
     public interface onSelectedRowListener{
         void onSelectedFriendsFragmentRowListener(String UUID, String messageType);
     }
 
 
-    public SelectSendToFriendsFragment(Context context, onSelectedRowListener listener) {
-        this.mContext = context;
-        this.listener = listener;
-    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {

@@ -69,4 +69,15 @@ public class Formatting {
 
         return formattedTimeAgo;
     }
+
+    public String getFileNameFromUrl(String Url){
+
+        String editedUrl;
+
+        String[] editedUrlArray = Url.split("\\?");
+        editedUrlArray = editedUrlArray[0].split("%2F");
+        editedUrl = editedUrlArray[1];
+
+        return editedUrl;
+    }
 }

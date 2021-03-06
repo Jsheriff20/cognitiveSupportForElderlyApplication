@@ -35,6 +35,7 @@ public class ViewMediaMessage extends AppCompatActivity {
     int numberOfMessages;
     int newMessageNum;
     String friendsUUID;
+    String messageUrl;
     ArrayList<Parcelable> messageList;
 
     ContactingFirebase contactingFirebase = new ContactingFirebase(this);
@@ -70,18 +71,18 @@ public class ViewMediaMessage extends AppCompatActivity {
 
         lockOrientation(true);
 
-
+        messageUrl = displayingMessage.getMediaMessageUrl();
         String fileExtension = displayingMessage.getFileExtension();
         if (fileExtension.equals(".jpg")) {
             vidViewMediaMessage.setVisibility(View.INVISIBLE);
             int rotation = mediaManagement.exifToDegrees(displayingMessage.getMediaMessageRotation());
-            Picasso.with(this).load(displayingMessage.getMediaMessageUrl())
+            Picasso.with(this).load(messageUrl)
                     .rotate(rotation)
                     .into(imgViewMediaMessage);
         }
         else {
             imgViewMediaMessage.setVisibility(View.INVISIBLE);
-            vidViewMediaMessage.setVideoPath(displayingMessage.getMediaMessageUrl());
+            vidViewMediaMessage.setVideoPath(messageUrl);
             vidViewMediaMessage.start();
             setVideoViewListener();
         }
@@ -100,6 +101,7 @@ public class ViewMediaMessage extends AppCompatActivity {
                 lockOrientation(false);
 
                 contactingFirebase.deleteMessage(displayingMessage.getTimeStamp(), friendsUUID);
+                contactingFirebase.logMediaMessageViewed(messageUrl);
 
                 if (newMessageNum >= numberOfMessages) {
 
