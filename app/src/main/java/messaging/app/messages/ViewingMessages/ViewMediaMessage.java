@@ -35,6 +35,7 @@ public class ViewMediaMessage extends AppCompatActivity {
     int numberOfMessages;
     int newMessageNum;
     String friendsUUID;
+    String viewingType;
     String messageUrl;
     ArrayList<Parcelable> messageList;
 
@@ -63,6 +64,7 @@ public class ViewMediaMessage extends AppCompatActivity {
         displayingMessage = (MessageData) messageList.get(messageNum);
         numberOfMessages = intent.getIntExtra("numOfMessages", 0);
         friendsUUID = intent.getStringExtra("friendsUUID");
+        viewingType = intent.getStringExtra("viewingType");
         newMessageNum = messageNum + 1;
         if (newMessageNum >= numberOfMessages) {
             btnViewTextMessage.setText("Exit");
@@ -100,8 +102,11 @@ public class ViewMediaMessage extends AppCompatActivity {
                 Intent newIntent;
                 lockOrientation(false);
 
-                contactingFirebase.deleteMessage(displayingMessage.getTimeStamp(), friendsUUID);
-                contactingFirebase.logMediaMessageViewed(messageUrl);
+                if(viewingType.equals("directMessages")) {
+                    contactingFirebase.deleteMessage(displayingMessage.getTimeStamp(), friendsUUID);
+                    contactingFirebase.logMediaMessageViewed(messageUrl);
+                }
+
 
                 if (newMessageNum >= numberOfMessages) {
 

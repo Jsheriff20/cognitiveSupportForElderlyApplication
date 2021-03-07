@@ -2,8 +2,6 @@ package messaging.app.messages.ViewingMessages;
 
 import android.content.Context;
 import android.content.Intent;
-import android.os.Message;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -35,8 +33,6 @@ public class ViewingMessagesReceivedAdapter extends RecyclerView.Adapter {
 
 
     public ViewingMessagesReceivedAdapter(List<HashMap<String, String>> receivedMediaDetails, int numberOfStories, Context context) {
-        Log.d("test", "receivedMediaDetails: " + receivedMediaDetails);
-        Log.d("test", "numberOfStories: " + numberOfStories);
         this.mReceivedMediaDetails = receivedMediaDetails;
         this.mNumberOfStories = numberOfStories;
         this.context = context;
@@ -107,7 +103,7 @@ public class ViewingMessagesReceivedAdapter extends RecyclerView.Adapter {
                 if(mNumberOfStories > 0) {
                     storyViewHolder.lblStoryStatus.setText(mNumberOfStories + " received");
                     storyViewHolder.imgStoryStatus.setImageResource(R.drawable.closed_envelope_shadow_icon);
-                    storyViewHolder.imgStoryStatus.setBackgroundResource(R.drawable.btn_rectangle_red_gradiant);
+                    storyViewHolder.imgStoryStatus.setBackgroundResource(R.drawable.btn_rectangle_red_gradient);
                     storyViewHolder.imgStoryStatus.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
@@ -127,6 +123,7 @@ public class ViewingMessagesReceivedAdapter extends RecyclerView.Adapter {
 
                                     intent.putExtra("messagesList", storyMessagesDataList);
                                     intent.putExtra("numOfMessages", (storyMessagesDataList.size()));
+                                    intent.putExtra("viewingType", "story");
                                     storyViewHolder.itemViewContext.startActivity(intent);
                                 }
                             });
@@ -136,7 +133,7 @@ public class ViewingMessagesReceivedAdapter extends RecyclerView.Adapter {
                 else{
                     storyViewHolder.lblStoryStatus.setText("No new stories");
                     storyViewHolder.imgStoryStatus.setImageResource(R.drawable.opened_envelope_shadow_icon);
-                    storyViewHolder.imgStoryStatus.setBackgroundResource(R.drawable.btn_rectangle_green_gradiant);
+                    storyViewHolder.imgStoryStatus.setBackgroundResource(R.drawable.btn_rectangle_green_gradient);
                 }
                 break;
             case 1:
@@ -146,15 +143,16 @@ public class ViewingMessagesReceivedAdapter extends RecyclerView.Adapter {
 
                 friendsMessagesViewHolder.UUID = currentKVPair.get("UUID");
                 friendsMessagesViewHolder.lblViewMessageFriendsName.setText(currentKVPair.get("fullName"));
-                int profileImageRotation = mediaManagement.exifToDegrees(Integer.parseInt(currentKVPair.get("profileImageRotation")));
 
-                Picasso.with(context).load(currentKVPair.get("profileImageUrl"))
-                        .rotate(profileImageRotation)
-                        .into(friendsMessagesViewHolder.imgFriendsProfileImage);
-
+                if(currentKVPair.get("profileImageUrl") != null) {
+                    int profileImageRotation = mediaManagement.exifToDegrees(Integer.parseInt(currentKVPair.get("profileImageRotation")));
+                    Picasso.with(context).load(currentKVPair.get("profileImageUrl"))
+                            .rotate(profileImageRotation)
+                            .into(friendsMessagesViewHolder.imgFriendsProfileImage);
+                }
                 if(Integer.parseInt(currentKVPair.get("unopenedMessage")) == 1){
                     friendsMessagesViewHolder.btnMessageAction.setImageResource(R.drawable.closed_envelope_shadow_icon);
-                    friendsMessagesViewHolder.btnMessageAction.setBackgroundResource(R.drawable.btn_rectangle_red_gradiant);
+                    friendsMessagesViewHolder.btnMessageAction.setBackgroundResource(R.drawable.btn_rectangle_red_gradient);
 
                     friendsMessagesViewHolder.btnMessageAction.setOnClickListener(new View.OnClickListener() {
                         @Override
@@ -179,6 +177,7 @@ public class ViewingMessagesReceivedAdapter extends RecyclerView.Adapter {
                                     intent.putExtra("messagesList", messageDataList);
                                     intent.putExtra("friendsUUID", friendsMessagesViewHolder.UUID);
                                     intent.putExtra("numOfMessages", (messageDataList.size()));
+                                    intent.putExtra("viewingType", "directMessages");
                                     friendsMessagesViewHolder.itemViewContext.startActivity(intent);
                                 }
                             });
@@ -187,7 +186,7 @@ public class ViewingMessagesReceivedAdapter extends RecyclerView.Adapter {
                 }
                 else{
                     friendsMessagesViewHolder.btnMessageAction.setImageResource(R.drawable.send_icon);
-                    friendsMessagesViewHolder.btnMessageAction.setBackgroundResource(R.drawable.btn_rectangle_orange_gradiant);
+                    friendsMessagesViewHolder.btnMessageAction.setBackgroundResource(R.drawable.btn_rectangle_orange_gradient);
 
 
                     friendsMessagesViewHolder.btnMessageAction.setOnClickListener(new View.OnClickListener() {

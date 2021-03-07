@@ -195,8 +195,9 @@ public class ContactingFirebase {
     }
 
 
+    public void sendMessages(final ArrayList<String> directMessagesUUID, final ArrayList<String> storyMessagesUUID, final String pathToMedia, String fileType, final String message) throws IOException {
 
-    public void sendMessages(final ArrayList<String> directMessagesUUID, final ArrayList<String> storyMessagesUUID, final String pathToMedia, String fileType, final String message) {
+        final String profanityCheckedMessage = formatting.removeProfanity(message);
 
         final String fileExtension;
         if (fileType.equals("Image")) {
@@ -222,8 +223,8 @@ public class ContactingFirebase {
         getUUIDsFullNameAndProfileImage(getCurrentUsersUUID(), new OnGetUUIDsFullNameAndProfileImageListener() {
             @Override
             public void onSuccess(final String sendersFullName, String profileImageURL, String profileImageRotation) {
-                if(!directMessagesUUID.isEmpty()) {
-                    sendMessage(directMessagesUUID, sendersFullName, profileImageURL, profileImageRotation, sendingMediaUri, finalRotation, fileExtension, message, "directlyToFriend", new OnSendMessageListener() {
+                if (!directMessagesUUID.isEmpty()) {
+                    sendMessage(directMessagesUUID, sendersFullName, profileImageURL, profileImageRotation, sendingMediaUri, finalRotation, fileExtension, profanityCheckedMessage, "directlyToFriend", new OnSendMessageListener() {
                         @Override
                         public void onSuccess(String fileName) {
                             logNewMediaMessage(numberOfMessagesSent, fileName);
@@ -232,11 +233,11 @@ public class ContactingFirebase {
                     });
                 }
 
-                if(!storyMessagesUUID.isEmpty()) {
-                    sendMessage(storyMessagesUUID, sendersFullName, profileImageURL, profileImageRotation, sendingMediaUri, finalRotation, fileExtension, message, "toStory", new OnSendMessageListener() {
+                if (!storyMessagesUUID.isEmpty()) {
+                    sendMessage(storyMessagesUUID, sendersFullName, profileImageURL, profileImageRotation, sendingMediaUri, finalRotation, fileExtension, profanityCheckedMessage, "toStory", new OnSendMessageListener() {
                         @Override
                         public void onSuccess(String fileName) {
-                            logNewMediaMessage(numberOfMessagesSent, fileName);
+                            //story messages do not get logged as they work off of a time not views
 
                         }
                     });
@@ -255,11 +256,11 @@ public class ContactingFirebase {
 
         //add number of links to the media has been sent
         DatabaseReference databaseRef = mDatabase.getReference();
-        databaseRef.child("sentMediaLog/" + editedFileName  + "/sent").setValue(numberOfMessagesSent);
+        databaseRef.child("sentMediaLog/" + editedFileName + "/sent").setValue(numberOfMessagesSent);
     }
 
 
-    public void logMediaMessageViewed(final String fileUrl){
+    public void logMediaMessageViewed(final String fileUrl) {
 
         //get the file name from the url
         //remove the dot
@@ -267,14 +268,13 @@ public class ContactingFirebase {
 
 
         final DatabaseReference databaseRef = mDatabase.getReference("sentMediaLog/" + fileName);
-        Log.d(TAG, "logMediaMessageViewed: " + fileName);
         databaseRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 int currentValue = 0;
                 int sentValue = 0;
-                for (DataSnapshot ds : snapshot.getChildren()){
-                    switch (ds.getKey()){
+                for (DataSnapshot ds : snapshot.getChildren()) {
+                    switch (ds.getKey()) {
                         case "viewed":
                             long longCurrentValue = (long) ds.getValue();
                             currentValue = (int) longCurrentValue;
@@ -290,13 +290,12 @@ public class ContactingFirebase {
 
                 //if all of the media messages have been viewed, then delete.
                 //else update the new value
-                if(sentValue <= newValue){
+                if (sentValue <= newValue) {
                     //remove from file storage
                     deleteSentMediaFromStorage(fileName);
                     //remove from database
                     databaseRef.setValue(null);
-                }
-                else {
+                } else {
                     databaseRef.child("viewed").setValue(newValue);
                 }
             }
@@ -313,7 +312,13 @@ public class ContactingFirebase {
     private void deleteSentMediaFromStorage(String fileName) {
         //delete from firebase storage
         FirebaseStorage storage = FirebaseStorage.getInstance();
-        StorageReference storageReference = storage.getReference("sentMedia").child(fileName);
+
+        //add the . between the filename and the extension
+        int dotPosition = (fileName.length() - 3);
+        String editedFileName = fileName.substring(0, dotPosition) + "." + fileName.substring(dotPosition);
+
+
+        StorageReference storageReference = storage.getReference("sentMedia").child(editedFileName);
         storageReference.delete();
     }
 
@@ -346,7 +351,7 @@ public class ContactingFirebase {
                             String mediaUrl = uri.toString();
                             DatabaseReference databaseRef = mDatabase.getReference();
 
-                            for(String friendsUUID : listOfUUIDs) {
+                            for (String friendsUUID : listOfUUIDs) {
                                 Log.d(TAG, "friendsUUID: " + friendsUUID);
                                 if (sendingTo == "directlyToFriend") {
                                     databaseRef.child("messages/" + friendsUUID + "/" + getCurrentUsersUUID() + "/fullName").setValue(sendersFullName);
@@ -435,16 +440,8 @@ public class ContactingFirebase {
                             HashMap friendsMessagesHashMap = new HashMap();
                             boolean firstLoop = true;
 
-                            //add the UUID of the sender
-                            friendsMessagesHashMap.put("UUID", ds.getKey());
-
                             //get the other data
                             for (DataSnapshot subDS : ds.getChildren()) {
-                                //if this is the first child, then this is the most recent message sent
-                                if (firstLoop) {
-                                    friendsMessagesHashMap.put("lastMessageTimeStamp", subDS.getKey());
-                                    firstLoop = false;
-                                }
 
 
                                 if (subDS.getKey().equals("unopened")) {
@@ -457,6 +454,8 @@ public class ContactingFirebase {
                                     friendsMessagesHashMap.put("profileImageUrl", subDS.getValue());
                                 } else if (subDS.getKey().equals("profileImageRotation")) {
                                     friendsMessagesHashMap.put("profileImageRotation", subDS.getValue().toString());
+                                } else if (subDS.getKey().equals("lastSentMessageTime")) {
+                                    friendsMessagesHashMap.put("lastMessageTimeStamp", subDS.getValue().toString());
                                 }
 
                             }
@@ -1301,6 +1300,13 @@ public class ContactingFirebase {
         getStoryMessage.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
+                for (DataSnapshot ds : snapshot.getChildren()) {
+                    if (ds.getKey().equals("mediaMessageUrl")) {
+                        String url = (String) ds.getValue();
+                        final String fileName = formatting.getFileNameFromUrl(url).replace(".", "");
+                        deleteSentMediaFromStorage(fileName);
+                    }
+                }
                 snapshot.getRef().removeValue();
             }
 
@@ -1323,25 +1329,24 @@ public class ContactingFirebase {
                 boolean existingMessage = true;
                 String lastSentMessageTime = null;
 
-                for(DataSnapshot ds : snapshot.getChildren()){
+                for (DataSnapshot ds : snapshot.getChildren()) {
                     //if its the message, delete it
-                    if(ds.getKey().equals(timestamp)){
+                    if (ds.getKey().equals(timestamp)) {
                         ds.getRef().removeValue();
                     }
-                    if(ds.getKey().equals("lastSentMessageTime")){
-                        Log.d(TAG, "ds.getKey(): " + ds.getValue());
+                    if (ds.getKey().equals("lastSentMessageTime")) {
                         lastSentMessageTime = (String) ds.getValue();
                     }
                 }
 
                 //check if the viewing message was the last sent message (therefore the last message)
-                if(lastSentMessageTime.equals(timestamp)){
+                if (lastSentMessageTime.equals(timestamp)) {
                     //if there is an existing message found;
                     existingMessage = false;
                 }
 
                 //if the last message was opened then set unopened messages to false
-                if(!existingMessage){
+                if (!existingMessage) {
                     databaseRef.child(getCurrentUsersUUID() + "/" + friendsUUID + "/unopened").setValue(false);
                 }
             }

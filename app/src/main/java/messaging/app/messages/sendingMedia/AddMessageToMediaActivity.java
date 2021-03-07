@@ -128,7 +128,11 @@ public class AddMessageToMediaActivity extends AppCompatActivity {
 
         directMessagesUUID.add(friendsUUID);
 
-        contactingFirebase.sendMessages(directMessagesUUID, storyMessagesUUID, pathToMedia, typeOfMediaCaptured, message);
+        try {
+            contactingFirebase.sendMessages(directMessagesUUID, storyMessagesUUID, pathToMedia, typeOfMediaCaptured, message);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
 
         Intent intent = new Intent(AddMessageToMediaActivity.this, ListOfReceivedMediaActivity.class);

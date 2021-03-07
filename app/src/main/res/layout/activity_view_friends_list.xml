@@ -23,7 +23,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        android:background="@drawable/btn_rectangle_blue_gradiant"
+        android:background="@drawable/btn_rectangle_blue_gradient"
         android:text="Add friends"
         android:textColor="#000000"
         android:textSize="24sp"

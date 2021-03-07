@@ -2,8 +2,19 @@ package messaging.app;
 
 import android.util.Log;
 
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.InputStream;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.regex.Pattern;
 
 public class Formatting {
 
@@ -80,4 +91,19 @@ public class Formatting {
 
         return editedUrl;
     }
+
+    public String removeProfanity(String checkingString){
+        //a select few have been chosen
+        //TODO
+        //Add more profanity words before release
+        List<String> profanityWords = Arrays.asList("fuck", "shit", "bastard", "bitch", "fucker", "fucking", "shitting"); // suppose these words are offensive
+
+        for (String word : profanityWords) {
+            Pattern rx = Pattern.compile("\\b" + word + "\\b", Pattern.CASE_INSENSITIVE);
+            checkingString = rx.matcher(checkingString).replaceAll(new String(new char[word.length()]).replace('\0', '*'));
+        }
+
+        return checkingString;
+    }
+
 }

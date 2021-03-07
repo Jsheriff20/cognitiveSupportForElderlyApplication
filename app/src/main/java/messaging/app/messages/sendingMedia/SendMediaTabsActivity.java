@@ -19,6 +19,7 @@ import android.widget.ImageButton;
 import android.widget.Toast;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -64,7 +65,11 @@ public class SendMediaTabsActivity extends AppCompatActivity implements Sections
 
     private void sendMedia(ArrayList<String> directMessagesUUID,  ArrayList<String> storyMessagesUUID){
 
-        contactingFirebase.sendMessages(directMessagesUUID, storyMessagesUUID, pathToMedia, typeOfMediaCaptured, message);
+        try {
+            contactingFirebase.sendMessages(directMessagesUUID, storyMessagesUUID, pathToMedia, typeOfMediaCaptured, message);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
 
         Intent intent = new Intent(SendMediaTabsActivity.this, CaptureActivity.class);

@@ -50,7 +50,7 @@
         android:layout_height="80dp"
         android:layout_gravity="center"
         android:layout_marginEnd="8dp"
-        android:background="@drawable/btn_rectangle_orange_gradiant"
+        android:background="@drawable/btn_rectangle_orange_gradient"
         android:scaleType="centerCrop"
         app:layout_constraintBottom_toTopOf="@+id/divider19"
         app:layout_constraintEnd_toEndOf="parent"
