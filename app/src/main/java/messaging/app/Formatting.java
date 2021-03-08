@@ -14,6 +14,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 import java.util.regex.Pattern;
 
 public class Formatting {
@@ -106,4 +107,28 @@ public class Formatting {
         return checkingString;
     }
 
+
+    public List<HashMap<String, String>> orderReceivedMediaDetails(List<HashMap<String, String>> receivedMediaDetails) {
+
+        HashMap<Long, HashMap<String, String>> unorderedMap = new HashMap<>();
+        List<HashMap<String, String>> sortedList = new ArrayList<>();
+
+        for (Map<String, String> kvPair : receivedMediaDetails) {
+            Long timestamp = Long.valueOf(kvPair.get("lastMessageTimeStamp"));
+            unorderedMap.put(timestamp, (HashMap<String, String>) kvPair);
+        }
+
+        // TreeMap to store values of HashMap
+        TreeMap<Long, Map<String, String>> sorted = new TreeMap<>();
+
+        // Copy all data from hashMap into TreeMap
+        sorted.putAll(unorderedMap);
+
+        // Display the TreeMap which is naturally sorted
+        for (Map.Entry<Long, Map<String, String>> entry : sorted.entrySet()) {
+            sortedList.add((HashMap<String, String>) entry.getValue());
+        }
+
+        return sortedList;
+    }
 }

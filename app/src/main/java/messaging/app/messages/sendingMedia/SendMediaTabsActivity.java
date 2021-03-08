@@ -38,6 +38,7 @@ public class SendMediaTabsActivity extends AppCompatActivity implements Sections
     String pathToMedia;
     String typeOfMediaCaptured;
     String message;
+    int mDeviceOrientationMode;
     private ImageButton btnSend;
     ArrayList<String> directMessagesUUID = new ArrayList<String>();
     ArrayList<String> storyMessagesUUID = new ArrayList<String>();;
@@ -52,10 +53,23 @@ public class SendMediaTabsActivity extends AppCompatActivity implements Sections
         TabLayout tabs = findViewById(R.id.tabs);
         tabs.setupWithViewPager(viewPager);
 
-        pathToMedia = getIntent().getExtras().getString("mediaPath");
-        typeOfMediaCaptured = getIntent().getExtras().getString("typeOfMediaCaptured");
-        message = getIntent().getExtras().getString("message");
+        pathToMedia = getIntent().getStringExtra("mediaPath");
+        typeOfMediaCaptured = getIntent().getStringExtra("typeOfMediaCaptured");
+        message = getIntent().getStringExtra("message");
+        mDeviceOrientationMode = getIntent().getIntExtra("deviceOrientationMode", 0);
         btnSend = findViewById(R.id.btnSend);
+
+
+        //hide the navigation controls
+        View decorView = getWindow().getDecorView();
+
+        decorView.setSystemUiVisibility(
+                View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                        | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
+                        | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                        | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                        | View.SYSTEM_UI_FLAG_FULLSCREEN
+                        | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION);
 
 
         btnSendOnClick();
@@ -66,7 +80,8 @@ public class SendMediaTabsActivity extends AppCompatActivity implements Sections
     private void sendMedia(ArrayList<String> directMessagesUUID,  ArrayList<String> storyMessagesUUID){
 
         try {
-            contactingFirebase.sendMessages(directMessagesUUID, storyMessagesUUID, pathToMedia, typeOfMediaCaptured, message);
+
+            contactingFirebase.sendMessages(directMessagesUUID, storyMessagesUUID, pathToMedia, typeOfMediaCaptured, message, mDeviceOrientationMode);
         } catch (IOException e) {
             e.printStackTrace();
         }

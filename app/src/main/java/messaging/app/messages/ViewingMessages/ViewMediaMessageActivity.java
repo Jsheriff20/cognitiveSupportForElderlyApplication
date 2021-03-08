@@ -7,11 +7,9 @@ import android.content.pm.ActivityInfo;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Parcelable;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.Toast;
 import android.widget.VideoView;
 
 import com.squareup.picasso.Picasso;
@@ -21,8 +19,10 @@ import java.util.ArrayList;
 import messaging.app.ContactingFirebase;
 import messaging.app.MediaManagement;
 import messaging.app.R;
+import messaging.app.login.LoginActivity;
+import messaging.app.login.ResetPasswordActivity;
 
-public class ViewMediaMessage extends AppCompatActivity {
+public class ViewMediaMessageActivity extends AppCompatActivity {
 
     VideoView vidViewMediaMessage;
     ImageView imgViewMediaMessage;
@@ -37,6 +37,7 @@ public class ViewMediaMessage extends AppCompatActivity {
     String friendsUUID;
     String viewingType;
     String messageUrl;
+    int deviceOrientationMode;
     ArrayList<Parcelable> messageList;
 
     ContactingFirebase contactingFirebase = new ContactingFirebase(this);
@@ -49,7 +50,6 @@ public class ViewMediaMessage extends AppCompatActivity {
         vidViewMediaMessage = findViewById(R.id.vidViewMediaMessage);
         imgViewMediaMessage = findViewById(R.id.imgViewMediaMessage);
         btnViewTextMessage = findViewById(R.id.btnViewTextMessage);
-
 
         intent = getIntent();
         messageNum = intent.getIntExtra("messageNum", -1);
@@ -65,6 +65,8 @@ public class ViewMediaMessage extends AppCompatActivity {
         numberOfMessages = intent.getIntExtra("numOfMessages", 0);
         friendsUUID = intent.getStringExtra("friendsUUID");
         viewingType = intent.getStringExtra("viewingType");
+        deviceOrientationMode = displayingMessage.getDeviceOrientationMode();
+
         newMessageNum = messageNum + 1;
         if (newMessageNum >= numberOfMessages) {
             btnViewTextMessage.setText("Exit");
@@ -76,8 +78,16 @@ public class ViewMediaMessage extends AppCompatActivity {
         messageUrl = displayingMessage.getMediaMessageUrl();
         String fileExtension = displayingMessage.getFileExtension();
         if (fileExtension.equals(".jpg")) {
+
+
+
             vidViewMediaMessage.setVisibility(View.INVISIBLE);
             int rotation = mediaManagement.exifToDegrees(displayingMessage.getMediaMessageRotation());
+            int currentDeviceOrientationMode = getWindowManager().getDefaultDisplay().getRotation();
+            if(currentDeviceOrientationMode != deviceOrientationMode){
+                rotation += 90;
+            }
+
             Picasso.with(this).load(messageUrl)
                     .rotate(rotation)
                     .into(imgViewMediaMessage);
@@ -90,6 +100,20 @@ public class ViewMediaMessage extends AppCompatActivity {
         }
 
         setBtnViewTextMessageOnClick();
+    }
+
+
+    @Override
+    public void onBackPressed() {
+
+        lockOrientation(false);
+        if(viewingType.equals("directMessages")) {
+            contactingFirebase.deleteMessage(displayingMessage.getTimeStamp(), friendsUUID);
+            contactingFirebase.logMediaMessageViewed(messageUrl);
+        }
+
+        Intent intent = new Intent(ViewMediaMessageActivity.this, ListOfReceivedMediaActivity.class);
+        ViewMediaMessageActivity.this.startActivity(intent);
     }
 
 
@@ -111,7 +135,7 @@ public class ViewMediaMessage extends AppCompatActivity {
                 if (newMessageNum >= numberOfMessages) {
 
                     //if there are no more messages, load the list of messages from friends
-                    newIntent = new Intent(ViewMediaMessage.this, ListOfReceivedMediaActivity.class);
+                    newIntent = new Intent(ViewMediaMessageActivity.this, ListOfReceivedMediaActivity.class);
                 }
                 else {
                     MessageData tempMessageData = (MessageData) messageList.get(newMessageNum);
@@ -119,15 +143,15 @@ public class ViewMediaMessage extends AppCompatActivity {
 
                     //check to see if there is a text message
                     if (tempMessageData.getTextMessage().equals("")) {
-                        newIntent = new Intent(ViewMediaMessage.this, ViewMediaMessage.class);
+                        newIntent = new Intent(ViewMediaMessageActivity.this, ViewMediaMessageActivity.class);
                         newIntent.putExtras(intent.getExtras());
                     }
                     else {
-                        newIntent = new Intent(ViewMediaMessage.this, ViewTextMessage.class);
+                        newIntent = new Intent(ViewMediaMessageActivity.this, ViewTextMessageActivity.class);
                         newIntent.putExtras(intent.getExtras());
                     }
                 }
-                ViewMediaMessage.this.startActivity(newIntent);
+                ViewMediaMessageActivity.this.startActivity(newIntent);
             }
         });
     }

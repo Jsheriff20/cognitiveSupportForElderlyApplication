@@ -23,34 +23,42 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="24dp"
-        android:layout_marginTop="13dp"
+        android:layout_marginTop="44dp"
         android:text="Received:"
         android:textColor="#171717"
         android:textSize="24sp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/lblMessageFromName" />
+        app:layout_constraintStart_toEndOf="@+id/divider22"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/lblMessageFromName"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="28dp"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="4dp"
+        android:layout_marginEnd="24dp"
+        android:inputType="textMultiLine"
         android:text="Name"
         android:textColor="#000000"
         android:textSize="28sp"
+        app:layout_constraintEnd_toStartOf="@+id/divider22"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/lblMessageFrom" />
 
     <TextView
         android:id="@+id/lblReceivedTime"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="28dp"
-        android:layout_marginTop="1dp"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="4dp"
+        android:layout_marginEnd="24dp"
         android:text="Time"
         android:textColor="#000000"
         android:textSize="28sp"
-        app:layout_constraintStart_toStartOf="parent"
+        android:inputType="textMultiLine"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/divider22"
         app:layout_constraintTop_toBottomOf="@+id/lblReceived" />
 
     <TextView
@@ -70,14 +78,14 @@
 
     <View
         android:id="@+id/divider20"
-        android:layout_width="402dp"
+        android:layout_width="0dp"
         android:layout_height="2dp"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="32dp"
+        android:layout_marginTop="24dp"
         android:layout_marginEnd="8dp"
-        android:background="?android:attr/listDivider"
+        android:background="@color/white"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.444"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/lblReceivedTime" />
 
@@ -87,12 +95,23 @@
         android:layout_height="78dp"
         android:layout_marginEnd="16dp"
         android:layout_marginBottom="16dp"
+        android:background="@drawable/btn_rectangle_blue_gradient"
         android:text="View"
         android:textAlignment="center"
         android:textColor="#000000"
         android:textSize="36sp"
-        android:background="@drawable/btn_rectangle_blue_gradient"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
+
+    <View
+        android:id="@+id/divider22"
+        android:layout_width="1dp"
+        android:layout_height="0dp"
+        android:background="?android:attr/listDivider"
+        app:layout_constraintBottom_toTopOf="@+id/divider20"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

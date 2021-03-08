@@ -34,6 +34,8 @@ import java.util.Locale;
 import messaging.app.ContactingFirebase;
 import messaging.app.MediaManagement;
 import messaging.app.R;
+import messaging.app.login.LoginActivity;
+import messaging.app.login.ResetPasswordActivity;
 import messaging.app.messages.ViewingMessages.ListOfReceivedMediaActivity;
 import messaging.app.messages.capturingMedia.CaptureActivity;
 
@@ -53,6 +55,7 @@ public class AddMessageToMediaActivity extends AppCompatActivity {
     String mTypeOfMediaCaptured;
     String mMediaPath;
     String mMessage;
+    int mDeviceOrientationMode;
     private boolean userWantsToSendTheirAudioRecording = false;
     private boolean permissionToRecordAccepted = false;
     private SpeechRecognizer speechRecognizer;
@@ -69,6 +72,8 @@ public class AddMessageToMediaActivity extends AppCompatActivity {
 
         mTypeOfMediaCaptured = getIntent().getStringExtra("typeOfMediaCaptured");
         mMediaPath = getIntent().getStringExtra("mediaPath");
+        mDeviceOrientationMode = getIntent().getIntExtra("deviceOrientationMode", 0);
+
 
         btnSelectRecipientsActivity = findViewById(R.id.btnSelectRecipientsActivity);
         btnVoiceToText = findViewById(R.id.btnVoiceToText);
@@ -89,6 +94,16 @@ public class AddMessageToMediaActivity extends AppCompatActivity {
         setBtnStopVoiceToTextOnClick();
         btnStopVoiceToText.setVisibility(View.INVISIBLE);
 
+        //hide the navigation controls
+        View decorView = getWindow().getDecorView();
+
+        decorView.setSystemUiVisibility(
+                View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                        | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
+                        | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                        | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                        | View.SYSTEM_UI_FLAG_FULLSCREEN
+                        | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION);
 
         setBtnSelectRecipientsActivityOnClick();
         setVideoViewListener();
@@ -110,18 +125,19 @@ public class AddMessageToMediaActivity extends AppCompatActivity {
                     intent.putExtra("typeOfMediaCaptured", mTypeOfMediaCaptured);
                     intent.putExtra("mediaPath", mMediaPath);
                     intent.putExtra("message", mMessage);
+                    intent.putExtra("deviceOrientationMode", mDeviceOrientationMode);
 
 
                     startActivity(intent);
                 }
                 else{
-                    sendMedia(mReplyingToUUID, mMediaPath, mTypeOfMediaCaptured, mMessage);
+                    sendMedia(mReplyingToUUID, mMediaPath, mTypeOfMediaCaptured, mMessage, mDeviceOrientationMode);
                 }
             }
         });
     }
 
-    private void sendMedia(String friendsUUID, String pathToMedia, String typeOfMediaCaptured, String message ){
+    private void sendMedia(String friendsUUID, String pathToMedia, String typeOfMediaCaptured, String message, int deviceOrientationMode ){
 
         ArrayList<String> directMessagesUUID = new ArrayList<String>();
         ArrayList<String> storyMessagesUUID = new ArrayList<String>();;
@@ -129,7 +145,7 @@ public class AddMessageToMediaActivity extends AppCompatActivity {
         directMessagesUUID.add(friendsUUID);
 
         try {
-            contactingFirebase.sendMessages(directMessagesUUID, storyMessagesUUID, pathToMedia, typeOfMediaCaptured, message);
+            contactingFirebase.sendMessages(directMessagesUUID, storyMessagesUUID, pathToMedia, typeOfMediaCaptured, message, deviceOrientationMode);
         } catch (IOException e) {
             e.printStackTrace();
         }

@@ -57,6 +57,11 @@ public class RegisterPersonalInfoActivity extends AppCompatActivity {
         setBtnLoadLoginOnClick();
     }
 
+    @Override
+    public void onBackPressed() {
+
+        btnBackToRegisterUsername.callOnClick();
+    }
 
 
     private void setBtnBackToRegisterUsernameOnClick(){

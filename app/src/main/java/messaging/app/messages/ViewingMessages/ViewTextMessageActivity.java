@@ -14,9 +14,8 @@ import java.util.ArrayList;
 
 import messaging.app.Formatting;
 import messaging.app.R;
-import messaging.app.messages.capturingMedia.CaptureActivity;
 
-public class ViewTextMessage extends AppCompatActivity {
+public class ViewTextMessageActivity extends AppCompatActivity {
     Intent intent;
     MessageData displayingMessage;
 
@@ -62,13 +61,20 @@ public class ViewTextMessage extends AppCompatActivity {
         setBtnViewMediaMessageOnClick();
     }
 
+
+    @Override
+    public void onBackPressed() {
+        Intent intent = new Intent(ViewTextMessageActivity.this, ListOfReceivedMediaActivity.class);
+        ViewTextMessageActivity.this.startActivity(intent);
+    }
+
     private void setBtnViewMediaMessageOnClick(){
         btnViewMediaMessage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent newIntent = new Intent(ViewTextMessage.this, ViewMediaMessage.class);
+                Intent newIntent = new Intent(ViewTextMessageActivity.this, ViewMediaMessageActivity.class);
                 newIntent.putExtras(intent.getExtras());
-                ViewTextMessage.this.startActivity(newIntent);
+                ViewTextMessageActivity.this.startActivity(newIntent);
             }
         });
     }

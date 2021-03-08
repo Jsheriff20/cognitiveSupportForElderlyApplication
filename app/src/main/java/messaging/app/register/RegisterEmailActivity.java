@@ -14,6 +14,8 @@ import messaging.app.ContactingFirebase;
 import messaging.app.Formatting;
 import messaging.app.login.LoginActivity;
 import messaging.app.R;
+import messaging.app.messages.ViewingMessages.ListOfReceivedMediaActivity;
+import messaging.app.messages.ViewingMessages.ViewTextMessageActivity;
 
 public class RegisterEmailActivity extends AppCompatActivity {
 
@@ -44,6 +46,13 @@ public class RegisterEmailActivity extends AppCompatActivity {
         setBtnLoadPasswordRegisterOnClick();
         setBtnLoadLoginOnClick();
     }
+
+    @Override
+    public void onBackPressed() {
+        Intent intent = new Intent(RegisterEmailActivity.this, LoginActivity.class);
+        RegisterEmailActivity.this.startActivity(intent);
+    }
+
 
     private void setBtnLoadPasswordRegisterOnClick(){
         btnLoadPasswordRegister.setOnClickListener(new View.OnClickListener() {

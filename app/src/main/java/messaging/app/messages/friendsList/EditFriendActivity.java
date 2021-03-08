@@ -16,6 +16,8 @@ import com.squareup.picasso.Picasso;
 import messaging.app.CheckInputsValidity;
 import messaging.app.ContactingFirebase;
 import messaging.app.R;
+import messaging.app.login.LoginActivity;
+import messaging.app.login.ResetPasswordActivity;
 
 public class EditFriendActivity extends AppCompatActivity {
 
@@ -67,6 +69,11 @@ public class EditFriendActivity extends AppCompatActivity {
         setBtnBlockOnClick();
     }
 
+    @Override
+    public void onBackPressed() {
+        Intent intent = new Intent(EditFriendActivity.this, ViewFriendsListActivity.class);
+        EditFriendActivity.this.startActivity(intent);
+    }
 
     private void setBtnRemoveOnClick() {
         btnRemove.setOnClickListener(new View.OnClickListener() {

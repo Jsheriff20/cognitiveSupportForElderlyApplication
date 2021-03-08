@@ -53,8 +53,8 @@ import java.util.Arrays;
 
 import messaging.app.MediaManagement;
 import messaging.app.R;
+import messaging.app.messages.MessagesActivity;
 import messaging.app.messages.sendingMedia.AddMessageToMediaActivity;
-import messaging.app.messages.sendingMedia.SendMediaTabsActivity;
 import messaging.app.register.RegisterProfileImageActivity;
 
 import static android.widget.Toast.LENGTH_SHORT;
@@ -63,7 +63,7 @@ public class CaptureActivity extends AppCompatActivity {
 
     //TODO:
     //remove saved files once sent
-        // function built
+    // function built
     //add the ability to use flash
     //add manual focus
     // add the ability to zoom
@@ -122,11 +122,11 @@ public class CaptureActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.capture_activity);
+        setContentView(R.layout.activity_capture);
 
 
         mCaptureForProfileImage = getIntent().getBooleanExtra("captureForProfileImage", false);
-        if(getIntent().getStringExtra("replyingTo") != null){
+        if (getIntent().getStringExtra("replyingTo") != null) {
             mReplyingToUUID = getIntent().getStringExtra("replyingTo");
         }
 
@@ -149,16 +149,26 @@ public class CaptureActivity extends AppCompatActivity {
 
         //if capturing for profile image hide additional features
         //also initiate onclick listeners
-        if(mCaptureForProfileImage){
+        if (mCaptureForProfileImage) {
             btnCaptureVideo.setVisibility(View.INVISIBLE);
             confirmProfileImageSelectionOnClick();
-        }
-        else{
+        } else {
             //create listeners
             setLoadMessageActivityOnClick();
             setVideoViewListener();
             toggleRecordingOnClick();
         }
+
+        //hide the navigation controls
+        View decorView = getWindow().getDecorView();
+
+        decorView.setSystemUiVisibility(
+                View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                        | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
+                        | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                        | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                        | View.SYSTEM_UI_FLAG_FULLSCREEN
+                        | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION);
 
         //create directories for files
         createMediaFolders();
@@ -171,9 +181,13 @@ public class CaptureActivity extends AppCompatActivity {
 
 
     @Override
-    protected void onResume() {
-        super.onResume();
+    public void onBackPressed() {
+        Intent intent = new Intent(CaptureActivity.this, MessagesActivity.class);
+        CaptureActivity.this.startActivity(intent);
+    }
 
+    @Override
+    protected void onResume() {
         //start background thread and initiate all services
         startBackgroundThread();
         if (cameraView.isAvailable()) {
@@ -185,6 +199,7 @@ public class CaptureActivity extends AppCompatActivity {
         } else {
             cameraView.setSurfaceTextureListener(cameraViewListener);
         }
+        super.onResume();
     }
 
 
@@ -198,15 +213,15 @@ public class CaptureActivity extends AppCompatActivity {
     }
 
 
-    public void toggleRecordingOnClick(){
+    public void toggleRecordingOnClick() {
 
         //if user has clicked to start recording a video
         btnCaptureVideo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(!mIsRecording){
+                if (!mIsRecording) {
                     //check permissions are valid
-                    if(checkWriteToStoragePermissions() != false) {
+                    if (checkWriteToStoragePermissions() != false) {
                         mIsRecording = true;
                         btnStopVideo.setVisibility(View.VISIBLE);
                         btnCaptureVideo.setVisibility(View.INVISIBLE);
@@ -217,8 +232,7 @@ public class CaptureActivity extends AppCompatActivity {
                         mMediaRecorder.start();
 
                     }
-                }
-                else{
+                } else {
                     Toast.makeText(getApplicationContext(), "An error has occurred", LENGTH_SHORT).show();
                 }
             }
@@ -229,7 +243,7 @@ public class CaptureActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 //check if video is record, if so stop and adjust view for user
-                if(mIsRecording) {
+                if (mIsRecording) {
                     mIsRecording = false;
                     btnStopVideo.setVisibility(View.INVISIBLE);
                     btnCaptureVideo.setVisibility(View.VISIBLE);
@@ -242,8 +256,7 @@ public class CaptureActivity extends AppCompatActivity {
 
                     previewCapturedMedia("Video");
 
-                }
-                else{
+                } else {
                     Toast.makeText(getApplicationContext(), "An error has occurred", LENGTH_SHORT).show();
                 }
             }
@@ -251,7 +264,7 @@ public class CaptureActivity extends AppCompatActivity {
     }
 
 
-    public void setVideoViewListener(){
+    public void setVideoViewListener() {
         capturedVideoView.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
             @Override
             public void onPrepared(MediaPlayer mp) {
@@ -261,13 +274,16 @@ public class CaptureActivity extends AppCompatActivity {
     }
 
 
-    public void captureImageOnClick(){
+    public void captureImageOnClick() {
 
         //if user has clicked to start recording a video
         btnCaptureImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                lockFocus();
+
+                if (checkWriteToStoragePermissions() != false) {
+                    lockFocus();
+                }
 
             }
         });
@@ -275,7 +291,7 @@ public class CaptureActivity extends AppCompatActivity {
     }
 
 
-    private void cancelMediaOnClick(){
+    private void cancelMediaOnClick() {
         btnCancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -310,7 +326,7 @@ public class CaptureActivity extends AppCompatActivity {
                     cameraView.setSurfaceTextureListener(cameraViewListener);
                 }
 
-                switch (mTypeOfMediaCaptured){
+                switch (mTypeOfMediaCaptured) {
                     case "Image":
                         deleteMediaFile(mImageFilePath);
                         break;
@@ -324,7 +340,7 @@ public class CaptureActivity extends AppCompatActivity {
     }
 
 
-    private void confirmProfileImageSelectionOnClick(){
+    private void confirmProfileImageSelectionOnClick() {
         btnLoadMessageActivity.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -332,31 +348,28 @@ public class CaptureActivity extends AppCompatActivity {
                 intent.putExtras(getIntent().getExtras());
                 intent.putExtra("profileImage", mImageFilePath);
                 intent.putExtra("typeOfMediaCaptured", mTypeOfMediaCaptured);
+                intent.putExtra("profileImageRotation", mTotalRotation);
 
-                int landscape = 1;
-                boolean inLandscapeMode = ((int) getWindowManager().getDefaultDisplay().getRotation() == landscape);
-                if(!inLandscapeMode) {
-                    intent.putExtra("profileImageRotation", mTotalRotation);
-                }
                 startActivity(intent);
             }
         });
     }
 
 
-    private void setLoadMessageActivityOnClick(){
+    private void setLoadMessageActivityOnClick() {
         btnLoadMessageActivity.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(getApplicationContext(), AddMessageToMediaActivity.class);
                 intent.putExtra("typeOfMediaCaptured", mTypeOfMediaCaptured);
 
-                if(mReplyingToUUID != null){
-                    intent.putExtra("replyingTo",  mReplyingToUUID);
+                if (mReplyingToUUID != null) {
+                    intent.putExtra("replyingTo", mReplyingToUUID);
                 }
-                Log.d("test", "test: " + mReplyingToUUID);
 
-                switch (mTypeOfMediaCaptured){
+                int deviceOrientationMode = getWindowManager().getDefaultDisplay().getRotation();
+
+                switch (mTypeOfMediaCaptured) {
                     case "Image":
                         intent.putExtra("mediaPath", mImageFilePath);
                         break;
@@ -365,6 +378,7 @@ public class CaptureActivity extends AppCompatActivity {
                         intent.putExtra("mediaPath", mVideoFilePath);
                         break;
                 }
+                intent.putExtra("deviceOrientationMode", deviceOrientationMode);
 
                 startActivity(intent);
 
@@ -426,19 +440,19 @@ public class CaptureActivity extends AppCompatActivity {
 
         int landscape = 1;
         boolean inLandscapeMode = ((int) getWindowManager().getDefaultDisplay().getRotation() == landscape);
-        if(inLandscapeMode){
+        if (inLandscapeMode) {
             mMediaRecorder.setOrientationHint(0);
-        }else{
+        } else {
             mMediaRecorder.setOrientationHint(mTotalRotation);
         }
         mMediaRecorder.prepare();
     }
 
 
-    private boolean checkWriteToStoragePermissions(){
-        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M){
-            if(ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
-                    == PackageManager.PERMISSION_GRANTED){
+    private boolean checkWriteToStoragePermissions() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                    == PackageManager.PERMISSION_GRANTED) {
                 try {
                     //if permissions are granted create the video file
                     createVideoFileName();
@@ -446,17 +460,15 @@ public class CaptureActivity extends AppCompatActivity {
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
-            }
-            else{
-                if(shouldShowRequestPermissionRationale(Manifest.permission.WRITE_EXTERNAL_STORAGE)){
+            } else {
+                if (shouldShowRequestPermissionRationale(Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
                     //if permissions are denied say why permission is needed
                     Toast.makeText(this, "App requires permission to access storage", LENGTH_SHORT).show();
                 }
                 //request for permission
                 requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUEST_EXTERNAL_STORAGE_PERMISSION_RESULT);
             }
-        }
-        else{
+        } else {
             try {
                 //if permissions are granted create the video file
                 createVideoFileName();
@@ -469,11 +481,11 @@ public class CaptureActivity extends AppCompatActivity {
     }
 
 
-    public void deleteMediaFile(String path){
+    public void deleteMediaFile(String path) {
         File file = new File(path);
         boolean deleted = file.delete();
 
-        if(!deleted){
+        if (!deleted) {
             Toast.makeText(this, "Error Deleting file", LENGTH_SHORT).show();
         }
         return;
@@ -487,12 +499,11 @@ public class CaptureActivity extends AppCompatActivity {
 
         mVideoFolder = new File(movieDir, "capturesFromElderlyApp");
         mImageFolder = new File(imageDir, "capturesFromElderlyApp");
-        Log.d("Test", "mVideoFolder.exists(): " + mVideoFolder.exists());
 
-        if(!mVideoFolder.exists()) {
+        if (!mVideoFolder.exists()) {
             mVideoFolder.mkdirs();
         }
-        if(!mImageFolder.exists()) {
+        if (!mImageFolder.exists()) {
             mImageFolder.mkdirs();
         }
     }
@@ -512,23 +523,6 @@ public class CaptureActivity extends AppCompatActivity {
         return imageFile;
     }
 
-    //Hide the phones control options when in app but allow user to swipe up to view them
-    @Override
-    public void onWindowFocusChanged(boolean hasFocus) {
-        super.onWindowFocusChanged(hasFocus);
-        View decorView = getWindow().getDecorView();
-
-        if (hasFocus) {
-            decorView.setSystemUiVisibility(
-                    View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-                            | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
-                            | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-                            | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
-                            | View.SYSTEM_UI_FLAG_FULLSCREEN
-                            | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION);
-        }
-    }
-
 
     private CameraDevice.StateCallback cameraDeviceStateCallback = new CameraDevice.StateCallback() {
         @Override
@@ -537,7 +531,7 @@ public class CaptureActivity extends AppCompatActivity {
             mMediaRecorder = new MediaRecorder();
 
             //if user wants to record create a new file and start the video and audio recoding
-            if(mIsRecording){
+            if (mIsRecording) {
                 try {
                     createVideoFileName();
                     startRecording();
@@ -545,7 +539,7 @@ public class CaptureActivity extends AppCompatActivity {
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
-            }else{
+            } else {
                 //if user is ending video recording start the preview
                 startPreview();
             }
@@ -571,19 +565,22 @@ public class CaptureActivity extends AppCompatActivity {
         public void onCaptureCompleted(@NonNull CameraCaptureSession session, @NonNull CaptureRequest request, @NonNull TotalCaptureResult result) {
             super.onCaptureCompleted(session, request, result);
             startCaptureImageRequest();
-
         }
     };
 
     private static String degreesToExif(int orientation) {
-        if (orientation == 90) { return String.valueOf(ExifInterface.ORIENTATION_ROTATE_90); }
-        else if (orientation == 180) {  return String.valueOf(0); }
-        else if (orientation == 270) {  return String.valueOf(0); }
+        if (orientation == 90) {
+            return String.valueOf(ExifInterface.ORIENTATION_ROTATE_90);
+        } else if (orientation == 180) {
+            return String.valueOf(0);
+        } else if (orientation == 270) {
+            return String.valueOf(0);
+        }
         return String.valueOf(0);
     }
 
 
-    private void previewCapturedMedia(String typeOfCapturedMedia){
+    private void previewCapturedMedia(String typeOfCapturedMedia) {
         File mediaFile;
         mTypeOfMediaCaptured = typeOfCapturedMedia;
 
@@ -600,34 +597,35 @@ public class CaptureActivity extends AppCompatActivity {
         lockOrientation(true);
 
         //display the captured media
-        switch (typeOfCapturedMedia){
+        switch (typeOfCapturedMedia) {
             case "Image":
                 //get image file
                 mediaFile = new File(mImageFilePath);
 
                 //update image view
-                if(mediaFile.exists()){
+                if (mediaFile.exists()) {
 
                     try {
+
                         ExifInterface exif = null;
                         //display the media in the correct rotation
                         exif = new ExifInterface(mediaFile.getPath());
-                        int rotation = exif.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL);
-                        int rotationInDegrees = mediaManagement.exifToDegrees(rotation);
-
+                        int exifOrientation = exif.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL);
                         Bitmap myBitmap = BitmapFactory.decodeFile(mediaFile.getAbsolutePath());
-                        myBitmap = mediaManagement.RotateBitmap(myBitmap, rotationInDegrees);
 
-                        capturedImageView.setImageBitmap(myBitmap);
+
+                        Bitmap adjustedBitmapImage = mediaManagement.adjustBitmapImage(exifOrientation, myBitmap);
+
+
+                        capturedImageView.setImageBitmap(adjustedBitmapImage);
+
 
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
 
 
-
-
-                }else{
+                } else {
                     Toast.makeText(getApplicationContext(), "Could not find image", LENGTH_SHORT).show();
                 }
 
@@ -640,13 +638,13 @@ public class CaptureActivity extends AppCompatActivity {
                 mediaFile = new File(mVideoFilePath);
 
                 //update image view
-                if(mediaFile.exists()){
+                if (mediaFile.exists()) {
 
                     capturedVideoView.setVideoPath(mVideoFilePath);
                     capturedVideoView.start();
 
 
-                }else{
+                } else {
                     Toast.makeText(getApplicationContext(), "Could not find video", LENGTH_SHORT).show();
                 }
 
@@ -667,6 +665,7 @@ public class CaptureActivity extends AppCompatActivity {
 
                 //set camera ID
                 CameraCharacteristics cameraCharacteristics = cameraManager.getCameraCharacteristics(cameraId);
+
                 //select the first rear camera as suggested via google documentation
                 mCameraID = cameraManager.getCameraIdList()[0];
 
@@ -674,7 +673,6 @@ public class CaptureActivity extends AppCompatActivity {
                 //check the device's orientation and change cameras orientation
                 int deviceOrientation = getWindowManager().getDefaultDisplay().getRotation();
                 mTotalRotation = sensorToDeviceRotation(cameraCharacteristics, deviceOrientation);
-                Log.d("Test", "setupCamera: " + mTotalRotation);
 
                 //check if rotation is portrait (if it is it will be true)
                 boolean inPortraitMode = mTotalRotation == 90 || mTotalRotation == 270;
@@ -709,21 +707,19 @@ public class CaptureActivity extends AppCompatActivity {
         CameraManager cameraManager = (CameraManager) getSystemService(Context.CAMERA_SERVICE);
 
         try {
-            if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M){
-                if(ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED){
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED) {
                     //open the camera if permissions are granted
                     cameraManager.openCamera(mCameraID, cameraDeviceStateCallback, mBackgroundHandler);
-                }
-                else{
-                    if(shouldShowRequestPermissionRationale(Manifest.permission.CAMERA)){
+                } else {
+                    if (shouldShowRequestPermissionRationale(Manifest.permission.CAMERA)) {
                         //if permissions are denied say why permission is needed
                         Toast.makeText(this, "Please enable Camera Access", LENGTH_SHORT).show();
                     }
                     requestPermissions(new String[]{Manifest.permission.CAMERA, Manifest.permission.RECORD_AUDIO, Manifest.permission.READ_EXTERNAL_STORAGE}, REQUEST_CAMERA_PERMISSION_RESULT);
                 }
 
-            }
-            else{
+            } else {
                 cameraManager.openCamera(mCameraID, cameraDeviceStateCallback, mBackgroundHandler);
             }
 
@@ -733,7 +729,7 @@ public class CaptureActivity extends AppCompatActivity {
     }
 
 
-    private void startRecording(){
+    private void startRecording() {
 
         try {
             setupMediaRecorder();
@@ -782,12 +778,13 @@ public class CaptureActivity extends AppCompatActivity {
     }
 
 
-    private void startCaptureImageRequest(){
+    private void startCaptureImageRequest() {
         try {
             //setup capture request builder
             mCaptureRequestBuilder = mCameraDevice.createCaptureRequest(CameraDevice.TEMPLATE_STILL_CAPTURE);
             mCaptureRequestBuilder.addTarget(mImageReader.getSurface());
-            mCaptureRequestBuilder.set(CaptureRequest.CONTROL_AF_MODE, CaptureRequest.CONTROL_AF_MODE_CONTINUOUS_PICTURE);
+
+            mCaptureRequestBuilder.set(CaptureRequest.CONTROL_AF_MODE, CaptureRequest.CONTROL_AF_STATE_FOCUSED_LOCKED);
 
             CameraCaptureSession.CaptureCallback imageCaptureCallback = new CameraCaptureSession.CaptureCallback() {
                 @Override
@@ -811,11 +808,11 @@ public class CaptureActivity extends AppCompatActivity {
     }
 
 
-    public class ImageSaver implements Runnable{
+    public class ImageSaver implements Runnable {
 
         private final Image mImage;
 
-        public ImageSaver(Image image){
+        public ImageSaver(Image image) {
             mImage = image;
         }
 
@@ -838,8 +835,7 @@ public class CaptureActivity extends AppCompatActivity {
                 e.printStackTrace();
             } catch (IOException e) {
                 e.printStackTrace();
-            }
-            finally {
+            } finally {
 
                 ExifInterface exif = null;
                 try {
@@ -850,7 +846,7 @@ public class CaptureActivity extends AppCompatActivity {
                     e.printStackTrace();
                 }
                 mImage.close();
-                if(fileOutputStream != null){
+                if (fileOutputStream != null) {
                     try {
                         fileOutputStream.close();
                     } catch (IOException e) {
@@ -874,7 +870,7 @@ public class CaptureActivity extends AppCompatActivity {
     }
 
 
-    private void startPreview(){
+    private void startPreview() {
         //setup target surface
         SurfaceTexture surfaceTexture = cameraView.getSurfaceTexture();
         surfaceTexture.setDefaultBufferSize(mPreviewSize.getWidth(), mPreviewSize.getHeight());
@@ -888,31 +884,28 @@ public class CaptureActivity extends AppCompatActivity {
             mCaptureRequestBuilder.set(CaptureRequest.JPEG_ORIENTATION, ORIENTATIONS.get(mTotalRotation));
 
 
-
-
-
             //create camera session
             mCameraDevice.createCaptureSession(Arrays.asList(cameraPreviewSurface, mImageReader.getSurface()),
                     new CameraCaptureSession.StateCallback() {
-                @Override
-                public void onConfigured(@NonNull CameraCaptureSession session) {
+                        @Override
+                        public void onConfigured(@NonNull CameraCaptureSession session) {
 
-                    mCaptureSession = session;
+                            mCaptureSession = session;
 
-                    //keep updating the camera preview
-                    try {
-                        mCaptureSession.setRepeatingRequest(mCaptureRequestBuilder.build(),
-                                null, mBackgroundHandler);
-                    } catch (CameraAccessException e) {
-                        e.printStackTrace();
-                    }
-                }
+                            //keep updating the camera preview
+                            try {
+                                mCaptureSession.setRepeatingRequest(mCaptureRequestBuilder.build(),
+                                        null, mBackgroundHandler);
+                            } catch (CameraAccessException e) {
+                                e.printStackTrace();
+                            }
+                        }
 
-                @Override
-                public void onConfigureFailed(@NonNull CameraCaptureSession session) {
-                    Toast.makeText(getApplicationContext(), "Camera preview failed", LENGTH_SHORT).show();
-                }
-            }, null);
+                        @Override
+                        public void onConfigureFailed(@NonNull CameraCaptureSession session) {
+                            Toast.makeText(getApplicationContext(), "Camera preview failed", LENGTH_SHORT).show();
+                        }
+                    }, null);
 
         } catch (CameraAccessException e) {
             e.printStackTrace();
@@ -920,8 +913,8 @@ public class CaptureActivity extends AppCompatActivity {
     }
 
 
-    private void closeCamera(){
-        if(mCameraDevice !=null){
+    private void closeCamera() {
+        if (mCameraDevice != null) {
             mCameraDevice.close();
             mCameraDevice = null;
         }
@@ -934,19 +927,19 @@ public class CaptureActivity extends AppCompatActivity {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
 
         //when a permission request result is received if the user selects deny alert them of the issue.
-        switch (requestCode){
+        switch (requestCode) {
             case REQUEST_CAMERA_PERMISSION_RESULT:
-                if(grantResults[0] != PackageManager.PERMISSION_GRANTED){
+                if (grantResults[0] != PackageManager.PERMISSION_GRANTED) {
                     Toast.makeText(this, "Camera will not work without access to camera", LENGTH_SHORT).show();
                 }
                 break;
             case REQUEST_EXTERNAL_STORAGE_PERMISSION_RESULT:
-                if(grantResults[0] != PackageManager.PERMISSION_GRANTED){
+                if (grantResults[0] != PackageManager.PERMISSION_GRANTED) {
                     Toast.makeText(this, "Camera will not work without access to storage", LENGTH_SHORT).show();
                 }
                 break;
             case REQUEST_RECORD_AUDIO_PERMISSION_RESULT:
-                if(grantResults[1] != PackageManager.PERMISSION_GRANTED){
+                if (grantResults[1] != PackageManager.PERMISSION_GRANTED) {
                     Toast.makeText(this, "Application will not be able to record audio", LENGTH_SHORT).show();
                 }
                 break;
@@ -956,16 +949,16 @@ public class CaptureActivity extends AppCompatActivity {
 
 
     //setup background thread for the camera to use so it is not blocking main thread
-    private void startBackgroundThread(){
+    private void startBackgroundThread() {
         mBackgroundHandlerThread = new HandlerThread("CameraForElderlyApplication");
         mBackgroundHandlerThread.start();
         mBackgroundHandler = new Handler(mBackgroundHandlerThread.getLooper());
     }
 
 
-    private void stopBackgroundThread(){
+    private void stopBackgroundThread() {
         mBackgroundHandlerThread.quitSafely();
-        try{
+        try {
             mBackgroundHandlerThread.join();
             mBackgroundHandlerThread = null;
             mBackgroundHandler = null;
@@ -976,7 +969,7 @@ public class CaptureActivity extends AppCompatActivity {
     }
 
 
-    private static int sensorToDeviceRotation(CameraCharacteristics cameraCharacteristics, int deviceOrientation){
+    private static int sensorToDeviceRotation(CameraCharacteristics cameraCharacteristics, int deviceOrientation) {
         int sensorOrientation = cameraCharacteristics.get(CameraCharacteristics.SENSOR_ORIENTATION);
         deviceOrientation = ORIENTATIONS.get(deviceOrientation);
 
@@ -985,7 +978,7 @@ public class CaptureActivity extends AppCompatActivity {
     }
 
 
-    public void lockFocus(){
+    public void lockFocus() {
 
         //focus on the subject
         mCaptureRequestBuilder.set(CaptureRequest.CONTROL_AF_TRIGGER, CaptureRequest.CONTROL_AF_TRIGGER_START);
@@ -999,19 +992,19 @@ public class CaptureActivity extends AppCompatActivity {
     }
 
 
-    public void transformImage(int width, int height){
-        if(mPreviewSize == null || cameraView == null){
+    public void transformImage(int width, int height) {
+        if (mPreviewSize == null || cameraView == null) {
             return;
         }
 
         Matrix matrix = new Matrix();
-        int rotation =  getWindowManager().getDefaultDisplay().getRotation();
+        int rotation = getWindowManager().getDefaultDisplay().getRotation();
         RectF textureRectF = new RectF(0, 0, width, height);
         RectF previewRectF = new RectF(0, 0, mPreviewSize.getHeight(), mPreviewSize.getWidth());
         float centerX = textureRectF.centerX();
         float centerY = textureRectF.centerY();
 
-        if(rotation == Surface.ROTATION_90 || rotation == Surface.ROTATION_270){
+        if (rotation == Surface.ROTATION_90 || rotation == Surface.ROTATION_270) {
             previewRectF.offset(centerX - previewRectF.centerX(), centerY - previewRectF.centerY());
             matrix.setRectToRect(textureRectF, previewRectF, Matrix.ScaleToFit.FILL);
             float scale = Math.max((float) width / mPreviewSize.getWidth(), (float) height / mPreviewSize.getHeight());
@@ -1028,17 +1021,17 @@ public class CaptureActivity extends AppCompatActivity {
     }
 
 
-    private void lockOrientation(boolean lock){
+    private void lockOrientation(boolean lock) {
 
-        if(lock){
+        if (lock) {
             int landscape = 1;
             boolean inLandscapeMode = ((int) getWindowManager().getDefaultDisplay().getRotation() == landscape);
-            if(inLandscapeMode){
+            if (inLandscapeMode) {
                 setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
-            }else{
+            } else {
                 setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
             }
-        }else{
+        } else {
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
         }
     }

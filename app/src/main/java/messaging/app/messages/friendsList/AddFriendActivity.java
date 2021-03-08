@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
@@ -14,6 +15,8 @@ import java.util.List;
 import messaging.app.CheckInputsValidity;
 import messaging.app.ContactingFirebase;
 import messaging.app.R;
+import messaging.app.login.LoginActivity;
+import messaging.app.login.ResetPasswordActivity;
 
 public class AddFriendActivity extends AppCompatActivity {
 
@@ -40,6 +43,12 @@ public class AddFriendActivity extends AppCompatActivity {
 
         setBtnSearchFriendOnClick();
         displayFriendRequests();
+    }
+
+    @Override
+    public void onBackPressed() {
+        Intent intent = new Intent(AddFriendActivity.this, ViewFriendsListActivity.class);
+        AddFriendActivity.this.startActivity(intent);
     }
 
     private void displayFriendRequests() {

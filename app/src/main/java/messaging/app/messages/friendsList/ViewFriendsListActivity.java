@@ -6,6 +6,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Message;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -16,6 +17,8 @@ import java.util.List;
 import messaging.app.CheckInputsValidity;
 import messaging.app.ContactingFirebase;
 import messaging.app.R;
+import messaging.app.login.LoginActivity;
+import messaging.app.login.ResetPasswordActivity;
 import messaging.app.messages.MessagesActivity;
 
 public class ViewFriendsListActivity extends AppCompatActivity {
@@ -38,6 +41,13 @@ public class ViewFriendsListActivity extends AppCompatActivity {
         setBtnLoadAddFriendActivityOnClick();
         displayFriends();
 
+    }
+
+
+    @Override
+    public void onBackPressed() {
+        Intent intent = new Intent(ViewFriendsListActivity.this, MessagesActivity.class);
+        ViewFriendsListActivity.this.startActivity(intent);
     }
 
     private void displayFriends() {

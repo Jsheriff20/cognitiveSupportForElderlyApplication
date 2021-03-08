@@ -100,6 +100,13 @@ public class RegisterProfileImageActivity extends AppCompatActivity {
     }
 
 
+    @Override
+    public void onBackPressed() {
+
+        btnBackToRegisterPersonalInfo.callOnClick();
+    }
+
+
     public static Bitmap RotateBitmap(Bitmap source, float angle){
         Matrix matrix = new Matrix();
         matrix.postRotate(angle);

@@ -10,6 +10,7 @@ import android.view.View;
 import messaging.app.R;
 import messaging.app.SelectAreaOfApplicationActivity;
 import messaging.app.messages.ViewingMessages.ListOfReceivedMediaActivity;
+import messaging.app.messages.ViewingMessages.ViewTextMessageActivity;
 import messaging.app.messages.capturingMedia.CaptureActivity;
 import messaging.app.messages.friendsList.ViewFriendsListActivity;
 
@@ -32,6 +33,12 @@ public class MessagesActivity extends AppCompatActivity {
         setLayoutButtonOnClick();
     }
 
+    @Override
+    public void onBackPressed() {
+
+        Intent intent = new Intent(MessagesActivity.this, SelectAreaOfApplicationActivity.class);
+        MessagesActivity.this.startActivity(intent);
+    }
 
     private void setLayoutButtonOnClick(){
         llaySendMessages.setOnClickListener(new View.OnClickListener() {

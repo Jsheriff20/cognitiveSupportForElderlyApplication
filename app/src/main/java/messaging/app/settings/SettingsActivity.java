@@ -13,6 +13,7 @@ import messaging.app.ContactingFirebase;
 import messaging.app.R;
 import messaging.app.SelectAreaOfApplicationActivity;
 import messaging.app.login.LoginActivity;
+import messaging.app.register.RegisterEmailActivity;
 
 public class SettingsActivity extends AppCompatActivity {
 
@@ -28,6 +29,13 @@ public class SettingsActivity extends AppCompatActivity {
         btnLogout = findViewById(R.id.btnLogout);
         setBtnLogoutOnClick();
     }
+
+    @Override
+    public void onBackPressed() {
+        Intent intent = new Intent(SettingsActivity.this, SelectAreaOfApplicationActivity.class);
+        SettingsActivity.this.startActivity(intent);
+    }
+
 
     private void setBtnLogoutOnClick(){
         btnLogout.setOnClickListener(new View.OnClickListener() {

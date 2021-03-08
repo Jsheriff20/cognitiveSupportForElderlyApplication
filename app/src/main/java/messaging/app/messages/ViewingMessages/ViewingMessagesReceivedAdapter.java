@@ -2,6 +2,7 @@ package messaging.app.messages.ViewingMessages;
 
 import android.content.Context;
 import android.content.Intent;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -112,12 +113,13 @@ public class ViewingMessagesReceivedAdapter extends RecyclerView.Adapter {
                                 public void onSuccess(ArrayList<MessageData> storyMessagesDataList) {
                                     Intent intent;
 
+
                                     //check if there is a text message to display
                                     if(storyMessagesDataList.get(0).getTextMessage().equals(null) || storyMessagesDataList.get(0).getTextMessage().equals("")) {
-                                        intent = new Intent(context, ViewMediaMessage.class);
+                                        intent = new Intent(context, ViewMediaMessageActivity.class);
                                     }
                                     else{
-                                        intent = new Intent(context, ViewTextMessage.class);
+                                        intent = new Intent(context, ViewTextMessageActivity.class);
                                     }
 
 
@@ -150,6 +152,7 @@ public class ViewingMessagesReceivedAdapter extends RecyclerView.Adapter {
                             .rotate(profileImageRotation)
                             .into(friendsMessagesViewHolder.imgFriendsProfileImage);
                 }
+
                 if(Integer.parseInt(currentKVPair.get("unopenedMessage")) == 1){
                     friendsMessagesViewHolder.btnMessageAction.setImageResource(R.drawable.closed_envelope_shadow_icon);
                     friendsMessagesViewHolder.btnMessageAction.setBackgroundResource(R.drawable.btn_rectangle_red_gradient);
@@ -167,10 +170,10 @@ public class ViewingMessagesReceivedAdapter extends RecyclerView.Adapter {
 
                                     //check if there is a text message to display
                                     if(messageDataList.get(0).getTextMessage().equals(null) || messageDataList.get(0).getTextMessage().equals("")) {
-                                        intent = new Intent(context, ViewMediaMessage.class);
+                                        intent = new Intent(context, ViewMediaMessageActivity.class);
                                     }
                                     else{
-                                        intent = new Intent(context, ViewTextMessage.class);
+                                        intent = new Intent(context, ViewTextMessageActivity.class);
                                     }
 
 

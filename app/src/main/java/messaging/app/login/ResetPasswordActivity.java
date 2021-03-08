@@ -33,6 +33,12 @@ public class ResetPasswordActivity extends AppCompatActivity {
     }
 
 
+    @Override
+    public void onBackPressed() {
+        Intent intent = new Intent(ResetPasswordActivity.this, LoginActivity.class);
+        ResetPasswordActivity.this.startActivity(intent);
+    }
+
     private void setBtnLoadLoginOnClick(){
         btnLoadLogin.setOnClickListener(new View.OnClickListener() {
             @Override

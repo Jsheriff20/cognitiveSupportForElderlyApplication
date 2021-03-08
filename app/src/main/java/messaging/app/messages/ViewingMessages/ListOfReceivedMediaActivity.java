@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 
@@ -14,7 +15,11 @@ import java.util.Map;
 import java.util.TreeMap;
 
 import messaging.app.ContactingFirebase;
+import messaging.app.Formatting;
 import messaging.app.R;
+import messaging.app.login.LoginActivity;
+import messaging.app.login.ResetPasswordActivity;
+import messaging.app.messages.MessagesActivity;
 
 public class ListOfReceivedMediaActivity extends AppCompatActivity {
 
@@ -22,6 +27,7 @@ public class ListOfReceivedMediaActivity extends AppCompatActivity {
     private ViewingMessagesReceivedAdapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
     ContactingFirebase contactingFirebase = new ContactingFirebase(this);
+    Formatting formatting = new Formatting();
 
 
     @Override
@@ -34,13 +40,21 @@ public class ListOfReceivedMediaActivity extends AppCompatActivity {
         displayConversations();
     }
 
+
+    @Override
+    public void onBackPressed() {
+        Intent intent = new Intent(ListOfReceivedMediaActivity.this, MessagesActivity.class);
+        ListOfReceivedMediaActivity.this.startActivity(intent);
+    }
+
     private void displayConversations() {
         contactingFirebase.getExistingReceivedMediaDetails(new ContactingFirebase.OnGetExistingReceivedMediaDetailsListener() {
             @Override
             public void onSuccess(List<HashMap<String, String>> receivedMediaDetails, int numberOfStories) {
+                Log.d("test", "receivedMediaDetails: " + receivedMediaDetails);
 
                 //reorder messages so most recent is displayed first
-                receivedMediaDetails = orderReceivedMediaDetails(receivedMediaDetails);
+//                receivedMediaDetails = formatting.orderReceivedMediaDetails(receivedMediaDetails);
 
                 //display to user
                 mLayoutManager = new LinearLayoutManager(getApplicationContext());
@@ -52,30 +66,6 @@ public class ListOfReceivedMediaActivity extends AppCompatActivity {
 
             }
         });
-    }
-
-    private List<HashMap<String, String>> orderReceivedMediaDetails(List<HashMap<String, String>> receivedMediaDetails) {
-
-        HashMap<Long, HashMap<String, String>> unorderedMap = new HashMap<>();
-        List<HashMap<String, String>> sortedList = new ArrayList<>();
-
-        for (Map<String, String> kvPair : receivedMediaDetails) {
-            Long timestamp = Long.valueOf(kvPair.get("lastMessageTimeStamp"));
-            unorderedMap.put(timestamp, (HashMap<String, String>) kvPair);
-        }
-
-        // TreeMap to store values of HashMap
-        TreeMap<Long, Map<String, String>> sorted = new TreeMap<>();
-
-        // Copy all data from hashMap into TreeMap
-        sorted.putAll(unorderedMap);
-
-        // Display the TreeMap which is naturally sorted
-        for (Map.Entry<Long, Map<String, String>> entry : sorted.entrySet()) {
-            sortedList.add((HashMap<String, String>) entry.getValue());
-        }
-
-        return sortedList;
     }
 
 }

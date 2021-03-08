@@ -55,6 +55,13 @@ public class RegisterUsernameActivity extends AppCompatActivity {
     }
 
 
+    @Override
+    public void onBackPressed() {
+
+        btnBackToRegisterPassword.callOnClick();
+    }
+
+
     private void setBtnBackToRegisterPasswordOnClick(){
         btnBackToRegisterPassword.setOnClickListener(new View.OnClickListener() {
             @Override

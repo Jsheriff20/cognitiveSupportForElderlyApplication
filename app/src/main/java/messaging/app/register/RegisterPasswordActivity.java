@@ -44,6 +44,14 @@ public class RegisterPasswordActivity extends AppCompatActivity {
     }
 
 
+
+    @Override
+    public void onBackPressed() {
+
+        btnBackToRegisterEmail.callOnClick();
+    }
+
+
     private void setBtnLoadPersonInfoOnClick(){
         btnLoadRegisterUsername.setOnClickListener(new View.OnClickListener() {
             @Override

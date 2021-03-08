@@ -32,6 +32,14 @@ public class SelectAreaOfApplicationActivity extends AppCompatActivity {
         setLayoutButtonOnClick();
     }
 
+    @Override
+    public void onBackPressed() {
+        //exit the app
+        finish();
+        System.exit(0);
+    }
+
+
 
     private void setLayoutButtonOnClick(){
         llayMessages.setOnClickListener(new View.OnClickListener() {

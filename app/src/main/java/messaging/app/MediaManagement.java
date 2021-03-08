@@ -20,6 +20,62 @@ import static android.widget.Toast.LENGTH_SHORT;
 
 public class MediaManagement {
 
+    public Bitmap FlipBitmap(Bitmap myBitmap, String flipType) {
+
+        Matrix matrix = new Matrix();
+        switch (flipType){
+            case "Horizontally":
+                matrix.postScale(-1, 1, myBitmap.getWidth() / 2f, myBitmap.getHeight() / 2f);
+                break;
+            case "Vertically":
+                matrix.postScale(1,-1, myBitmap.getWidth() / 2f, myBitmap.getHeight() / 2f);
+                break;
+        }
+
+        return Bitmap.createBitmap(myBitmap, 0, 0, myBitmap.getWidth(), myBitmap.getHeight(), matrix, true);
+    }
+
+    public int[] getVideoViewTransform(int exifOrientation) {
+
+        int scaleX = 0;
+        int scaleY = 0;
+        int rotation = 0;
+
+        switch (exifOrientation)
+        {
+            case 2:
+                scaleX = -1;
+                break;
+            case 3:
+                rotation = 180;
+                break;
+            case 4:
+                rotation = 270;
+                scaleX = -1;
+                break;
+            case 5:
+                rotation = 90;
+                scaleX = -1;
+                break;
+            case 6:
+                rotation = 90;
+                break;
+            case 7:
+                rotation = 90;
+                scaleY = -1;
+                break;
+            case 8:
+                rotation = 270;
+                break;
+            default:
+                break;
+        }
+
+        int[] intList = {rotation, scaleX, scaleY};
+        return intList;
+    }
+
+
     public static class CompareSizeByArea implements Comparator<Size> {
         @Override
         public int compare(Size lhs, Size rhs) {
@@ -119,6 +175,44 @@ public class MediaManagement {
             Toast.makeText(context, "Error Deleting file", LENGTH_SHORT).show();
         }
         return;
+    }
+
+
+
+    public Bitmap adjustBitmapImage(int exifOrientation, Bitmap myBitmap) {
+
+        switch (exifOrientation)
+        {
+            case 2:
+                myBitmap = RotateBitmap(myBitmap, 0);
+                myBitmap = FlipBitmap(myBitmap, "Horizontally");
+                break;
+            case 3:
+                myBitmap = RotateBitmap(myBitmap, 180);
+                break;
+            case 4:
+                myBitmap = RotateBitmap(myBitmap, 270);
+                myBitmap = FlipBitmap(myBitmap, "Horizontally");
+                break;
+            case 5:
+                myBitmap = RotateBitmap(myBitmap, 90);
+                myBitmap = FlipBitmap(myBitmap, "Horizontally");
+                break;
+            case 6:
+                myBitmap = RotateBitmap(myBitmap, 90);
+                break;
+            case 7:
+                myBitmap = RotateBitmap(myBitmap, 90);
+                myBitmap = FlipBitmap(myBitmap, "Vertically");
+                break;
+            case 8:
+                myBitmap = RotateBitmap(myBitmap, 270);
+                break;
+            default:
+                break;
+        }
+
+        return myBitmap;
     }
 
 }

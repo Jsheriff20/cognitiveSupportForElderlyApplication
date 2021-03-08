@@ -7,6 +7,7 @@ public class MessageData implements Parcelable {
     String timeStamp;
     String fileExtension = null;
     int mediaMessageRotation;
+    int deviceOrientationMode;
     String mediaMessageUrl;
     String textMessage = "";
     String fullName;
@@ -15,10 +16,11 @@ public class MessageData implements Parcelable {
     public MessageData() {
     }
 
-    public MessageData(String timeStamp, String fileExtension, int mediaMessageRotation, String mediaMessageUrl, String textMessage, String fullName, boolean unopened) {
+    public MessageData(String timeStamp, String fileExtension, int mediaMessageRotation, int deviceOrientationMode, String mediaMessageUrl, String textMessage, String fullName, boolean unopened) {
         this.timeStamp = timeStamp;
         this.fileExtension = fileExtension;
         this.mediaMessageRotation = mediaMessageRotation;
+        this.deviceOrientationMode = deviceOrientationMode;
         this.mediaMessageUrl = mediaMessageUrl;
         if(textMessage.length() <= 0){
             this.textMessage = "";
@@ -34,6 +36,7 @@ public class MessageData implements Parcelable {
         timeStamp = in.readString();
         fileExtension = in.readString();
         mediaMessageRotation = in.readInt();
+        deviceOrientationMode = in.readInt();
         mediaMessageUrl = in.readString();
         textMessage = in.readString();
         fullName = in.readString();
@@ -84,6 +87,14 @@ public class MessageData implements Parcelable {
         this.mediaMessageRotation = mediaMessageRotation;
     }
 
+    public int getDeviceOrientationMode() {
+        return deviceOrientationMode;
+    }
+
+    public void setDeviceOrientationMode(int deviceOrientationMode) {
+        this.deviceOrientationMode = deviceOrientationMode;
+    }
+
     public String getMediaMessageUrl() {
         return mediaMessageUrl;
     }
@@ -118,6 +129,7 @@ public class MessageData implements Parcelable {
         dest.writeString(timeStamp);
         dest.writeString(fileExtension);
         dest.writeInt(mediaMessageRotation);
+        dest.writeInt(deviceOrientationMode);
         dest.writeString(mediaMessageUrl);
         dest.writeString(textMessage);
         dest.writeString(fullName);

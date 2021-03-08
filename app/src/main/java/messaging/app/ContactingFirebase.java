@@ -195,7 +195,7 @@ public class ContactingFirebase {
     }
 
 
-    public void sendMessages(final ArrayList<String> directMessagesUUID, final ArrayList<String> storyMessagesUUID, final String pathToMedia, String fileType, final String message) throws IOException {
+    public void sendMessages(final ArrayList<String> directMessagesUUID, final ArrayList<String> storyMessagesUUID, final String pathToMedia, String fileType, final String message, final int deviceOrientationMode) throws IOException {
 
         final String profanityCheckedMessage = formatting.removeProfanity(message);
 
@@ -224,7 +224,7 @@ public class ContactingFirebase {
             @Override
             public void onSuccess(final String sendersFullName, String profileImageURL, String profileImageRotation) {
                 if (!directMessagesUUID.isEmpty()) {
-                    sendMessage(directMessagesUUID, sendersFullName, profileImageURL, profileImageRotation, sendingMediaUri, finalRotation, fileExtension, profanityCheckedMessage, "directlyToFriend", new OnSendMessageListener() {
+                    sendMessage(directMessagesUUID, sendersFullName, profileImageURL, profileImageRotation, sendingMediaUri, finalRotation, deviceOrientationMode, fileExtension, profanityCheckedMessage, "directlyToFriend", new OnSendMessageListener() {
                         @Override
                         public void onSuccess(String fileName) {
                             logNewMediaMessage(numberOfMessagesSent, fileName);
@@ -234,7 +234,7 @@ public class ContactingFirebase {
                 }
 
                 if (!storyMessagesUUID.isEmpty()) {
-                    sendMessage(storyMessagesUUID, sendersFullName, profileImageURL, profileImageRotation, sendingMediaUri, finalRotation, fileExtension, profanityCheckedMessage, "toStory", new OnSendMessageListener() {
+                    sendMessage(storyMessagesUUID, sendersFullName, profileImageURL, profileImageRotation, sendingMediaUri, finalRotation, deviceOrientationMode, fileExtension, profanityCheckedMessage, "toStory", new OnSendMessageListener() {
                         @Override
                         public void onSuccess(String fileName) {
                             //story messages do not get logged as they work off of a time not views
@@ -328,7 +328,7 @@ public class ContactingFirebase {
 
     }
 
-    private void sendMessage(final ArrayList<String> listOfUUIDs, final String sendersFullName, final String profileImageURL, final String profileImageRotation, final Uri sendingMediaUri, final int rotation, final String fileExtension, final String message, final String sendingTo, final OnSendMessageListener listener) {
+    private void sendMessage(final ArrayList<String> listOfUUIDs, final String sendersFullName, final String profileImageURL, final String profileImageRotation, final Uri sendingMediaUri, final int rotation, final int deviceOrientationMode, final String fileExtension, final String message, final String sendingTo, final OnSendMessageListener listener) {
         Date now = new Date();
         long ut3 = now.getTime() / 1000L;
         final String timestamp = Long.toString(ut3);
@@ -363,16 +363,17 @@ public class ContactingFirebase {
                                     databaseRef.child("messages/" + friendsUUID + "/" + getCurrentUsersUUID() + "/" + timestamp + "/unopened").setValue(true);
                                     databaseRef.child("messages/" + friendsUUID + "/" + getCurrentUsersUUID() + "/" + timestamp + "/mediaMessageUrl").setValue(mediaUrl);
                                     databaseRef.child("messages/" + friendsUUID + "/" + getCurrentUsersUUID() + "/" + timestamp + "/mediaMessageRotation").setValue(rotation);
+                                    databaseRef.child("messages/" + friendsUUID + "/" + getCurrentUsersUUID() + "/" + timestamp + "/deviceOrientationMode").setValue(deviceOrientationMode);
                                     databaseRef.child("messages/" + friendsUUID + "/" + getCurrentUsersUUID() + "/" + timestamp + "/textMessage").setValue(message);
                                 } else {
                                     databaseRef.child("stories/" + friendsUUID + "/" + timestamp + "/fileExtension").setValue(fileExtension);
                                     databaseRef.child("stories/" + friendsUUID + "/" + timestamp + "/fullName").setValue(sendersFullName);
                                     databaseRef.child("stories/" + friendsUUID + "/" + timestamp + "/mediaMessageUrl").setValue(mediaUrl);
                                     databaseRef.child("stories/" + friendsUUID + "/" + timestamp + "/mediaMessageRotation").setValue(rotation);
+                                    databaseRef.child("stories/" + friendsUUID + "/" + timestamp + "/deviceOrientationMode").setValue(deviceOrientationMode);
                                     databaseRef.child("stories/" + friendsUUID + "/" + timestamp + "/textMessage").setValue(message);
                                     databaseRef.child("stories/" + friendsUUID + "/" + timestamp + "/unopened").setValue(true);
                                 }
-                                Log.d(TAG, "Test: ");
                             }
 
                             listener.onSuccess(fileName);
@@ -438,7 +439,8 @@ public class ContactingFirebase {
                         for (DataSnapshot ds : snapshot.getChildren()) {
 
                             HashMap friendsMessagesHashMap = new HashMap();
-                            boolean firstLoop = true;
+                            //add the UUID of the sender
+                            friendsMessagesHashMap.put("UUID", ds.getKey());
 
                             //get the other data
                             for (DataSnapshot subDS : ds.getChildren()) {
@@ -828,6 +830,10 @@ public class ContactingFirebase {
                                 break;
                             case "textMessage":
                                 messageData.setTextMessage((String) subDS.getValue());
+                                break;
+                            case "deviceOrientationMode":
+                                long deviceOrientationMode = (long) subDS.getValue();
+                                messageData.setDeviceOrientationMode((int) deviceOrientationMode);
                                 break;
                             case "unopened":
                                 messageData.setUnopened((boolean) subDS.getValue());
