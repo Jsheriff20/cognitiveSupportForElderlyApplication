@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
 import android.Manifest;
+import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.media.ExifInterface;
@@ -48,6 +49,7 @@ public class AddMessageToMediaActivity extends AppCompatActivity {
     ImageButton btnSelectRecipientsActivity;
     ImageButton btnVoiceToText;
     ImageButton btnStopVoiceToText;
+    ImageButton btnBackToCaptureMedia;
     EditText txtMessage;
     ImageView imgCapturedImagePreview;
     VideoView vidCapturedVideoPreview;
@@ -81,6 +83,7 @@ public class AddMessageToMediaActivity extends AppCompatActivity {
         txtMessage = findViewById(R.id.txtMessage);
         imgCapturedImagePreview = findViewById(R.id.imgCapturedImagePreview);
         vidCapturedVideoPreview = findViewById(R.id.vidCapturedVideoPreview);
+        btnBackToCaptureMedia = findViewById(R.id.btnBackToCaptureMedia);
 
         if(getIntent().getStringExtra("replyingTo") != null){
             mReplyingToUUID = getIntent().getStringExtra("replyingTo");
@@ -108,7 +111,18 @@ public class AddMessageToMediaActivity extends AppCompatActivity {
         setBtnSelectRecipientsActivityOnClick();
         setVideoViewListener();
         previewCapturedMedia(mTypeOfMediaCaptured, mMediaPath);
+        setBtnBackToCaptureMedia();
 
+    }
+
+
+    private void setBtnBackToCaptureMedia(){
+        btnBackToCaptureMedia.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                ((Activity) AddMessageToMediaActivity.this).finish();
+            }
+        });
     }
 
 

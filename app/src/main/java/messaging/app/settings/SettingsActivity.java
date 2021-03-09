@@ -10,6 +10,7 @@ import android.view.View;
 import android.widget.Button;
 
 import messaging.app.ContactingFirebase;
+import messaging.app.NotifyMessageReceivedService;
 import messaging.app.R;
 import messaging.app.SelectAreaOfApplicationActivity;
 import messaging.app.login.LoginActivity;
@@ -44,6 +45,9 @@ public class SettingsActivity extends AppCompatActivity {
                 contactingFirebase.logoutUser();
                 Intent intent = new Intent(SettingsActivity.this, LoginActivity.class);
                 SettingsActivity.this.startActivity(intent);
+
+                //stop notification service
+                stopService(new Intent(getApplicationContext(), NotifyMessageReceivedService.class));
             }
         });
     }

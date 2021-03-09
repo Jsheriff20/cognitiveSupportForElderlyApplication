@@ -19,6 +19,7 @@ import java.text.Normalizer;
 import messaging.app.CheckInputsValidity;
 import messaging.app.ContactingFirebase;
 import messaging.app.Formatting;
+import messaging.app.NotifyMessageReceivedService;
 import messaging.app.R;
 import messaging.app.SelectAreaOfApplicationActivity;
 import messaging.app.register.RegisterEmailActivity;
@@ -104,7 +105,8 @@ public class LoginActivity extends AppCompatActivity {
                     return;
                 }
                 else {
-                    contactingFirebase.loginUser(email, txtPassword.getText().toString());
+                    boolean loginSuccess = contactingFirebase.loginUser(email, txtPassword.getText().toString());
+
                 }
             }
         });

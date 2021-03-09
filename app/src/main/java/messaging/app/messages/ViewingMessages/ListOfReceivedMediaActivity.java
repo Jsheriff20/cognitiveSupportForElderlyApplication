@@ -7,6 +7,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.ImageButton;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -20,10 +22,13 @@ import messaging.app.R;
 import messaging.app.login.LoginActivity;
 import messaging.app.login.ResetPasswordActivity;
 import messaging.app.messages.MessagesActivity;
+import messaging.app.messages.capturingMedia.CaptureActivity;
 
 public class ListOfReceivedMediaActivity extends AppCompatActivity {
 
     private RecyclerView recyclerView;
+    ImageButton btnBackToMessagesActivity;
+
     private ViewingMessagesReceivedAdapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
     ContactingFirebase contactingFirebase = new ContactingFirebase(this);
@@ -36,8 +41,21 @@ public class ListOfReceivedMediaActivity extends AppCompatActivity {
         setContentView(R.layout.activity_list_of_conversations);
 
         recyclerView = findViewById(R.id.lstConversations);
+        btnBackToMessagesActivity = findViewById(R.id.btnBackToMessagesActivity);
 
         displayConversations();
+        setBtnBackToMessagesActivity();
+    }
+
+
+    private void setBtnBackToMessagesActivity(){
+        btnBackToMessagesActivity.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(ListOfReceivedMediaActivity.this, MessagesActivity.class);
+                ListOfReceivedMediaActivity.this.startActivity(intent);
+            }
+        });
     }
 
 

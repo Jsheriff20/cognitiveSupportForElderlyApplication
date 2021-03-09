@@ -7,6 +7,7 @@ import androidx.core.content.ContextCompat;
 import android.content.Intent;
 import android.os.Bundle;
 import android.provider.Settings;
+import android.util.Log;
 import android.view.View;
 
 import messaging.app.messages.MessagesActivity;
@@ -30,6 +31,14 @@ public class SelectAreaOfApplicationActivity extends AppCompatActivity {
         llaySettings = findViewById(R.id.llaySettings);
 
         setLayoutButtonOnClick();
+
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        //start notification service
+        startService(new Intent(getApplicationContext(), NotifyMessageReceivedService.class));
     }
 
     @Override

@@ -10,8 +10,8 @@ import android.util.Log;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
-import com.google.android.gms.auth.api.signin.internal.Storage;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -21,6 +21,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.SignInMethodQueryResult;
 import com.google.firebase.auth.UserProfileChangeRequest;
+import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -34,7 +35,6 @@ import com.google.firebase.storage.UploadTask;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -677,7 +677,9 @@ public class ContactingFirebase {
     }
 
 
-    public void loginUser(String email, String password) {
+    boolean returnValue;
+
+    public boolean loginUser(String email, String password) {
         mAuth = FirebaseAuth.getInstance();
         mAuth.signInWithEmailAndPassword(email, password)
                 .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
@@ -686,12 +688,15 @@ public class ContactingFirebase {
 
                         if (!task.isSuccessful()) {
                             Toast.makeText(context, "Password or email is incorrect", Toast.LENGTH_SHORT).show();
-
+                            returnValue = false;
                         } else {
                             context.startActivity(new Intent(context, SelectAreaOfApplicationActivity.class));
+                            returnValue = true;
                         }
                     }
                 });
+        return returnValue;
+
     }
 
 
@@ -1281,6 +1286,8 @@ public class ContactingFirebase {
 
     public void logoutUser() {
         mAuth.getInstance().signOut();
+        //TODO:
+        //stop notification service
     }
 
 
@@ -1362,6 +1369,103 @@ public class ContactingFirebase {
 
             }
         });
+    }
+
+    int previousNumberOfMessage = 0;
+    boolean initiationOfMessageListener = true;
+
+    public void listenForReceivedMessage(final Context context) {
+
+        DatabaseReference databaseRef = mDatabase.getReference("messages/" + getCurrentUsersUUID());
+        databaseRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                int numberOfMessages = getNumberOfMessages((Map<String, Object>) snapshot.getValue());
+
+                //check that a new message has been added and that it is not the first loop
+                if (previousNumberOfMessage < numberOfMessages && !initiationOfMessageListener) {
+                    //send notification
+                    MessageReceivedServiceNotification messageReceivedServiceNotification =
+                            new MessageReceivedServiceNotification(context);
+                    messageReceivedServiceNotification.sendNotification("New message received");
+                }
+                initiationOfMessageListener = false;
+                previousNumberOfMessage = numberOfMessages;
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+    }
+
+
+    int previousNumberOfStoryMessages = 0;
+    boolean initiationOfStoryMessageListener = true;
+
+    public void listenForReceivedStoryMessage(final Context context) {
+
+        DatabaseReference databaseRef = mDatabase.getReference("stories/" + getCurrentUsersUUID());
+        databaseRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                int numberOfStoryMessages = (int) snapshot.getChildrenCount();
+
+                String sendersName = "New message";
+//                int loopNum = 0;
+//                for (DataSnapshot ds : snapshot.getChildren()) {
+//                    loopNum++;
+//                    if (loopNum == numberOfStoryMessages) {
+//                        Log.d(TAG, "onDataChange: " + ds);
+//                        for (DataSnapshot subDS : ds.getChildren()) {
+//                            {
+//                                Log.d(TAG, "onDataChange: " + subDS);
+//                                if (subDS.getKey().equals("fullName")) {
+//                                    sendersName = (String) subDS.getValue();
+//                                    Log.d(TAG, "sendersName: " + sendersName);
+//                                    break;
+//
+//                                }
+//                            }
+//                        }
+//                        break;
+//                    }
+//                }
+//
+//                Log.d(TAG, "onDataChange: " + sendersName);
+
+                //check that a new message has been added and that it is not the first loop
+                if (previousNumberOfStoryMessages < numberOfStoryMessages && !initiationOfStoryMessageListener) {
+                    //send notification
+                    MessageReceivedServiceNotification messageReceivedServiceNotification =
+                            new MessageReceivedServiceNotification(context);
+                    messageReceivedServiceNotification.sendNotification(sendersName + " added to your story");
+                }
+                initiationOfStoryMessageListener = false;
+                previousNumberOfStoryMessages = numberOfStoryMessages;
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+    }
+
+
+    private int getNumberOfMessages(Map<String, Object> users) {
+
+        int numberOfMessages = 0;
+        //iterate through each user, ignoring their UID
+        for (Map.Entry<String, Object> entry : users.entrySet()) {
+
+            //Get user map
+            Map singleUser = (Map) entry.getValue();
+            numberOfMessages = +singleUser.size();
+        }
+
+        return numberOfMessages;
     }
 }
 

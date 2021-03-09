@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -35,6 +36,7 @@ public class EditFriendActivity extends AppCompatActivity {
     Button btnUpdate;
     Button btnRemove;
     Button btnBlock;
+    ImageButton btnBackToFriendsList;
 
     ContactingFirebase contactingFirebase = new ContactingFirebase(this);
     CheckInputsValidity checkInputsValidity = new CheckInputsValidity(this);
@@ -58,6 +60,7 @@ public class EditFriendActivity extends AppCompatActivity {
         btnUpdate = findViewById(R.id.btnUpdateFriend);
         btnRemove = findViewById(R.id.btnRemoveFriend);
         btnBlock = findViewById(R.id.btnBlockFriend);
+        btnBackToFriendsList = findViewById(R.id.btnBackToFriendsList);
 
         lblFullName.setText(mFriendsName);
         lblUsername.setText(mFriendsUsername);
@@ -67,6 +70,7 @@ public class EditFriendActivity extends AppCompatActivity {
         setBtnRemoveOnClick();
         setBtnUpdateOnClick();
         setBtnBlockOnClick();
+        setBtnBackToFriendsList();
     }
 
     @Override
@@ -74,6 +78,18 @@ public class EditFriendActivity extends AppCompatActivity {
         Intent intent = new Intent(EditFriendActivity.this, ViewFriendsListActivity.class);
         EditFriendActivity.this.startActivity(intent);
     }
+
+
+    private void setBtnBackToFriendsList(){
+        btnBackToFriendsList.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(EditFriendActivity.this, ViewFriendsListActivity.class);
+                EditFriendActivity.this.startActivity(intent);
+            }
+        });
+    }
+
 
     private void setBtnRemoveOnClick() {
         btnRemove.setOnClickListener(new View.OnClickListener() {

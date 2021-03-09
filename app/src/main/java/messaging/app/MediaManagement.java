@@ -35,47 +35,6 @@ public class MediaManagement {
         return Bitmap.createBitmap(myBitmap, 0, 0, myBitmap.getWidth(), myBitmap.getHeight(), matrix, true);
     }
 
-    public int[] getVideoViewTransform(int exifOrientation) {
-
-        int scaleX = 0;
-        int scaleY = 0;
-        int rotation = 0;
-
-        switch (exifOrientation)
-        {
-            case 2:
-                scaleX = -1;
-                break;
-            case 3:
-                rotation = 180;
-                break;
-            case 4:
-                rotation = 270;
-                scaleX = -1;
-                break;
-            case 5:
-                rotation = 90;
-                scaleX = -1;
-                break;
-            case 6:
-                rotation = 90;
-                break;
-            case 7:
-                rotation = 90;
-                scaleY = -1;
-                break;
-            case 8:
-                rotation = 270;
-                break;
-            default:
-                break;
-        }
-
-        int[] intList = {rotation, scaleX, scaleY};
-        return intList;
-    }
-
-
     public static class CompareSizeByArea implements Comparator<Size> {
         @Override
         public int compare(Size lhs, Size rhs) {

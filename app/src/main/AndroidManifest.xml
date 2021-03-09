@@ -49,6 +49,7 @@
         <activity android:name=".register.RegisterProfileImageActivity" />
         <activity android:name=".messages.capturingMedia.CaptureActivity" />
         <activity android:name=".SelectAreaOfApplicationActivity" />
+        <service android:name=".NotifyMessageReceivedService"/>
     </application>
 
 </manifest>

@@ -23,6 +23,7 @@ public class AddFriendActivity extends AppCompatActivity {
     EditText txtAddingUsername;
     EditText txtRelationship;
     ImageButton btnSearchFriend;
+    ImageButton btnBackToFriendsList;
     private RecyclerView recyclerView;
 
     CheckInputsValidity checkInputsValidity = new CheckInputsValidity(this);
@@ -40,15 +41,27 @@ public class AddFriendActivity extends AppCompatActivity {
         btnSearchFriend = findViewById(R.id.btnSearchFriend);
         txtRelationship = findViewById(R.id.txtReceivedFriendRequestRelationship);
         recyclerView = findViewById(R.id.lstAddFriend);
+        btnBackToFriendsList = findViewById(R.id.btnBackToFriendsList);
 
         setBtnSearchFriendOnClick();
         displayFriendRequests();
+        setBtnBackToFriendsList();
     }
 
     @Override
     public void onBackPressed() {
         Intent intent = new Intent(AddFriendActivity.this, ViewFriendsListActivity.class);
         AddFriendActivity.this.startActivity(intent);
+    }
+
+    private void setBtnBackToFriendsList(){
+        btnBackToFriendsList.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(AddFriendActivity.this, ViewFriendsListActivity.class);
+                AddFriendActivity.this.startActivity(intent);
+            }
+        });
     }
 
     private void displayFriendRequests() {

@@ -20,10 +20,12 @@ import messaging.app.R;
 import messaging.app.login.LoginActivity;
 import messaging.app.login.ResetPasswordActivity;
 import messaging.app.messages.MessagesActivity;
+import messaging.app.messages.capturingMedia.CaptureActivity;
 
 public class ViewFriendsListActivity extends AppCompatActivity {
 
     Button btnLoadAddFriendActivity;
+    ImageButton btnBackToMessagesActivity;
 
     private RecyclerView recyclerView;
     private RecyclerView.Adapter mAdapter;
@@ -36,11 +38,12 @@ public class ViewFriendsListActivity extends AppCompatActivity {
         setContentView(R.layout.activity_view_friends_list);
 
         btnLoadAddFriendActivity = findViewById(R.id.btnAddFriend);
+        btnBackToMessagesActivity = findViewById(R.id.btnBackToMessagesActivity);
         recyclerView = findViewById(R.id.lstFriendsList);
 
         setBtnLoadAddFriendActivityOnClick();
         displayFriends();
-
+        setBtnBackToMessagesActivity();
     }
 
 
@@ -48,6 +51,18 @@ public class ViewFriendsListActivity extends AppCompatActivity {
     public void onBackPressed() {
         Intent intent = new Intent(ViewFriendsListActivity.this, MessagesActivity.class);
         ViewFriendsListActivity.this.startActivity(intent);
+    }
+
+
+
+    private void setBtnBackToMessagesActivity(){
+        btnBackToMessagesActivity.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(ViewFriendsListActivity.this, MessagesActivity.class);
+                ViewFriendsListActivity.this.startActivity(intent);
+            }
+        });
     }
 
     private void displayFriends() {

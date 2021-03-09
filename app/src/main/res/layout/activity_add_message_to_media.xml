@@ -44,7 +44,6 @@
         android:layout_height="227dp"
         android:layout_gravity="center"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
@@ -116,4 +115,15 @@
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/divider18" />
+
+
+    <ImageButton
+        android:id="@+id/btnBackToCaptureMedia"
+        android:layout_width="70dp"
+        android:layout_height="70dp"
+        android:background="@null"
+        android:scaleType="centerCrop"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/back_icon" />
 </androidx.constraintlayout.widget.ConstraintLayout>

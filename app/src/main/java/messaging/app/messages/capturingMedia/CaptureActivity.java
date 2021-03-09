@@ -54,6 +54,8 @@ import java.util.Arrays;
 import messaging.app.MediaManagement;
 import messaging.app.R;
 import messaging.app.messages.MessagesActivity;
+import messaging.app.messages.friendsList.EditFriendActivity;
+import messaging.app.messages.friendsList.ViewFriendsListActivity;
 import messaging.app.messages.sendingMedia.AddMessageToMediaActivity;
 import messaging.app.register.RegisterProfileImageActivity;
 
@@ -88,6 +90,7 @@ public class CaptureActivity extends AppCompatActivity {
     private ImageButton btnStopVideo;
     private ImageButton btnCancel;
     private ImageButton btnLoadMessageActivity;
+    private ImageButton btnBackToMessagesActivity;
     public TextureView cameraView;
     public VideoView capturedVideoView;
     private ImageView capturedImageView;
@@ -136,6 +139,7 @@ public class CaptureActivity extends AppCompatActivity {
         btnCaptureImage = (ImageButton) findViewById(R.id.btnTakePhoto);
         btnStopVideo = (ImageButton) findViewById(R.id.btnStopVideo);
         btnCancel = (ImageButton) findViewById(R.id.btnCancel);
+        btnBackToMessagesActivity = (ImageButton) findViewById(R.id.btnBackToMessagesActivity);
         btnLoadMessageActivity = (ImageButton) findViewById(R.id.btnEnterMessageActivity);
         capturedVideoView = (VideoView) findViewById(R.id.capturedVideoView);
         capturedImageView = (ImageView) findViewById(R.id.capturedImageView);
@@ -176,6 +180,7 @@ public class CaptureActivity extends AppCompatActivity {
         //create events
         captureImageOnClick();
         cancelMediaOnClick();
+        setBtnBackToMessagesActivity();
 
     }
 
@@ -184,6 +189,17 @@ public class CaptureActivity extends AppCompatActivity {
     public void onBackPressed() {
         Intent intent = new Intent(CaptureActivity.this, MessagesActivity.class);
         CaptureActivity.this.startActivity(intent);
+    }
+
+
+    private void setBtnBackToMessagesActivity(){
+        btnBackToMessagesActivity.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(CaptureActivity.this, MessagesActivity.class);
+                CaptureActivity.this.startActivity(intent);
+            }
+        });
     }
 
     @Override
