@@ -126,7 +126,7 @@ public class Formatting {
 
         // Display the TreeMap which is naturally sorted
         for (Map.Entry<Long, Map<String, String>> entry : sorted.entrySet()) {
-            sortedList.add((HashMap<String, String>) entry.getValue());
+            sortedList.add(0, (HashMap<String, String>) entry.getValue());
         }
 
         return sortedList;

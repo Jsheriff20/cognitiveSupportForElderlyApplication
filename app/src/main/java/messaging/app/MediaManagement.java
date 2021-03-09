@@ -100,7 +100,6 @@ public class MediaManagement {
                     bestRatioDifference = currentDifference;
                     mostSimilar = size;
                 }
-                Log.d("Test", "best " + bestRatioDifference);
             }
         }
 

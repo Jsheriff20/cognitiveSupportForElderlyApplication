@@ -63,14 +63,6 @@ import static android.widget.Toast.LENGTH_SHORT;
 
 public class CaptureActivity extends AppCompatActivity {
 
-    //TODO:
-    //remove saved files once sent
-    // function built
-    //add the ability to use flash
-    //add manual focus
-    // add the ability to zoom
-    //add front facing camera
-
     //state orientation of output image
     private static final SparseIntArray ORIENTATIONS = new SparseIntArray();
     private static final int REQUEST_CAMERA_PERMISSION_RESULT = 101;
@@ -187,6 +179,14 @@ public class CaptureActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
+
+        if(!mImageFilePath.equals("")) {
+            mediaManagement.deleteMediaFile(mImageFilePath, this);
+        }
+        else{
+            mediaManagement.deleteMediaFile(mVideoFilePath, this);
+        }
+
         Intent intent = new Intent(CaptureActivity.this, MessagesActivity.class);
         CaptureActivity.this.startActivity(intent);
     }
@@ -196,6 +196,14 @@ public class CaptureActivity extends AppCompatActivity {
         btnBackToMessagesActivity.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                if(!mImageFilePath.equals("")) {
+                    mediaManagement.deleteMediaFile(mImageFilePath, getApplicationContext());
+                }
+                else{
+                    mediaManagement.deleteMediaFile(mVideoFilePath, getApplicationContext());
+                }
+
+
                 Intent intent = new Intent(CaptureActivity.this, MessagesActivity.class);
                 CaptureActivity.this.startActivity(intent);
             }

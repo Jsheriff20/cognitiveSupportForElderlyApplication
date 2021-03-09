@@ -51,7 +51,6 @@ public class ViewTextMessageActivity extends AppCompatActivity {
 
 
         //display the "displayingMessage" data to the user
-        Log.d("test", "onCreate: " + displayingMessage.getFullName());
         lblMessageFromName.setText(displayingMessage.getFullName());
         lblDisplayingMessage.setText(displayingMessage.getTextMessage());
 

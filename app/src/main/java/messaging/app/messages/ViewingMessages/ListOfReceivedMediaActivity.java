@@ -69,10 +69,9 @@ public class ListOfReceivedMediaActivity extends AppCompatActivity {
         contactingFirebase.getExistingReceivedMediaDetails(new ContactingFirebase.OnGetExistingReceivedMediaDetailsListener() {
             @Override
             public void onSuccess(List<HashMap<String, String>> receivedMediaDetails, int numberOfStories) {
-                Log.d("test", "receivedMediaDetails: " + receivedMediaDetails);
 
                 //reorder messages so most recent is displayed first
-//                receivedMediaDetails = formatting.orderReceivedMediaDetails(receivedMediaDetails);
+                receivedMediaDetails = formatting.orderReceivedMediaDetails(receivedMediaDetails);
 
                 //display to user
                 mLayoutManager = new LinearLayoutManager(getApplicationContext());

@@ -186,9 +186,6 @@ public class AddMessageToMediaActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 recordAudioForText(false);
-                //TODO:
-                //convert the file just recorded into text
-                //or at the same time of recording, gather words
 
             }
         });

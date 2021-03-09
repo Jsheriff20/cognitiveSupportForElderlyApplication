@@ -26,6 +26,7 @@ import java.io.File;
 import java.io.IOException;
 
 import messaging.app.ContactingFirebase;
+import messaging.app.MediaManagement;
 import messaging.app.login.LoginActivity;
 import messaging.app.R;
 import messaging.app.messages.MessagesActivity;
@@ -53,8 +54,10 @@ public class RegisterProfileImageActivity extends AppCompatActivity {
     String mFirstName;
     String mSurname;
     Uri mProfileImage = null;
+    String mProfileImagePath = null;
     int mProfileImageRotation = 0;
     ContactingFirebase contactingFirebase = new ContactingFirebase(this);
+    MediaManagement mediaManagement = new MediaManagement();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,17 +78,17 @@ public class RegisterProfileImageActivity extends AppCompatActivity {
         mSurname = getIntent().getStringExtra("surname");
 
         if(getIntent().getStringExtra("profileImage") != null){
-            String profileImagePath = getIntent().getStringExtra("profileImage");
+            mProfileImagePath = getIntent().getStringExtra("profileImage");
             mProfileImageRotation = getIntent().getIntExtra("profileImageRotation", 0);
 
             btnRegister.setText("Register");
 
 
-            Bitmap profileImage = BitmapFactory.decodeFile(profileImagePath);
+            Bitmap profileImage = BitmapFactory.decodeFile(mProfileImagePath);
             profileImage = RotateBitmap(profileImage, mProfileImageRotation);
 
 
-            mProfileImage = Uri.fromFile(new File(profileImagePath));
+            mProfileImage = Uri.fromFile(new File(mProfileImagePath));
 
             imgProfileImage.setImageBitmap(profileImage);
         }
@@ -102,7 +105,6 @@ public class RegisterProfileImageActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-
         btnBackToRegisterPersonalInfo.callOnClick();
     }
 
@@ -118,6 +120,10 @@ public class RegisterProfileImageActivity extends AppCompatActivity {
         btnBackToRegisterPersonalInfo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if(!mProfileImagePath.equals(null)) {
+                    mediaManagement.deleteMediaFile(mProfileImagePath, getApplicationContext());
+                }
+
                 Intent intent = new Intent(RegisterProfileImageActivity.this, RegisterPersonalInfoActivity.class);
                 intent.putExtra("email", mEmail);
                 intent.putExtra("password", mPassword);

@@ -96,8 +96,12 @@ public class ContactingFirebase {
                                             } else {
                                                 mCurrentUser.delete();
                                                 Toast.makeText(context, "Registration failed!", Toast.LENGTH_SHORT).show();
-                                                return;
                                             }
+
+                                            MediaManagement mediaManagement = new MediaManagement();
+                                            mediaManagement.deleteMediaFile(profileImage.toString(), context);
+
+                                            return;
                                         }
                                     });
 
@@ -352,7 +356,6 @@ public class ContactingFirebase {
                             DatabaseReference databaseRef = mDatabase.getReference();
 
                             for (String friendsUUID : listOfUUIDs) {
-                                Log.d(TAG, "friendsUUID: " + friendsUUID);
                                 if (sendingTo == "directlyToFriend") {
                                     databaseRef.child("messages/" + friendsUUID + "/" + getCurrentUsersUUID() + "/fullName").setValue(sendersFullName);
                                     databaseRef.child("messages/" + friendsUUID + "/" + getCurrentUsersUUID() + "/unopened").setValue(true);
@@ -757,12 +760,10 @@ public class ContactingFirebase {
                                         getUsernamesUUID(friendsUsername, new OnGetUUIDListener() {
                                             @Override
                                             public void onSuccess(final String friendsUUID) {
-                                                Log.d(TAG, "addFriend: 0");
                                                 checkReceivedFriendRequestFrom(friendsUUID, new OnCheckReceivedFriendRequestFromListener() {
                                                     @Override
                                                     public void onSuccess(boolean haveExistingFriendRequest) {
 
-                                                        Log.d(TAG, "addFriend: 1");
                                                         if (haveExistingFriendRequest) {
                                                             Toast.makeText(context, "Friend request to " + friendsUsername + " was automatically accepted", Toast.LENGTH_SHORT).show();
                                                             acceptFriendRequest(friendsUUID, friendsUsername);
@@ -772,7 +773,6 @@ public class ContactingFirebase {
                                                         sendFriendRequest(friendsUsername, relationship, new OnCheckIfFriendRequestSentListener() {
                                                             @Override
                                                             public void onSuccess(boolean requestSentSuccessfully) {
-                                                                Log.d(TAG, "addFriend: 2");
                                                                 if (requestSentSuccessfully) {
                                                                     Toast.makeText(context, "Friend request to " + friendsUsername + " was sent successfully", Toast.LENGTH_SHORT).show();
                                                                 } else {
@@ -1417,13 +1417,10 @@ public class ContactingFirebase {
 //                for (DataSnapshot ds : snapshot.getChildren()) {
 //                    loopNum++;
 //                    if (loopNum == numberOfStoryMessages) {
-//                        Log.d(TAG, "onDataChange: " + ds);
 //                        for (DataSnapshot subDS : ds.getChildren()) {
 //                            {
-//                                Log.d(TAG, "onDataChange: " + subDS);
 //                                if (subDS.getKey().equals("fullName")) {
 //                                    sendersName = (String) subDS.getValue();
-//                                    Log.d(TAG, "sendersName: " + sendersName);
 //                                    break;
 //
 //                                }
@@ -1433,7 +1430,6 @@ public class ContactingFirebase {
 //                    }
 //                }
 //
-//                Log.d(TAG, "onDataChange: " + sendersName);
 
                 //check that a new message has been added and that it is not the first loop
                 if (previousNumberOfStoryMessages < numberOfStoryMessages && !initiationOfStoryMessageListener) {

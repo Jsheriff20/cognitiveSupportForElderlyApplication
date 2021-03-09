@@ -34,7 +34,6 @@ public class CheckInputsValidity {
         String overallPattern = "(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=\\S+$).{8,}";
         String missingFromPassword = "Your password is missing: ";
 
-        Log.d("Test", "isPasswordValid: " + password);
         if (password.length() < 8) {
             Toast.makeText(context, "Your password must be at least 8 characters long", Toast.LENGTH_SHORT).show();
             return false;
@@ -54,7 +53,6 @@ public class CheckInputsValidity {
             if (!missingFromPassword.equals("Your password is missing: ")) {
                 Toast.makeText(context, missingFromPassword, Toast.LENGTH_SHORT).show();
             }
-            Log.d("Test", "isPasswordValid: " + password.matches(overallPattern));
             return password.matches(overallPattern);
         }
     }

@@ -180,12 +180,9 @@ public class AddFriendsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 
 
     public int getItemViewType(int position){
-        Log.d("Test", "position: " + position);
         if(position < mSentFriendRequests.size()){
-            Log.d("Test", "return: " + 0);
             return 0;
         }
-        Log.d("Test", "return: " + 1);
         return 1;
     }
 
