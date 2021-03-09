@@ -1,7 +1,11 @@
 package messaging.app.messages.sendingMedia;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.media.ExifInterface;
+import android.os.StrictMode;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,8 +17,12 @@ import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.squareup.picasso.Picasso;
 
+import java.io.BufferedInputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -29,6 +37,9 @@ public class SendMediaToFriendsListAdapter extends RecyclerView.Adapter<SendMedi
     public List mSelectedFriends = new ArrayList();
     MediaManagement mediaManagement = new MediaManagement();
     onFriendsSelectRecyclerViewClickedUUIDListener listener;
+
+    private File mImageFolder;
+    private String mImageFilePath;
 
 
     public interface onFriendsSelectRecyclerViewClickedUUIDListener {
@@ -63,7 +74,43 @@ public class SendMediaToFriendsListAdapter extends RecyclerView.Adapter<SendMedi
         holder.lblRelationship.setText(currentListItem.getRelationship());
         holder.UUID = currentListItem.getUUID();
         holder.profileImageRotation = mediaManagement.exifToDegrees(currentListItem.getProfileImageRotation());
-        Picasso.with(context).load(currentListItem.getProfileImageUrl()).rotate(holder.profileImageRotation).into(holder.imgFriendsImage);
+
+        if(currentListItem.getProfileImageUrl() != null && !currentListItem.getProfileImageUrl().equals("") ) {
+            //create directories for files
+            File[] mediaFolders = mediaManagement.createMediaFolders();
+            mImageFolder = mediaFolders[1];
+
+            try {
+
+                mImageFilePath = mediaManagement.createImageFileName(mImageFolder).getAbsolutePath();
+                try (BufferedInputStream inputStream = new BufferedInputStream(new URL(currentListItem.getProfileImageUrl()).openStream());
+                     FileOutputStream fileOS = new FileOutputStream(mImageFilePath)) {
+                    byte data[] = new byte[1024];
+                    int byteContent;
+                    while ((byteContent = inputStream.read(data, 0, 1024)) != -1) {
+                        fileOS.write(data, 0, byteContent);
+                    }
+
+                } catch (IOException e) {
+                    // handles IO exceptions
+                }
+
+
+                ExifInterface exif = null;
+                //display the media in the correct rotation
+                exif = new ExifInterface(mImageFilePath);
+                int exifOrientation = exif.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL);
+                Bitmap myBitmap = BitmapFactory.decodeFile(new File(mImageFilePath).getAbsolutePath());
+
+                Bitmap adjustedBitmapImage = mediaManagement.adjustBitmapImage(exifOrientation, myBitmap);
+
+                holder.imgFriendsImage.setImageBitmap(adjustedBitmapImage);
+
+                mediaManagement.deleteMediaFile(mImageFilePath, context);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
 
 
         holder.friendRowLayout.setOnClickListener(new View.OnClickListener() {
@@ -109,6 +156,15 @@ public class SendMediaToFriendsListAdapter extends RecyclerView.Adapter<SendMedi
             lblName = itemView.findViewById(R.id.lblSendMessageName);
             lblRelationship = itemView.findViewById(R.id.lblSendMessageRelationship);
             friendRowLayout = itemView.findViewById(R.id.sendMediaFriendRowLayout);
+
+
+            int SDK_INT = android.os.Build.VERSION.SDK_INT;
+            if (SDK_INT > 8) {
+                StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder()
+                        .permitAll().build();
+                StrictMode.setThreadPolicy(policy);
+
+            }
         }
 
     }

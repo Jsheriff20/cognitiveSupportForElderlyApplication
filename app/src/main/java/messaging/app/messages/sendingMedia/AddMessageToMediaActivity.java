@@ -9,6 +9,8 @@ import android.Manifest;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.media.ExifInterface;
 import android.media.MediaPlayer;
 import android.media.MediaRecorder;
@@ -65,6 +67,7 @@ public class AddMessageToMediaActivity extends AppCompatActivity {
     private String mReplyingToUUID = null;
 
     ContactingFirebase contactingFirebase = new ContactingFirebase(this);
+    MediaManagement mediaManagement = new MediaManagement();
 
 
     @Override
@@ -286,8 +289,21 @@ public class AddMessageToMediaActivity extends AppCompatActivity {
 
                 //update image view
                 if(mediaFile.exists()){
+                    try {
 
-                    Picasso.with(this).load(mediaFile).into(imgCapturedImagePreview);
+                        ExifInterface exif = null;
+                        //display the media in the correct rotation
+                        exif = new ExifInterface(mediaFile.getPath());
+                        int exifOrientation = exif.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL);
+                        Bitmap myBitmap = BitmapFactory.decodeFile(mediaFile.getAbsolutePath());
+
+                        Bitmap adjustedBitmapImage = mediaManagement.adjustBitmapImage(exifOrientation, myBitmap);
+
+                        imgCapturedImagePreview.setImageBitmap(adjustedBitmapImage);
+
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
 
                 }else{
                     Toast.makeText(getApplicationContext(), "Could not find image", LENGTH_SHORT).show();

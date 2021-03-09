@@ -83,14 +83,25 @@ public class RegisterProfileImageActivity extends AppCompatActivity {
 
             btnRegister.setText("Register");
 
-
-            Bitmap profileImage = BitmapFactory.decodeFile(mProfileImagePath);
-            profileImage = RotateBitmap(profileImage, mProfileImageRotation);
-
-
             mProfileImage = Uri.fromFile(new File(mProfileImagePath));
 
-            imgProfileImage.setImageBitmap(profileImage);
+            try {
+
+                ExifInterface exif = null;
+                //display the media in the correct rotation
+                exif = new ExifInterface(mProfileImagePath);
+                int exifOrientation = exif.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL);
+                Bitmap myBitmap = BitmapFactory.decodeFile(new File(mProfileImagePath).getAbsolutePath());
+
+                Bitmap adjustedBitmapImage = mediaManagement.adjustBitmapImage(exifOrientation, myBitmap);
+
+                imgProfileImage.setImageBitmap(adjustedBitmapImage);
+
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+
         }
 
         setBtnCapturePhotoOnClick();

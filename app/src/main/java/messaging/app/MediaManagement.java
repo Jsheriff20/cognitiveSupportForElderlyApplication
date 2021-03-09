@@ -5,12 +5,14 @@ import android.graphics.Bitmap;
 import android.graphics.Matrix;
 import android.graphics.RectF;
 import android.media.ExifInterface;
+import android.os.Environment;
 import android.util.Log;
 import android.util.Size;
 import android.view.Surface;
 import android.widget.Toast;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -111,7 +113,7 @@ public class MediaManagement {
 
 
 
-    public static Bitmap RotateBitmap(Bitmap source, float angle){
+    public static Bitmap rotateBitmap(Bitmap source, float angle){
         Matrix matrix = new Matrix();
         matrix.postRotate(angle);
         return Bitmap.createBitmap(source, 0, 0, source.getWidth(), source.getHeight(), matrix, true);
@@ -122,6 +124,18 @@ public class MediaManagement {
         else if (exifOrientation == ExifInterface.ORIENTATION_ROTATE_180) {  return 180; }
         else if (exifOrientation == ExifInterface.ORIENTATION_ROTATE_270) {  return 270; }
         return 0;
+    }
+
+
+    public static String degreesToExif(int orientation) {
+        if (orientation == 90) {
+            return String.valueOf(ExifInterface.ORIENTATION_ROTATE_90);
+        } else if (orientation == 180) {
+            return String.valueOf(0);
+        } else if (orientation == 270) {
+            return String.valueOf(0);
+        }
+        return String.valueOf(0);
     }
 
 
@@ -142,29 +156,29 @@ public class MediaManagement {
         switch (exifOrientation)
         {
             case 2:
-                myBitmap = RotateBitmap(myBitmap, 0);
+                myBitmap = rotateBitmap(myBitmap, 0);
                 myBitmap = FlipBitmap(myBitmap, "Horizontally");
                 break;
             case 3:
-                myBitmap = RotateBitmap(myBitmap, 180);
+                myBitmap = rotateBitmap(myBitmap, 180);
                 break;
             case 4:
-                myBitmap = RotateBitmap(myBitmap, 270);
+                myBitmap = rotateBitmap(myBitmap, 270);
                 myBitmap = FlipBitmap(myBitmap, "Horizontally");
                 break;
             case 5:
-                myBitmap = RotateBitmap(myBitmap, 90);
+                myBitmap = rotateBitmap(myBitmap, 90);
                 myBitmap = FlipBitmap(myBitmap, "Horizontally");
                 break;
             case 6:
-                myBitmap = RotateBitmap(myBitmap, 90);
+                myBitmap = rotateBitmap(myBitmap, 90);
                 break;
             case 7:
-                myBitmap = RotateBitmap(myBitmap, 90);
+                myBitmap = rotateBitmap(myBitmap, 90);
                 myBitmap = FlipBitmap(myBitmap, "Vertically");
                 break;
             case 8:
-                myBitmap = RotateBitmap(myBitmap, 270);
+                myBitmap = rotateBitmap(myBitmap, 270);
                 break;
             default:
                 break;
@@ -172,6 +186,41 @@ public class MediaManagement {
 
         return myBitmap;
     }
+
+
+
+    public File createVideoFileName(File videoFolder) throws IOException {
+        File videoFile = File.createTempFile("tempFile", ".mp4", videoFolder);
+        return videoFile;
+    }
+
+
+    public File createImageFileName(File imageFolder) throws IOException {
+
+        File imageFile = File.createTempFile("tempFile", ".jpg", imageFolder);
+        return imageFile;
+    }
+
+
+    public File[] createMediaFolders() {
+        //create folders for media files
+        File movieDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MOVIES);
+        File imageDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES);
+
+        File videoFolder = new File(movieDir, "capturesFromElderlyApp");
+        File imageFolder = new File(imageDir, "capturesFromElderlyApp");
+
+        if (!videoFolder.exists()) {
+            videoFolder.mkdirs();
+        }
+        if (!imageFolder.exists()) {
+            imageFolder.mkdirs();
+        }
+
+        File[] returnArray = {videoFolder, imageFolder};
+        return returnArray;
+    }
+
 
 }
 

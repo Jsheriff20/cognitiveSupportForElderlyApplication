@@ -28,6 +28,7 @@ public class ListOfReceivedMediaActivity extends AppCompatActivity {
 
     private RecyclerView recyclerView;
     ImageButton btnBackToMessagesActivity;
+    ImageButton btnRefreshMessages;
 
     private ViewingMessagesReceivedAdapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
@@ -42,9 +43,11 @@ public class ListOfReceivedMediaActivity extends AppCompatActivity {
 
         recyclerView = findViewById(R.id.lstConversations);
         btnBackToMessagesActivity = findViewById(R.id.btnBackToMessagesActivity);
+        btnRefreshMessages = findViewById(R.id.btnRefreshMessages);
 
         displayConversations();
         setBtnBackToMessagesActivity();
+        setBtnRefreshMessages();
     }
 
 
@@ -54,6 +57,16 @@ public class ListOfReceivedMediaActivity extends AppCompatActivity {
             public void onClick(View view) {
                 Intent intent = new Intent(ListOfReceivedMediaActivity.this, MessagesActivity.class);
                 ListOfReceivedMediaActivity.this.startActivity(intent);
+            }
+        });
+    }
+
+    private void setBtnRefreshMessages(){
+        btnRefreshMessages.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                finish();
+                startActivity(getIntent());
             }
         });
     }

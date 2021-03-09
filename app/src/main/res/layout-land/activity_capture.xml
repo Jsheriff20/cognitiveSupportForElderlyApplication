@@ -126,4 +126,17 @@
         app:srcCompat="@drawable/back_icon" />
 
 
+    <ImageButton
+        android:id="@+id/btnRotateCamera"
+        android:layout_width="70dp"
+        android:layout_height="70dp"
+        android:layout_marginTop="24dp"
+        android:layout_marginEnd="21dp"
+        android:background="@null"
+        android:scaleType="centerCrop"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/rotate_camera_icon" />
+
+
 </androidx.constraintlayout.widget.ConstraintLayout>

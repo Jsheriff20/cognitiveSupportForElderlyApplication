@@ -4,16 +4,23 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.media.ExifInterface;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Parcelable;
+import android.os.StrictMode;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.VideoView;
 
-import com.squareup.picasso.Picasso;
-
+import java.io.BufferedInputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.net.URL;
 import java.util.ArrayList;
 
 import messaging.app.ContactingFirebase;
@@ -39,6 +46,9 @@ public class ViewMediaMessageActivity extends AppCompatActivity {
     String messageUrl;
     int deviceOrientationMode;
     ArrayList<Parcelable> messageList;
+
+    private File mImageFolder;
+    private String mImageFilePath;
 
     ContactingFirebase contactingFirebase = new ContactingFirebase(this);
 
@@ -77,31 +87,82 @@ public class ViewMediaMessageActivity extends AppCompatActivity {
 
         messageUrl = displayingMessage.getMediaMessageUrl();
         String fileExtension = displayingMessage.getFileExtension();
+
+        int SDK_INT = android.os.Build.VERSION.SDK_INT;
+        if (SDK_INT > 8) {
+            StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder()
+                    .permitAll().build();
+            StrictMode.setThreadPolicy(policy);
+
+        }
+
         if (fileExtension.equals(".jpg")) {
-
-
-
-            vidViewMediaMessage.setVisibility(View.INVISIBLE);
-            int rotation = mediaManagement.exifToDegrees(displayingMessage.getMediaMessageRotation());
-            int currentDeviceOrientationMode = getWindowManager().getDefaultDisplay().getRotation();
-            if(currentDeviceOrientationMode != deviceOrientationMode){
-                rotation += 90;
-            }
-
-            Picasso.with(this).load(messageUrl)
-                    .rotate(rotation)
-                    .into(imgViewMediaMessage);
+            displayReceivedImage();
         }
         else {
-            imgViewMediaMessage.setVisibility(View.INVISIBLE);
-            vidViewMediaMessage.setVideoPath(messageUrl);
-            vidViewMediaMessage.start();
-            setVideoViewListener();
+            displayReceivedVideo();
         }
 
         setBtnViewTextMessageOnClick();
     }
 
+
+    private void displayReceivedImage(){
+        vidViewMediaMessage.setVisibility(View.INVISIBLE);
+
+        if(messageUrl != null && !messageUrl.equals("") ) {
+            //create directories for files
+            File[] mediaFolders = mediaManagement.createMediaFolders();
+            mImageFolder = mediaFolders[1];
+
+            try {
+                mImageFilePath = mediaManagement.createImageFileName(mImageFolder).getAbsolutePath();
+                try (BufferedInputStream inputStream = new BufferedInputStream(new URL(messageUrl).openStream());
+                     FileOutputStream fileOS = new FileOutputStream(mImageFilePath)) {
+                    byte data[] = new byte[1024];
+                    int byteContent;
+                    while ((byteContent = inputStream.read(data, 0, 1024)) != -1) {
+                        fileOS.write(data, 0, byteContent);
+                    }
+
+                } catch (IOException e) {
+                    // handles IO exceptions
+                }
+
+
+                ExifInterface exif = null;
+                //display the media in the correct rotation
+                exif = new ExifInterface(mImageFilePath);
+
+
+                int exifOrientation = exif.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL);
+                Bitmap myBitmap = BitmapFactory.decodeFile(new File(mImageFilePath).getAbsolutePath());
+
+                //pre rotate bitmap to account for the device rotation
+                int currentDeviceOrientationMode = getWindowManager().getDefaultDisplay().getRotation();
+                if (currentDeviceOrientationMode != deviceOrientationMode) {
+                    myBitmap = mediaManagement.rotateBitmap(myBitmap, 90);
+                }
+
+                Bitmap adjustedBitmapImage = mediaManagement.adjustBitmapImage(exifOrientation, myBitmap);
+
+                imgViewMediaMessage.setImageBitmap(adjustedBitmapImage);
+
+
+                mediaManagement.deleteMediaFile(mImageFilePath, getApplicationContext());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+
+    private void displayReceivedVideo(){
+        imgViewMediaMessage.setVisibility(View.INVISIBLE);
+        vidViewMediaMessage.setVideoPath(messageUrl);
+        vidViewMediaMessage.start();
+        setVideoViewListener();
+    }
 
     @Override
     public void onBackPressed() {

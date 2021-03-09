@@ -2,6 +2,10 @@ package messaging.app.messages.ViewingMessages;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.media.ExifInterface;
+import android.os.StrictMode;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,8 +17,12 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.squareup.picasso.Picasso;
 
+import java.io.BufferedInputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -31,6 +39,8 @@ public class ViewingMessagesReceivedAdapter extends RecyclerView.Adapter {
     Context context;
     MediaManagement mediaManagement = new MediaManagement();
     ContactingFirebase contactingFirebase;
+    private File mImageFolder;
+    private String mImageFilePath;
 
 
     public ViewingMessagesReceivedAdapter(List<HashMap<String, String>> receivedMediaDetails, int numberOfStories, Context context) {
@@ -75,6 +85,15 @@ public class ViewingMessagesReceivedAdapter extends RecyclerView.Adapter {
             lblViewMessageFriendsName = itemView.findViewById(R.id.lblViewMessageFriendsName);
             imgFriendsProfileImage = itemView.findViewById(R.id.imgFriendsProfileImage);
             btnMessageAction = itemView.findViewById(R.id.btnMessageAction);
+
+
+            int SDK_INT = android.os.Build.VERSION.SDK_INT;
+            if (SDK_INT > 8) {
+                StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder()
+                        .permitAll().build();
+                StrictMode.setThreadPolicy(policy);
+
+            }
         }
     }
 
@@ -147,10 +166,40 @@ public class ViewingMessagesReceivedAdapter extends RecyclerView.Adapter {
                 friendsMessagesViewHolder.lblViewMessageFriendsName.setText(currentKVPair.get("fullName"));
 
                 if(currentKVPair.get("profileImageUrl") != null) {
-                    int profileImageRotation = mediaManagement.exifToDegrees(Integer.parseInt(currentKVPair.get("profileImageRotation")));
-                    Picasso.with(context).load(currentKVPair.get("profileImageUrl"))
-                            .rotate(profileImageRotation)
-                            .into(friendsMessagesViewHolder.imgFriendsProfileImage);
+                    //create directories for files
+                    File[] mediaFolders = mediaManagement.createMediaFolders();
+                    mImageFolder = mediaFolders[1];
+
+                    try {
+                        mImageFilePath = mediaManagement.createImageFileName(mImageFolder).getAbsolutePath();
+                        try (BufferedInputStream inputStream = new BufferedInputStream(new URL(currentKVPair.get("profileImageUrl")).openStream());
+                             FileOutputStream fileOS = new FileOutputStream(mImageFilePath)) {
+                            byte data[] = new byte[1024];
+                            int byteContent;
+                            while ((byteContent = inputStream.read(data, 0, 1024)) != -1) {
+                                fileOS.write(data, 0, byteContent);
+                            }
+
+                        } catch (IOException e) {
+                            // handles IO exceptions
+                        }
+
+
+                        ExifInterface exif = null;
+                        //display the media in the correct rotation
+                        exif = new ExifInterface(mImageFilePath);
+                        int exifOrientation = exif.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL);
+                        Bitmap myBitmap = BitmapFactory.decodeFile(new File(mImageFilePath).getAbsolutePath());
+
+                        Bitmap adjustedBitmapImage = mediaManagement.adjustBitmapImage(exifOrientation, myBitmap);
+
+                        friendsMessagesViewHolder.imgFriendsProfileImage.setImageBitmap(adjustedBitmapImage);
+
+
+                        mediaManagement.deleteMediaFile(mImageFilePath, context);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
                 }
 
                 if(Integer.parseInt(currentKVPair.get("unopenedMessage")) == 1){
