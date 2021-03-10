@@ -19,6 +19,7 @@ import java.text.Normalizer;
 import messaging.app.CheckInputsValidity;
 import messaging.app.ContactingFirebase;
 import messaging.app.Formatting;
+import messaging.app.ManagingActivityPreview;
 import messaging.app.NotifyMessageReceivedService;
 import messaging.app.R;
 import messaging.app.SelectAreaOfApplicationActivity;
@@ -36,6 +37,7 @@ public class LoginActivity extends AppCompatActivity {
     ContactingFirebase contactingFirebase = new ContactingFirebase(this);
     Formatting formatting = new Formatting();
     CheckInputsValidity checkInputsValidity = new CheckInputsValidity(this);
+    ManagingActivityPreview managingActivityPreview = new ManagingActivityPreview();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,6 +69,15 @@ public class LoginActivity extends AppCompatActivity {
         FirebaseUser currentUser = mAuth.getCurrentUser();
         if(currentUser != null){
             LoginActivity.this.startActivity(new Intent(LoginActivity.this, SelectAreaOfApplicationActivity.class));
+        }
+    }
+
+
+    @Override
+    public void onWindowFocusChanged(boolean hasFocus) {
+        super.onWindowFocusChanged(hasFocus);
+        if (hasFocus) {
+            managingActivityPreview.hideSystemUI(getWindow().getDecorView());
         }
     }
 

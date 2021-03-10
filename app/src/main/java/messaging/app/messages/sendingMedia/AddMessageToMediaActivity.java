@@ -35,6 +35,7 @@ import java.util.ArrayList;
 import java.util.Locale;
 
 import messaging.app.ContactingFirebase;
+import messaging.app.ManagingActivityPreview;
 import messaging.app.MediaManagement;
 import messaging.app.R;
 import messaging.app.login.LoginActivity;
@@ -68,6 +69,7 @@ public class AddMessageToMediaActivity extends AppCompatActivity {
 
     ContactingFirebase contactingFirebase = new ContactingFirebase(this);
     MediaManagement mediaManagement = new MediaManagement();
+    ManagingActivityPreview managingActivityPreview = new ManagingActivityPreview();
 
 
     @Override
@@ -116,6 +118,15 @@ public class AddMessageToMediaActivity extends AppCompatActivity {
         previewCapturedMedia(mTypeOfMediaCaptured, mMediaPath);
         setBtnBackToCaptureMedia();
 
+    }
+
+
+    @Override
+    public void onWindowFocusChanged(boolean hasFocus) {
+        super.onWindowFocusChanged(hasFocus);
+        if (hasFocus) {
+            managingActivityPreview.hideSystemUI(getWindow().getDecorView());
+        }
     }
 
 

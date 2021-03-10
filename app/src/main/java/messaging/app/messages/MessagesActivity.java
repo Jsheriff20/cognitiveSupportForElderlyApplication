@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 
+import messaging.app.ManagingActivityPreview;
 import messaging.app.R;
 import messaging.app.SelectAreaOfApplicationActivity;
 import messaging.app.messages.ViewingMessages.ListOfReceivedMediaActivity;
@@ -20,6 +21,9 @@ public class MessagesActivity extends AppCompatActivity {
     LinearLayoutCompat llaySendMessages;
     LinearLayoutCompat llayViewMessages;
     LinearLayoutCompat llayAppOptions;
+
+    ManagingActivityPreview managingActivityPreview = new ManagingActivityPreview();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -39,6 +43,16 @@ public class MessagesActivity extends AppCompatActivity {
         Intent intent = new Intent(MessagesActivity.this, SelectAreaOfApplicationActivity.class);
         MessagesActivity.this.startActivity(intent);
     }
+
+
+    @Override
+    public void onWindowFocusChanged(boolean hasFocus) {
+        super.onWindowFocusChanged(hasFocus);
+        if (hasFocus) {
+            managingActivityPreview.hideSystemUI(getWindow().getDecorView());
+        }
+    }
+
 
     private void setLayoutButtonOnClick(){
         llaySendMessages.setOnClickListener(new View.OnClickListener() {

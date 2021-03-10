@@ -24,6 +24,7 @@ import java.net.URL;
 import java.util.ArrayList;
 
 import messaging.app.ContactingFirebase;
+import messaging.app.ManagingActivityPreview;
 import messaging.app.MediaManagement;
 import messaging.app.R;
 import messaging.app.login.LoginActivity;
@@ -51,6 +52,7 @@ public class ViewMediaMessageActivity extends AppCompatActivity {
     private String mImageFilePath;
 
     ContactingFirebase contactingFirebase = new ContactingFirebase(this);
+    ManagingActivityPreview managingActivityPreview = new ManagingActivityPreview();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -104,6 +106,15 @@ public class ViewMediaMessageActivity extends AppCompatActivity {
         }
 
         setBtnViewTextMessageOnClick();
+    }
+
+
+    @Override
+    public void onWindowFocusChanged(boolean hasFocus) {
+        super.onWindowFocusChanged(hasFocus);
+        if (hasFocus) {
+            managingActivityPreview.hideSystemUI(getWindow().getDecorView());
+        }
     }
 
 

@@ -10,6 +10,7 @@ import android.widget.EditText;
 
 import messaging.app.CheckInputsValidity;
 import messaging.app.Formatting;
+import messaging.app.ManagingActivityPreview;
 import messaging.app.login.LoginActivity;
 import messaging.app.R;
 
@@ -22,6 +23,7 @@ public class RegisterPersonalInfoActivity extends AppCompatActivity {
     Button btnBackToRegisterUsername;
     CheckInputsValidity checkInputsValidity = new CheckInputsValidity(this);
     Formatting formatting = new Formatting();
+    ManagingActivityPreview managingActivityPreview = new ManagingActivityPreview();
 
     String mEmail;
     String mPassword;
@@ -61,6 +63,15 @@ public class RegisterPersonalInfoActivity extends AppCompatActivity {
     public void onBackPressed() {
 
         btnBackToRegisterUsername.callOnClick();
+    }
+
+
+    @Override
+    public void onWindowFocusChanged(boolean hasFocus) {
+        super.onWindowFocusChanged(hasFocus);
+        if (hasFocus) {
+            managingActivityPreview.hideSystemUI(getWindow().getDecorView());
+        }
     }
 
 

@@ -16,6 +16,7 @@ import java.util.List;
 
 import messaging.app.CheckInputsValidity;
 import messaging.app.ContactingFirebase;
+import messaging.app.ManagingActivityPreview;
 import messaging.app.R;
 import messaging.app.login.LoginActivity;
 import messaging.app.login.ResetPasswordActivity;
@@ -31,6 +32,7 @@ public class ViewFriendsListActivity extends AppCompatActivity {
     private RecyclerView.Adapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
     ContactingFirebase contactingFirebase = new ContactingFirebase(this);
+    ManagingActivityPreview managingActivityPreview = new ManagingActivityPreview();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,6 +55,14 @@ public class ViewFriendsListActivity extends AppCompatActivity {
         ViewFriendsListActivity.this.startActivity(intent);
     }
 
+
+    @Override
+    public void onWindowFocusChanged(boolean hasFocus) {
+        super.onWindowFocusChanged(hasFocus);
+        if (hasFocus) {
+            managingActivityPreview.hideSystemUI(getWindow().getDecorView());
+        }
+    }
 
 
     private void setBtnBackToMessagesActivity(){

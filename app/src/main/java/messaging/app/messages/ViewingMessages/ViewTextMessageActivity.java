@@ -13,6 +13,7 @@ import android.widget.TextView;
 import java.util.ArrayList;
 
 import messaging.app.Formatting;
+import messaging.app.ManagingActivityPreview;
 import messaging.app.R;
 
 public class ViewTextMessageActivity extends AppCompatActivity {
@@ -25,6 +26,7 @@ public class ViewTextMessageActivity extends AppCompatActivity {
     Button btnViewMediaMessage;
 
     Formatting formatting = new Formatting();
+    ManagingActivityPreview managingActivityPreview = new ManagingActivityPreview();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,6 +68,16 @@ public class ViewTextMessageActivity extends AppCompatActivity {
         Intent intent = new Intent(ViewTextMessageActivity.this, ListOfReceivedMediaActivity.class);
         ViewTextMessageActivity.this.startActivity(intent);
     }
+
+
+    @Override
+    public void onWindowFocusChanged(boolean hasFocus) {
+        super.onWindowFocusChanged(hasFocus);
+        if (hasFocus) {
+            managingActivityPreview.hideSystemUI(getWindow().getDecorView());
+        }
+    }
+
 
     private void setBtnViewMediaMessageOnClick(){
         btnViewMediaMessage.setOnClickListener(new View.OnClickListener() {

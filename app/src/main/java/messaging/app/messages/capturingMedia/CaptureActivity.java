@@ -51,6 +51,7 @@ import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.util.Arrays;
 
+import messaging.app.ManagingActivityPreview;
 import messaging.app.MediaManagement;
 import messaging.app.R;
 import messaging.app.messages.MessagesActivity;
@@ -111,6 +112,7 @@ public class CaptureActivity extends AppCompatActivity {
 
     private String mTypeOfMediaCaptured;
     private MediaManagement mediaManagement = new MediaManagement();
+    ManagingActivityPreview managingActivityPreview = new ManagingActivityPreview();
 
     private boolean mCaptureForProfileImage;
     private String mReplyingToUUID = null;
@@ -279,6 +281,15 @@ public class CaptureActivity extends AppCompatActivity {
         stopBackgroundThread();
         super.onPause();
 
+    }
+
+
+    @Override
+    public void onWindowFocusChanged(boolean hasFocus) {
+        super.onWindowFocusChanged(hasFocus);
+        if (hasFocus) {
+            managingActivityPreview.hideSystemUI(getWindow().getDecorView());
+        }
     }
 
 

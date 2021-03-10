@@ -12,6 +12,7 @@ import android.widget.Toast;
 import messaging.app.CheckInputsValidity;
 import messaging.app.ContactingFirebase;
 import messaging.app.Formatting;
+import messaging.app.ManagingActivityPreview;
 import messaging.app.login.LoginActivity;
 import messaging.app.R;
 import messaging.app.messages.ViewingMessages.ListOfReceivedMediaActivity;
@@ -25,6 +26,7 @@ public class RegisterEmailActivity extends AppCompatActivity {
     CheckInputsValidity checkInputsValidity = new CheckInputsValidity(this);
     ContactingFirebase contactingFirebase = new ContactingFirebase(this);
     Formatting formatting = new Formatting();
+    ManagingActivityPreview managingActivityPreview = new ManagingActivityPreview();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,6 +56,16 @@ public class RegisterEmailActivity extends AppCompatActivity {
         Intent intent = new Intent(RegisterEmailActivity.this, LoginActivity.class);
         RegisterEmailActivity.this.startActivity(intent);
     }
+
+
+    @Override
+    public void onWindowFocusChanged(boolean hasFocus) {
+        super.onWindowFocusChanged(hasFocus);
+        if (hasFocus) {
+            managingActivityPreview.hideSystemUI(getWindow().getDecorView());
+        }
+    }
+
 
 
     private void setBtnLoadPasswordRegisterOnClick(){

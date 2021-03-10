@@ -19,7 +19,8 @@ public class SelectAreaOfApplicationActivity extends AppCompatActivity {
     LinearLayoutCompat llayMemories;
     LinearLayoutCompat llayGames;
     LinearLayoutCompat llaySettings;
-    ContactingFirebase contactingFirebase = new ContactingFirebase(this);
+    ManagingActivityPreview managingActivityPreview = new ManagingActivityPreview();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -48,6 +49,14 @@ public class SelectAreaOfApplicationActivity extends AppCompatActivity {
         System.exit(0);
     }
 
+
+    @Override
+    public void onWindowFocusChanged(boolean hasFocus) {
+        super.onWindowFocusChanged(hasFocus);
+        if (hasFocus) {
+            managingActivityPreview.hideSystemUI(getWindow().getDecorView());
+        }
+    }
 
 
     private void setLayoutButtonOnClick(){

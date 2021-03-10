@@ -9,6 +9,7 @@ import android.widget.Button;
 import android.widget.EditText;
 
 import messaging.app.ContactingFirebase;
+import messaging.app.ManagingActivityPreview;
 import messaging.app.R;
 
 public class ResetPasswordActivity extends AppCompatActivity {
@@ -18,6 +19,7 @@ public class ResetPasswordActivity extends AppCompatActivity {
     Button btnLoadLogin;
 
     ContactingFirebase contactingFirebase = new ContactingFirebase(this);
+    ManagingActivityPreview managingActivityPreview = new ManagingActivityPreview();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,6 +40,9 @@ public class ResetPasswordActivity extends AppCompatActivity {
         Intent intent = new Intent(ResetPasswordActivity.this, LoginActivity.class);
         ResetPasswordActivity.this.startActivity(intent);
     }
+
+
+
 
     private void setBtnLoadLoginOnClick(){
         btnLoadLogin.setOnClickListener(new View.OnClickListener() {

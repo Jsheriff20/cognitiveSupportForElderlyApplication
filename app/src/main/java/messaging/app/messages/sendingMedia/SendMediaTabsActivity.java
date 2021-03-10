@@ -25,6 +25,7 @@ import java.util.List;
 import java.util.Map;
 
 import messaging.app.ContactingFirebase;
+import messaging.app.ManagingActivityPreview;
 import messaging.app.R;
 import messaging.app.messages.MessagesActivity;
 import messaging.app.messages.capturingMedia.CaptureActivity;
@@ -34,6 +35,7 @@ import static android.widget.Toast.LENGTH_SHORT;
 
 public class SendMediaTabsActivity extends AppCompatActivity implements SectionsPagerAdapter.onRowSelectedListener {
     ContactingFirebase contactingFirebase = new ContactingFirebase(this);
+    ManagingActivityPreview managingActivityPreview = new ManagingActivityPreview();
 
     String pathToMedia;
     String typeOfMediaCaptured;
@@ -76,6 +78,14 @@ public class SendMediaTabsActivity extends AppCompatActivity implements Sections
     }
 
 
+    @Override
+    public void onWindowFocusChanged(boolean hasFocus) {
+        super.onWindowFocusChanged(hasFocus);
+        if (hasFocus) {
+            managingActivityPreview.hideSystemUI(getWindow().getDecorView());
+        }
+    }
+
 
     private void sendMedia(ArrayList<String> directMessagesUUID,  ArrayList<String> storyMessagesUUID){
 
@@ -90,8 +100,6 @@ public class SendMediaTabsActivity extends AppCompatActivity implements Sections
         Intent intent = new Intent(SendMediaTabsActivity.this, CaptureActivity.class);
         SendMediaTabsActivity.this.startActivity(intent);
     }
-
-
 
 
     private void btnSendOnClick(){

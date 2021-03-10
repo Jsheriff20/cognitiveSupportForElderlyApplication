@@ -18,6 +18,7 @@ import java.util.TreeMap;
 
 import messaging.app.ContactingFirebase;
 import messaging.app.Formatting;
+import messaging.app.ManagingActivityPreview;
 import messaging.app.R;
 import messaging.app.login.LoginActivity;
 import messaging.app.login.ResetPasswordActivity;
@@ -34,6 +35,7 @@ public class ListOfReceivedMediaActivity extends AppCompatActivity {
     private RecyclerView.LayoutManager mLayoutManager;
     ContactingFirebase contactingFirebase = new ContactingFirebase(this);
     Formatting formatting = new Formatting();
+    ManagingActivityPreview managingActivityPreview = new ManagingActivityPreview();
 
 
     @Override
@@ -48,6 +50,15 @@ public class ListOfReceivedMediaActivity extends AppCompatActivity {
         displayConversations();
         setBtnBackToMessagesActivity();
         setBtnRefreshMessages();
+    }
+
+
+    @Override
+    public void onWindowFocusChanged(boolean hasFocus) {
+        super.onWindowFocusChanged(hasFocus);
+        if (hasFocus) {
+            managingActivityPreview.hideSystemUI(getWindow().getDecorView());
+        }
     }
 
 

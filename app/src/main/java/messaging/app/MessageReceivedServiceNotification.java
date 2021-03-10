@@ -14,7 +14,6 @@ import androidx.core.app.NotificationManagerCompat;
 public class MessageReceivedServiceNotification {
 
     Context context;
-    private MediaPlayer player;
 
     public MessageReceivedServiceNotification(Context context) {
         this.context = context;
@@ -23,9 +22,6 @@ public class MessageReceivedServiceNotification {
     public void sendNotification(String notificationMessage){
 
         //notify user
-        player = MediaPlayer.create(context, Settings.System.DEFAULT_NOTIFICATION_URI);
-        player.start();
-
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
             NotificationChannel channel =
                     new NotificationChannel("n", "n", NotificationManager.IMPORTANCE_DEFAULT);

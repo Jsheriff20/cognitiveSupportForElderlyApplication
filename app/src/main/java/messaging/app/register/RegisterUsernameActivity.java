@@ -13,6 +13,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import messaging.app.CheckInputsValidity;
 import messaging.app.ContactingFirebase;
 import messaging.app.Formatting;
+import messaging.app.ManagingActivityPreview;
 import messaging.app.login.LoginActivity;
 import messaging.app.R;
 
@@ -28,9 +29,11 @@ public class RegisterUsernameActivity extends AppCompatActivity {
 
     String mEmail;
     String mPassword;
+
     ContactingFirebase contactingFirebase = new ContactingFirebase(this);
     CheckInputsValidity checkInputsValidity = new CheckInputsValidity(this);
     Formatting formatting = new Formatting();
+    ManagingActivityPreview managingActivityPreview = new ManagingActivityPreview();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,6 +63,15 @@ public class RegisterUsernameActivity extends AppCompatActivity {
     public void onBackPressed() {
 
         btnBackToRegisterPassword.callOnClick();
+    }
+
+
+    @Override
+    public void onWindowFocusChanged(boolean hasFocus) {
+        super.onWindowFocusChanged(hasFocus);
+        if (hasFocus) {
+            managingActivityPreview.hideSystemUI(getWindow().getDecorView());
+        }
     }
 
 

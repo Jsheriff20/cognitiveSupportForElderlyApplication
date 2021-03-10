@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">MessagingApp</string>
+    <string name="app_name">Elderly Messaging App</string>
     <string name="title_activity_capture">captureActivity</string>
     <string name="title_activity_register">registerActivity</string>
     <!--

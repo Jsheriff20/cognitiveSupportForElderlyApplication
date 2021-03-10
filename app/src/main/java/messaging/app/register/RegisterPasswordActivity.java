@@ -10,6 +10,7 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import messaging.app.CheckInputsValidity;
+import messaging.app.ManagingActivityPreview;
 import messaging.app.login.LoginActivity;
 import messaging.app.R;
 
@@ -21,6 +22,7 @@ public class RegisterPasswordActivity extends AppCompatActivity {
     Button btnLoadLogin;
     Button btnBackToRegisterEmail;
     CheckInputsValidity checkInputsValidity = new CheckInputsValidity(this);
+    ManagingActivityPreview managingActivityPreview = new ManagingActivityPreview();
 
     //data received from previous activity
     String mEmail;
@@ -44,11 +46,19 @@ public class RegisterPasswordActivity extends AppCompatActivity {
     }
 
 
-
     @Override
     public void onBackPressed() {
 
         btnBackToRegisterEmail.callOnClick();
+    }
+
+
+    @Override
+    public void onWindowFocusChanged(boolean hasFocus) {
+        super.onWindowFocusChanged(hasFocus);
+        if (hasFocus) {
+            managingActivityPreview.hideSystemUI(getWindow().getDecorView());
+        }
     }
 
 

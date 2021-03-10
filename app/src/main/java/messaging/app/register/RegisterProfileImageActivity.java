@@ -26,6 +26,7 @@ import java.io.File;
 import java.io.IOException;
 
 import messaging.app.ContactingFirebase;
+import messaging.app.ManagingActivityPreview;
 import messaging.app.MediaManagement;
 import messaging.app.login.LoginActivity;
 import messaging.app.R;
@@ -56,8 +57,10 @@ public class RegisterProfileImageActivity extends AppCompatActivity {
     Uri mProfileImage = null;
     String mProfileImagePath = null;
     int mProfileImageRotation = 0;
+
     ContactingFirebase contactingFirebase = new ContactingFirebase(this);
     MediaManagement mediaManagement = new MediaManagement();
+    ManagingActivityPreview managingActivityPreview = new ManagingActivityPreview();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -117,6 +120,15 @@ public class RegisterProfileImageActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         btnBackToRegisterPersonalInfo.callOnClick();
+    }
+
+
+    @Override
+    public void onWindowFocusChanged(boolean hasFocus) {
+        super.onWindowFocusChanged(hasFocus);
+        if (hasFocus) {
+            managingActivityPreview.hideSystemUI(getWindow().getDecorView());
+        }
     }
 
 
