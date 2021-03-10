@@ -98,9 +98,11 @@
 
     <EditText
         android:id="@+id/txtEditRelationship"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginStart="24dp"
         android:layout_marginTop="4dp"
+        android:layout_marginEnd="24dp"
         android:ems="10"
         android:hint="Relationship"
         android:inputType="textPersonName"
@@ -139,7 +141,7 @@
         android:id="@+id/btnBackToFriendsList"
         android:layout_width="70dp"
         android:layout_height="70dp"
-        android:layout_marginStart="8dp"
+        android:layout_marginStart="24dp"
         android:layout_marginTop="8dp"
         android:background="@null"
         android:scaleType="centerCrop"

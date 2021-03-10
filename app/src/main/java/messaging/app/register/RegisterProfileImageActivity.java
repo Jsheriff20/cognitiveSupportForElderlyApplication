@@ -13,6 +13,7 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.util.Log;
+import android.view.TextureView;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -57,6 +58,7 @@ public class RegisterProfileImageActivity extends AppCompatActivity {
     Uri mProfileImage = null;
     String mProfileImagePath = null;
     int mProfileImageRotation = 0;
+    private boolean mButtonPressProcessing = false;
 
     ContactingFirebase contactingFirebase = new ContactingFirebase(this);
     MediaManagement mediaManagement = new MediaManagement();
@@ -132,13 +134,6 @@ public class RegisterProfileImageActivity extends AppCompatActivity {
     }
 
 
-    public static Bitmap RotateBitmap(Bitmap source, float angle){
-        Matrix matrix = new Matrix();
-        matrix.postRotate(angle);
-        return Bitmap.createBitmap(source, 0, 0, source.getWidth(), source.getHeight(), matrix, true);
-    }
-
-
     private void setBtnBackToRegisterPasswordOnClick(){
         btnBackToRegisterPersonalInfo.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -164,21 +159,22 @@ public class RegisterProfileImageActivity extends AppCompatActivity {
         btnUploadPhoto.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M){
-                    if(ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED){
-                        //open the storage if permissions are granted
+                if(!mButtonPressProcessing) {
+                    mButtonPressProcessing = true;
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                        if (ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
+                            //open the storage if permissions are granted
+                            openFileSelector();
+                        } else {
+                            if (shouldShowRequestPermissionRationale(Manifest.permission.READ_EXTERNAL_STORAGE)) {
+                                //if permissions are denied say why permission is needed
+                                Toast.makeText(getApplicationContext(), "Please enable Storage Access", LENGTH_SHORT).show();
+                            }
+                            requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, REQUEST_EXTERNAL_STORAGE_PERMISSION_RESULT);
+                        }
+                    } else {
                         openFileSelector();
                     }
-                    else{
-                        if(shouldShowRequestPermissionRationale(Manifest.permission.READ_EXTERNAL_STORAGE)){
-                            //if permissions are denied say why permission is needed
-                            Toast.makeText(getApplicationContext(), "Please enable Storage Access", LENGTH_SHORT).show();
-                        }
-                        requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, REQUEST_EXTERNAL_STORAGE_PERMISSION_RESULT);
-                    }
-                }
-                else{
-                    openFileSelector();
                 }
             }
         });
@@ -189,10 +185,14 @@ public class RegisterProfileImageActivity extends AppCompatActivity {
         btnCapturePhoto.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(RegisterProfileImageActivity.this, CaptureActivity.class);
-                intent.putExtra("captureForProfileImage", true);
-                intent.putExtras(getIntent().getExtras());
-                RegisterProfileImageActivity.this.startActivity(intent);
+                if(!mButtonPressProcessing) {
+                    //do not need to set button press processing to false as a new activity will be created instead
+                    mButtonPressProcessing = true;
+                    Intent intent = new Intent(RegisterProfileImageActivity.this, CaptureActivity.class);
+                    intent.putExtra("captureForProfileImage", true);
+                    intent.putExtras(getIntent().getExtras());
+                    RegisterProfileImageActivity.this.startActivity(intent);
+                }
 
             }
         });
@@ -210,6 +210,8 @@ public class RegisterProfileImageActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+        //cancel button process for selecting an image
+        mButtonPressProcessing = false;
         if(resultCode != RESULT_OK){
             Toast.makeText(this, "No new profile image", LENGTH_SHORT).show();
             return;

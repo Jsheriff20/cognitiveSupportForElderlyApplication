@@ -119,6 +119,8 @@ public class AddFriendActivity extends AppCompatActivity {
 
                 if(checkInputsValidity.isUsernameValid(username) && checkInputsValidity.isRelationshipValid(relationship)){
                     contactingFirebase.addFriend(username, relationship);
+                    finish();
+                    startActivity(getIntent());
                 }
             }
         });

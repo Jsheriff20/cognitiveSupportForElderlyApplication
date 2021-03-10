@@ -37,7 +37,7 @@
         android:id="@+id/btnBackToMessagesActivity"
         android:layout_width="70dp"
         android:layout_height="70dp"
-        android:layout_marginStart="8dp"
+        android:layout_marginStart="24dp"
         android:layout_marginTop="8dp"
         android:background="@null"
         android:scaleType="centerCrop"
