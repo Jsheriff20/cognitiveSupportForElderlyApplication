@@ -82,8 +82,8 @@ public class RegisterPersonalInfoActivity extends AppCompatActivity {
         btnLoadProfileImageRegister.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String firstName = formatting.removeEndingSpaceFromString(txtFirstName.getText().toString());
-                String surname = formatting.removeEndingSpaceFromString(txtSurname.getText().toString());
+                String firstName = txtFirstName.getText().toString().trim();
+                String surname = txtSurname.getText().toString().trim();
                 if(checkInputsValidity.isNameValid(firstName + surname)){
                     Intent intent = new Intent(RegisterPersonalInfoActivity.this, RegisterProfileImageActivity.class);
                     intent.putExtra("password", mPassword);

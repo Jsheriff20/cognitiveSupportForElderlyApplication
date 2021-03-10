@@ -660,15 +660,13 @@ public class ContactingFirebase {
 
     public void doesUsernameExist(final String username, final OnCheckIfUsernameExistsListener listener) {
 
-        mDatabase.getReference("usernames").addListenerForSingleValueEvent(new ValueEventListener() {
+        mDatabase.getReference("usernames").child(username).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-
-                for (DataSnapshot ds : snapshot.getChildren()) {
-                    if (username.toLowerCase().equals(ds.getKey().toLowerCase())) {
-                        listener.onSuccess(true);
-                        return;
-                    }
+                Log.d(TAG, "onDataChange: " + snapshot);
+                if(snapshot.getValue() != null){
+                    listener.onSuccess(true);
+                    return;
                 }
                 listener.onSuccess(false);
             }
@@ -930,7 +928,7 @@ public class ContactingFirebase {
             public void onDataChange(@NonNull DataSnapshot snapshot) {
 
                 if (!snapshot.getValue().toString().equals(null)) {
-                    listener.onSuccess(formatting.removeEndingSpaceFromString((String) snapshot.getValue()));
+                    listener.onSuccess(((String) snapshot.getValue()).trim());
                 }
             }
 
@@ -990,8 +988,9 @@ public class ContactingFirebase {
         mDatabase.getReference("usernames").child(username).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-
-                listener.onSuccess(formatting.removeEndingSpaceFromString((String) snapshot.getValue()));
+                if(snapshot.getValue()!= null){
+                    listener.onSuccess((snapshot.getValue().toString().trim()));
+                }
             }
 
             @Override
@@ -1380,6 +1379,11 @@ public class ContactingFirebase {
         databaseRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
+                //check that there is a message
+                if(snapshot.getValue() == null){
+                    return;
+                }
+
                 int numberOfMessages = getNumberOfMessages((Map<String, Object>) snapshot.getValue());
 
                 //check that a new message has been added and that it is not the first loop

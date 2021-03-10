@@ -96,7 +96,7 @@ public class LoginActivity extends AppCompatActivity {
         btnLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String email = formatting.removeEndingSpaceFromString(txtEmail.getText().toString());
+                String email = txtEmail.getText().toString().trim();
                 if(!checkInputsValidity.isEmailValid(email)){
                     return;
                 }

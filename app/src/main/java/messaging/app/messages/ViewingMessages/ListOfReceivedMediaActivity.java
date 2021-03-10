@@ -61,6 +61,7 @@ public class ListOfReceivedMediaActivity extends AppCompatActivity {
         });
     }
 
+    
     private void setBtnRefreshMessages(){
         btnRefreshMessages.setOnClickListener(new View.OnClickListener() {
             @Override

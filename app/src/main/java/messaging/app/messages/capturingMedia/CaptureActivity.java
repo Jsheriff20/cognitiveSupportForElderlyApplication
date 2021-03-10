@@ -115,6 +115,7 @@ public class CaptureActivity extends AppCompatActivity {
     private boolean mCaptureForProfileImage;
     private String mReplyingToUUID = null;
     private boolean useFrontFacingCamera = false;
+    private boolean mButtonPressProcessing = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -183,30 +184,33 @@ public class CaptureActivity extends AppCompatActivity {
     }
 
 
-    private void setBtnRotateCamera(){
+    private void setBtnRotateCamera() {
         btnRotateCamera.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(useFrontFacingCamera) {
-                    useFrontFacingCamera = false;
-                    btnCaptureVideo.setVisibility(View.VISIBLE);
-                }
-                else{
-                    useFrontFacingCamera = true;
-                    btnCaptureVideo.setVisibility(View.INVISIBLE);
-                }
+                if (!mButtonPressProcessing) {
+                    mButtonPressProcessing = true;
+                    if (useFrontFacingCamera) {
+                        useFrontFacingCamera = false;
+                        btnCaptureVideo.setVisibility(View.VISIBLE);
+                    } else {
+                        useFrontFacingCamera = true;
+                        btnCaptureVideo.setVisibility(View.INVISIBLE);
+                    }
 
-                closeCamera();
-                if (cameraView.isAvailable()) {
-                    setupCamera(cameraView.getWidth(), cameraView.getHeight());
+                    closeCamera();
+                    if (cameraView.isAvailable()) {
+                        setupCamera(cameraView.getWidth(), cameraView.getHeight());
 
-                    //check that the rotation is correct, if not fix it
-                    transformImage(cameraView.getWidth(), cameraView.getHeight());
-                    connectCamera();
-                } else {
-                    cameraView.setSurfaceTextureListener(cameraViewListener);
+                        //check that the rotation is correct, if not fix it
+                        transformImage(cameraView.getWidth(), cameraView.getHeight());
+                        connectCamera();
+                    } else {
+                        cameraView.setSurfaceTextureListener(cameraViewListener);
+                    }
+
+                    mButtonPressProcessing = false;
                 }
-
             }
         });
     }
@@ -215,32 +219,38 @@ public class CaptureActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
 
-        if(!mImageFilePath.equals("")) {
-            mediaManagement.deleteMediaFile(mImageFilePath, this);
-        }
-        else{
-            mediaManagement.deleteMediaFile(mVideoFilePath, this);
-        }
+        if (!mButtonPressProcessing) {
+            mButtonPressProcessing = true;
+            if (!mImageFilePath.equals("")) {
+                mediaManagement.deleteMediaFile(mImageFilePath, this);
+            } else {
+                mediaManagement.deleteMediaFile(mVideoFilePath, this);
+            }
 
-        Intent intent = new Intent(CaptureActivity.this, MessagesActivity.class);
-        CaptureActivity.this.startActivity(intent);
+            Intent intent = new Intent(CaptureActivity.this, MessagesActivity.class);
+            CaptureActivity.this.startActivity(intent);
+            mButtonPressProcessing = false;
+        }
     }
 
 
-    private void setBtnBackToMessagesActivity(){
+    private void setBtnBackToMessagesActivity() {
         btnBackToMessagesActivity.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(!mImageFilePath.equals("")) {
-                    mediaManagement.deleteMediaFile(mImageFilePath, getApplicationContext());
-                }
-                else{
-                    mediaManagement.deleteMediaFile(mVideoFilePath, getApplicationContext());
-                }
+                if (!mButtonPressProcessing) {
+                    mButtonPressProcessing = true;
+                    if (!mImageFilePath.equals("")) {
+                        mediaManagement.deleteMediaFile(mImageFilePath, getApplicationContext());
+                    } else {
+                        mediaManagement.deleteMediaFile(mVideoFilePath, getApplicationContext());
+                    }
 
 
-                Intent intent = new Intent(CaptureActivity.this, MessagesActivity.class);
-                CaptureActivity.this.startActivity(intent);
+                    Intent intent = new Intent(CaptureActivity.this, MessagesActivity.class);
+                    CaptureActivity.this.startActivity(intent);
+                    mButtonPressProcessing = false;
+                }
             }
         });
     }
@@ -278,28 +288,30 @@ public class CaptureActivity extends AppCompatActivity {
         btnCaptureVideo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(!useFrontFacingCamera) {
-                    btnBackToMessagesActivity.setVisibility(View.INVISIBLE);
-                    btnRotateCamera.setVisibility(View.INVISIBLE);
-                    if (!mIsRecording) {
-                        //check permissions are valid
-                        if (checkWriteToStoragePermissions() != false) {
-                            mIsRecording = true;
-                            btnStopVideo.setVisibility(View.VISIBLE);
-                            btnCaptureVideo.setVisibility(View.INVISIBLE);
-                            btnCaptureImage.setVisibility(View.INVISIBLE);
+                if (!mButtonPressProcessing) {
+                    mButtonPressProcessing = true;
+                    if (!useFrontFacingCamera) {
+                        btnBackToMessagesActivity.setVisibility(View.INVISIBLE);
+                        btnRotateCamera.setVisibility(View.INVISIBLE);
+                        if (!mIsRecording) {
+                            //check permissions are valid
+                            if (checkWriteToStoragePermissions() != false) {
+                                mIsRecording = true;
+                                btnStopVideo.setVisibility(View.VISIBLE);
+                                btnCaptureVideo.setVisibility(View.INVISIBLE);
+                                btnCaptureImage.setVisibility(View.INVISIBLE);
 
-                            //start recording a video
-                            startRecording();
-                            mMediaRecorder.start();
+                                //start recording a video
+                                startRecording();
+                                mMediaRecorder.start();
 
+                            }
+                        } else {
+                            Toast.makeText(getApplicationContext(), "An error has occurred", LENGTH_SHORT).show();
                         }
                     } else {
-                        Toast.makeText(getApplicationContext(), "An error has occurred", LENGTH_SHORT).show();
+                        Toast.makeText(CaptureActivity.this, "Cannot send a front facing camera video", LENGTH_SHORT).show();
                     }
-                }
-                else{
-                    Toast.makeText(CaptureActivity.this, "Cannot send a front facing camera video", LENGTH_SHORT).show();
                 }
             }
         });
@@ -308,22 +320,27 @@ public class CaptureActivity extends AppCompatActivity {
         btnStopVideo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //check if video is record, if so stop and adjust view for user
-                if (mIsRecording) {
-                    mIsRecording = false;
-                    btnStopVideo.setVisibility(View.INVISIBLE);
-                    btnCaptureVideo.setVisibility(View.VISIBLE);
-                    btnCaptureImage.setVisibility(View.VISIBLE);
 
-                    mMediaRecorder.stop();
-                    mMediaRecorder.reset();
-                    startPreview();
+                if (!mButtonPressProcessing) {
+                    mButtonPressProcessing = true;
+                    //check if video is record, if so stop and adjust view for user
+                    if (mIsRecording) {
+                        mIsRecording = false;
+                        btnStopVideo.setVisibility(View.INVISIBLE);
+                        btnCaptureVideo.setVisibility(View.VISIBLE);
+                        btnCaptureImage.setVisibility(View.VISIBLE);
+
+                        mMediaRecorder.stop();
+                        mMediaRecorder.reset();
+                        startPreview();
 
 
-                    previewCapturedMedia("Video");
+                        previewCapturedMedia("Video");
 
-                } else {
-                    Toast.makeText(getApplicationContext(), "An error has occurred", LENGTH_SHORT).show();
+                    } else {
+                        Toast.makeText(getApplicationContext(), "An error has occurred", LENGTH_SHORT).show();
+                    }
+                    mButtonPressProcessing = false;
                 }
             }
         });
@@ -347,8 +364,12 @@ public class CaptureActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                if (checkWriteToStoragePermissions() != false) {
-                    lockFocus();
+                if (!mButtonPressProcessing) {
+                    mButtonPressProcessing = true;
+
+                    if (checkWriteToStoragePermissions() != false) {
+                        lockFocus();
+                    }
                 }
 
             }
@@ -362,46 +383,53 @@ public class CaptureActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                //hide unwanted view elements
-                btnCancel.setVisibility(View.INVISIBLE);
-                btnLoadMessageActivity.setVisibility(View.INVISIBLE);
-                capturedImageView.setVisibility(View.INVISIBLE);
-                capturedVideoView.setVisibility(View.INVISIBLE);
 
-                //clear media
-                capturedVideoView.setVideoURI(null);
-                capturedImageView.setImageResource(0);
+                if (!mButtonPressProcessing) {
+                    mButtonPressProcessing = true;
+                    //hide unwanted view elements
+                    btnCancel.setVisibility(View.INVISIBLE);
+                    btnLoadMessageActivity.setVisibility(View.INVISIBLE);
+                    capturedImageView.setVisibility(View.INVISIBLE);
+                    capturedVideoView.setVisibility(View.INVISIBLE);
 
-                lockOrientation(false);
+                    //clear media
+                    capturedVideoView.setVideoURI(null);
+                    capturedImageView.setImageResource(0);
 
-                //display view elements
-                btnCaptureImage.setVisibility(View.VISIBLE);
-                btnCaptureVideo.setVisibility(View.VISIBLE);
-                cameraView.setVisibility(View.VISIBLE);
-                btnRotateCamera.setVisibility(View.VISIBLE);
+                    lockOrientation(false);
+
+                    //display view elements
+                    btnCaptureImage.setVisibility(View.VISIBLE);
+                    cameraView.setVisibility(View.VISIBLE);
+                    btnRotateCamera.setVisibility(View.VISIBLE);
+                    if (!useFrontFacingCamera) {
+                        btnCaptureVideo.setVisibility(View.VISIBLE);
+                    }
 
 
-                //start background thread and initiate all services
-                startBackgroundThread();
-                if (cameraView.isAvailable()) {
-                    setupCamera(cameraView.getWidth(), cameraView.getHeight());
+                    //start background thread and initiate all services
+                    startBackgroundThread();
+                    if (cameraView.isAvailable()) {
+                        setupCamera(cameraView.getWidth(), cameraView.getHeight());
 
-                    //check that the rotation is correct, if not fix it
-                    transformImage(cameraView.getWidth(), cameraView.getHeight());
-                    connectCamera();
-                } else {
-                    cameraView.setSurfaceTextureListener(cameraViewListener);
+                        //check that the rotation is correct, if not fix it
+                        transformImage(cameraView.getWidth(), cameraView.getHeight());
+                        connectCamera();
+                    } else {
+                        cameraView.setSurfaceTextureListener(cameraViewListener);
+                    }
+
+                    switch (mTypeOfMediaCaptured) {
+                        case "Image":
+                            mediaManagement.deleteMediaFile(mImageFilePath, getApplicationContext());
+                            break;
+                        case "Video":
+                            mediaManagement.deleteMediaFile(mVideoFilePath, getApplicationContext());
+                            break;
+                    }
+                    mTypeOfMediaCaptured = null;
+                    mButtonPressProcessing = false;
                 }
-
-                switch (mTypeOfMediaCaptured) {
-                    case "Image":
-                        mediaManagement.deleteMediaFile(mImageFilePath, getApplicationContext());
-                        break;
-                    case "Video":
-                        mediaManagement.deleteMediaFile(mVideoFilePath, getApplicationContext());
-                        break;
-                }
-                mTypeOfMediaCaptured = null;
             }
         });
     }
@@ -411,13 +439,18 @@ public class CaptureActivity extends AppCompatActivity {
         btnLoadMessageActivity.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(getApplicationContext(), RegisterProfileImageActivity.class);
-                intent.putExtras(getIntent().getExtras());
-                intent.putExtra("profileImage", mImageFilePath);
-                intent.putExtra("typeOfMediaCaptured", mTypeOfMediaCaptured);
-                intent.putExtra("profileImageRotation", mTotalRotation);
 
-                startActivity(intent);
+                if (!mButtonPressProcessing) {
+                    mButtonPressProcessing = true;
+                    Intent intent = new Intent(getApplicationContext(), RegisterProfileImageActivity.class);
+                    intent.putExtras(getIntent().getExtras());
+                    intent.putExtra("profileImage", mImageFilePath);
+                    intent.putExtra("typeOfMediaCaptured", mTypeOfMediaCaptured);
+                    intent.putExtra("profileImageRotation", mTotalRotation);
+
+                    startActivity(intent);
+                    mButtonPressProcessing = false;
+                }
             }
         });
     }
@@ -427,28 +460,32 @@ public class CaptureActivity extends AppCompatActivity {
         btnLoadMessageActivity.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(getApplicationContext(), AddMessageToMediaActivity.class);
-                intent.putExtra("typeOfMediaCaptured", mTypeOfMediaCaptured);
 
-                if (mReplyingToUUID != null) {
-                    intent.putExtra("replyingTo", mReplyingToUUID);
+                if (!mButtonPressProcessing) {
+                    mButtonPressProcessing = true;
+                    Intent intent = new Intent(getApplicationContext(), AddMessageToMediaActivity.class);
+                    intent.putExtra("typeOfMediaCaptured", mTypeOfMediaCaptured);
+
+                    if (mReplyingToUUID != null) {
+                        intent.putExtra("replyingTo", mReplyingToUUID);
+                    }
+
+                    int deviceOrientationMode = getWindowManager().getDefaultDisplay().getRotation();
+
+                    switch (mTypeOfMediaCaptured) {
+                        case "Image":
+                            intent.putExtra("mediaPath", mImageFilePath);
+                            break;
+
+                        case "Video":
+                            intent.putExtra("mediaPath", mVideoFilePath);
+                            break;
+                    }
+                    intent.putExtra("deviceOrientationMode", deviceOrientationMode);
+
+                    startActivity(intent);
+                    mButtonPressProcessing = false;
                 }
-
-                int deviceOrientationMode = getWindowManager().getDefaultDisplay().getRotation();
-
-                switch (mTypeOfMediaCaptured) {
-                    case "Image":
-                        intent.putExtra("mediaPath", mImageFilePath);
-                        break;
-
-                    case "Video":
-                        intent.putExtra("mediaPath", mVideoFilePath);
-                        break;
-                }
-                intent.putExtra("deviceOrientationMode", deviceOrientationMode);
-
-                startActivity(intent);
-
             }
         });
     }
@@ -667,9 +704,11 @@ public class CaptureActivity extends AppCompatActivity {
                 //display image
                 capturedVideoView.setVisibility(View.VISIBLE);
 
-
                 break;
         }
+        //release the button press processing from the capture video/ image
+        mButtonPressProcessing = false;
+
     }
 
 
@@ -682,10 +721,9 @@ public class CaptureActivity extends AppCompatActivity {
                 //set camera ID
                 CameraCharacteristics cameraCharacteristics = cameraManager.getCameraCharacteristics(cameraId);
 
-                if(useFrontFacingCamera){
+                if (useFrontFacingCamera) {
                     mCameraID = cameraManager.getCameraIdList()[1];
-                }
-                else{
+                } else {
                     //select the first rear camera as suggested via google documentation
                     mCameraID = cameraManager.getCameraIdList()[0];
                 }
@@ -708,9 +746,9 @@ public class CaptureActivity extends AppCompatActivity {
 
                 // select the best preview resolution
                 StreamConfigurationMap map = cameraCharacteristics.get(CameraCharacteristics.SCALER_STREAM_CONFIGURATION_MAP);
-                mPreviewSize = mediaManagement.selectOptimalSize(map.getOutputSizes(SurfaceTexture.class), rotatedWidth, rotatedHeight);
-                mVideoSize = mediaManagement.selectOptimalSize(map.getOutputSizes(MediaRecorder.class), rotatedWidth, rotatedHeight);
-                mImageSize = mediaManagement.selectOptimalSize(map.getOutputSizes(ImageFormat.JPEG), rotatedWidth, rotatedHeight);
+                mPreviewSize = mediaManagement.getOptimalPreviewSize(map.getOutputSizes(SurfaceTexture.class), rotatedWidth, rotatedHeight);
+                mVideoSize = mediaManagement.getOptimalPreviewSize(map.getOutputSizes(MediaRecorder.class), rotatedWidth, rotatedHeight);
+                mImageSize = mediaManagement.getOptimalPreviewSize(map.getOutputSizes(ImageFormat.JPEG), rotatedWidth, rotatedHeight);
 
                 mImageReader = ImageReader.newInstance(mImageSize.getWidth(), mImageSize.getHeight(), ImageFormat.JPEG, 1);
                 mImageReader.setOnImageAvailableListener(mOnImageAvailableListener, mBackgroundHandler);
@@ -861,17 +899,15 @@ public class CaptureActivity extends AppCompatActivity {
                 ExifInterface exif = null;
                 try {
                     exif = new ExifInterface(mImageFilePath);
-                    if(useFrontFacingCamera){
+                    if (useFrontFacingCamera) {
 
                         //check if in landscape mode
                         if ((int) getWindowManager().getDefaultDisplay().getRotation() == 1) {
                             exif.setAttribute(ExifInterface.TAG_ORIENTATION, String.valueOf(ExifInterface.ORIENTATION_FLIP_HORIZONTAL));
-                        }
-                        else{
+                        } else {
                             exif.setAttribute(ExifInterface.TAG_ORIENTATION, String.valueOf(ExifInterface.ORIENTATION_FLIP_VERTICAL));
                         }
-                    }
-                    else {
+                    } else {
                         exif.setAttribute(ExifInterface.TAG_ORIENTATION, mediaManagement.degreesToExif(mTotalRotation));
                     }
                     exif.saveAttributes();

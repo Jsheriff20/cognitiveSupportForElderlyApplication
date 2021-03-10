@@ -2,6 +2,7 @@ package messaging.app.register;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -79,7 +80,7 @@ public class RegisterUsernameActivity extends AppCompatActivity {
         btnLoadPersonalInfo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                final String username = formatting.removeEndingSpaceFromString(txtUsername.getText().toString());
+                final String username = txtUsername.getText().toString().trim();
                 if(checkInputsValidity.isUsernameValid(username)) {
 
                     contactingFirebase.doesUsernameExist(username, new ContactingFirebase.OnCheckIfUsernameExistsListener() {

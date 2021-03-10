@@ -50,7 +50,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="28dp"
-        android:text="Email"
+        android:text="Enter your email"
         android:textColor="#000000"
         android:textSize="21sp"
         android:textStyle="bold"

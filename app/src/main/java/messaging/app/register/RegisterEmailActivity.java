@@ -41,6 +41,8 @@ public class RegisterEmailActivity extends AppCompatActivity {
         if(getIntent().getStringExtra("email") != null ){
             String email = getIntent().getStringExtra("email");
             txtEmail.setText(email);
+        }else{
+            txtEmail.setText("");
         }
 
         setBtnLoadPasswordRegisterOnClick();
@@ -58,7 +60,7 @@ public class RegisterEmailActivity extends AppCompatActivity {
         btnLoadPasswordRegister.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                final String email = formatting.removeEndingSpaceFromString(txtEmail.getText().toString());
+                final String email = txtEmail.getText().toString().trim();
                 if(checkInputsValidity.isEmailValid(email)) {
                     contactingFirebase.isEmailAvailable(email,new ContactingFirebase.OnEmailCheckListener(){
                         @Override
