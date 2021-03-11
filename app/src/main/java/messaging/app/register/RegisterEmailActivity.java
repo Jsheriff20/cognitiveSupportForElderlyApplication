@@ -10,13 +10,11 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import messaging.app.CheckInputsValidity;
-import messaging.app.ContactingFirebase;
 import messaging.app.Formatting;
 import messaging.app.ManagingActivityPreview;
+import messaging.app.contactingFirebase.QueryingDatabase;
 import messaging.app.login.LoginActivity;
 import messaging.app.R;
-import messaging.app.messages.ViewingMessages.ListOfReceivedMediaActivity;
-import messaging.app.messages.ViewingMessages.ViewTextMessageActivity;
 
 public class RegisterEmailActivity extends AppCompatActivity {
 
@@ -24,9 +22,8 @@ public class RegisterEmailActivity extends AppCompatActivity {
     Button btnLoadPasswordRegister;
     Button btnLoadLogin;
     CheckInputsValidity checkInputsValidity = new CheckInputsValidity(this);
-    ContactingFirebase contactingFirebase = new ContactingFirebase(this);
-    Formatting formatting = new Formatting();
     ManagingActivityPreview managingActivityPreview = new ManagingActivityPreview();
+    QueryingDatabase queryingDatabase = new QueryingDatabase();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,7 +71,7 @@ public class RegisterEmailActivity extends AppCompatActivity {
             public void onClick(View v) {
                 final String email = txtEmail.getText().toString().trim();
                 if(checkInputsValidity.isEmailValid(email)) {
-                    contactingFirebase.isEmailAvailable(email,new ContactingFirebase.OnEmailCheckListener(){
+                    queryingDatabase.isEmailAvailable(email,new QueryingDatabase.OnEmailCheckListener(){
                         @Override
                         public void onSuccess(boolean isRegistered){
 

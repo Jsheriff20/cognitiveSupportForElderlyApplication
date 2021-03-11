@@ -2,7 +2,6 @@ package messaging.app.register;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -11,9 +10,9 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import messaging.app.CheckInputsValidity;
-import messaging.app.ContactingFirebase;
 import messaging.app.Formatting;
 import messaging.app.ManagingActivityPreview;
+import messaging.app.contactingFirebase.QueryingDatabase;
 import messaging.app.login.LoginActivity;
 import messaging.app.R;
 
@@ -30,10 +29,9 @@ public class RegisterUsernameActivity extends AppCompatActivity {
     String mEmail;
     String mPassword;
 
-    ContactingFirebase contactingFirebase = new ContactingFirebase(this);
     CheckInputsValidity checkInputsValidity = new CheckInputsValidity(this);
-    Formatting formatting = new Formatting();
     ManagingActivityPreview managingActivityPreview = new ManagingActivityPreview();
+    QueryingDatabase queryingDatabase = new QueryingDatabase();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -95,7 +93,7 @@ public class RegisterUsernameActivity extends AppCompatActivity {
                 final String username = txtUsername.getText().toString().trim();
                 if(checkInputsValidity.isUsernameValid(username)) {
 
-                    contactingFirebase.doesUsernameExist(username, new ContactingFirebase.OnCheckIfUsernameExistsListener() {
+                    queryingDatabase.doesUsernameExist(username, new QueryingDatabase.OnCheckIfUsernameExistsListener() {
                         @Override
                         public void onSuccess(boolean exists) {
                             if(exists){

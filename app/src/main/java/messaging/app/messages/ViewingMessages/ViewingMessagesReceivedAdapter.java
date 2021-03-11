@@ -6,7 +6,6 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.media.ExifInterface;
 import android.os.StrictMode;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -28,26 +27,26 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import messaging.app.ContactingFirebase;
 import messaging.app.MediaManagement;
 import messaging.app.R;
+import messaging.app.contactingFirebase.QueryingDatabase;
 import messaging.app.messages.capturingMedia.CaptureActivity;
 
 public class ViewingMessagesReceivedAdapter extends RecyclerView.Adapter {
     List<HashMap<String, String>> mReceivedMediaDetails;
     int mNumberOfStories;
     Context context;
-    MediaManagement mediaManagement = new MediaManagement();
-    ContactingFirebase contactingFirebase;
     private File mImageFolder;
     private String mImageFilePath;
+
+    MediaManagement mediaManagement = new MediaManagement();
+    QueryingDatabase queryingDatabase = new QueryingDatabase();
 
 
     public ViewingMessagesReceivedAdapter(List<HashMap<String, String>> receivedMediaDetails, int numberOfStories, Context context) {
         this.mReceivedMediaDetails = receivedMediaDetails;
         this.mNumberOfStories = numberOfStories;
         this.context = context;
-        contactingFirebase = new ContactingFirebase(context);
     }
 
 
@@ -127,7 +126,7 @@ public class ViewingMessagesReceivedAdapter extends RecyclerView.Adapter {
                     storyViewHolder.imgStoryStatus.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            contactingFirebase.getStoryForUUID(new ContactingFirebase.OnGetStoryForUUIDListener() {
+                            queryingDatabase.getStoryForUUID(new QueryingDatabase.OnGetStoryForUUIDListener() {
                                 @Override
                                 public void onSuccess(ArrayList<MessageData> storyMessagesDataList) {
                                     Intent intent;
@@ -212,7 +211,7 @@ public class ViewingMessagesReceivedAdapter extends RecyclerView.Adapter {
 
 
                             //on success get message data using the messageData class
-                            contactingFirebase.getMessagesFromUUID(friendsMessagesViewHolder.UUID, new ContactingFirebase.OnGetMessagesFromListener() {
+                            queryingDatabase.getMessagesFromUUID(friendsMessagesViewHolder.UUID, new QueryingDatabase.OnGetMessagesFromListener() {
                                 @Override
                                 public void onSuccess(ArrayList<MessageData> messageDataList) {
                                     Intent intent;

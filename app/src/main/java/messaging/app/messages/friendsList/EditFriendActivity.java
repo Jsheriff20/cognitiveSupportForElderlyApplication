@@ -15,11 +15,9 @@ import android.widget.Toast;
 import com.squareup.picasso.Picasso;
 
 import messaging.app.CheckInputsValidity;
-import messaging.app.ContactingFirebase;
 import messaging.app.ManagingActivityPreview;
 import messaging.app.R;
-import messaging.app.login.LoginActivity;
-import messaging.app.login.ResetPasswordActivity;
+import messaging.app.contactingFirebase.ManagingFriends;
 
 public class EditFriendActivity extends AppCompatActivity {
 
@@ -39,9 +37,9 @@ public class EditFriendActivity extends AppCompatActivity {
     Button btnBlock;
     ImageButton btnBackToFriendsList;
 
-    ContactingFirebase contactingFirebase = new ContactingFirebase(this);
     CheckInputsValidity checkInputsValidity = new CheckInputsValidity(this);
     ManagingActivityPreview managingActivityPreview = new ManagingActivityPreview();
+    ManagingFriends managingFriends = new ManagingFriends(this);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -106,7 +104,7 @@ public class EditFriendActivity extends AppCompatActivity {
         btnRemove.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                contactingFirebase.removeFriend(mFriendsUUID);
+                managingFriends.removeFriend(mFriendsUUID);
             }
         });
     }
@@ -123,7 +121,7 @@ public class EditFriendActivity extends AppCompatActivity {
                 } else if (!checkInputsValidity.isRelationshipValid(mFriendsRelationship)) {
                     return;
                 }
-                contactingFirebase.updateFriendRelationship(mFriendsUUID, updatedRelationship, new ContactingFirebase.OnUpdateFriendRelationshipListener() {
+                managingFriends.updateFriendRelationship(mFriendsUUID, updatedRelationship, new ManagingFriends.OnUpdateFriendRelationshipListener() {
                     @Override
                     public void onSuccess(boolean success) {
                         if (success) {
@@ -141,7 +139,7 @@ public class EditFriendActivity extends AppCompatActivity {
         btnBlock.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                contactingFirebase.blockFriend(mFriendsUUID, mFriendsUsername);
+                managingFriends.blockFriend(mFriendsUUID, mFriendsUsername);
             }
         });
     }

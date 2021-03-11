@@ -23,12 +23,10 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 
-import messaging.app.ContactingFirebase;
 import messaging.app.ManagingActivityPreview;
 import messaging.app.MediaManagement;
 import messaging.app.R;
-import messaging.app.login.LoginActivity;
-import messaging.app.login.ResetPasswordActivity;
+import messaging.app.contactingFirebase.ManagingMessages;
 
 public class ViewMediaMessageActivity extends AppCompatActivity {
 
@@ -51,7 +49,7 @@ public class ViewMediaMessageActivity extends AppCompatActivity {
     private File mImageFolder;
     private String mImageFilePath;
 
-    ContactingFirebase contactingFirebase = new ContactingFirebase(this);
+    ManagingMessages managingMessages = new ManagingMessages(this);
     ManagingActivityPreview managingActivityPreview = new ManagingActivityPreview();
 
     @Override
@@ -180,8 +178,8 @@ public class ViewMediaMessageActivity extends AppCompatActivity {
 
         lockOrientation(false);
         if(viewingType.equals("directMessages")) {
-            contactingFirebase.deleteMessage(displayingMessage.getTimeStamp(), friendsUUID);
-            contactingFirebase.logMediaMessageViewed(messageUrl);
+            managingMessages.deleteMessage(displayingMessage.getTimeStamp(), friendsUUID);
+            managingMessages.logMediaMessageViewed(messageUrl);
         }
 
         Intent intent = new Intent(ViewMediaMessageActivity.this, ListOfReceivedMediaActivity.class);
@@ -199,8 +197,8 @@ public class ViewMediaMessageActivity extends AppCompatActivity {
                 lockOrientation(false);
 
                 if(viewingType.equals("directMessages")) {
-                    contactingFirebase.deleteMessage(displayingMessage.getTimeStamp(), friendsUUID);
-                    contactingFirebase.logMediaMessageViewed(messageUrl);
+                    managingMessages.deleteMessage(displayingMessage.getTimeStamp(), friendsUUID);
+                    managingMessages.logMediaMessageViewed(messageUrl);
                 }
 
 

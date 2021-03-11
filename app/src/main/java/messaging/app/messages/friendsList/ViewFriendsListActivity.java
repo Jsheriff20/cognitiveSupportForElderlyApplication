@@ -6,22 +6,16 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Message;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
 
 import java.util.List;
 
-import messaging.app.CheckInputsValidity;
-import messaging.app.ContactingFirebase;
 import messaging.app.ManagingActivityPreview;
 import messaging.app.R;
-import messaging.app.login.LoginActivity;
-import messaging.app.login.ResetPasswordActivity;
+import messaging.app.contactingFirebase.QueryingDatabase;
 import messaging.app.messages.MessagesActivity;
-import messaging.app.messages.capturingMedia.CaptureActivity;
 
 public class ViewFriendsListActivity extends AppCompatActivity {
 
@@ -31,8 +25,8 @@ public class ViewFriendsListActivity extends AppCompatActivity {
     private RecyclerView recyclerView;
     private RecyclerView.Adapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
-    ContactingFirebase contactingFirebase = new ContactingFirebase(this);
     ManagingActivityPreview managingActivityPreview = new ManagingActivityPreview();
+    QueryingDatabase queryingDatabase = new QueryingDatabase();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,7 +70,7 @@ public class ViewFriendsListActivity extends AppCompatActivity {
     }
 
     private void displayFriends() {
-        contactingFirebase.getFriendsDetails(new ContactingFirebase.OnGetFriendsDetailsListener() {
+        queryingDatabase.getFriendsDetails(new QueryingDatabase.OnGetFriendsDetailsListener() {
             @Override
             public void onSuccess(List friendsDetails) {
                 //display to user

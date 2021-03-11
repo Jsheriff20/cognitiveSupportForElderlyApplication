@@ -5,15 +5,10 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Matrix;
 import android.media.ExifInterface;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Environment;
-import android.provider.MediaStore;
-import android.util.Log;
-import android.view.TextureView;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -26,12 +21,11 @@ import androidx.core.content.ContextCompat;
 import java.io.File;
 import java.io.IOException;
 
-import messaging.app.ContactingFirebase;
 import messaging.app.ManagingActivityPreview;
 import messaging.app.MediaManagement;
+import messaging.app.contactingFirebase.ManagingAccounts;
 import messaging.app.login.LoginActivity;
 import messaging.app.R;
-import messaging.app.messages.MessagesActivity;
 import messaging.app.messages.capturingMedia.CaptureActivity;
 
 import static android.widget.Toast.LENGTH_SHORT;
@@ -60,7 +54,7 @@ public class RegisterProfileImageActivity extends AppCompatActivity {
     int mProfileImageRotation = 0;
     private boolean mButtonPressProcessing = false;
 
-    ContactingFirebase contactingFirebase = new ContactingFirebase(this);
+    ManagingAccounts mangingAccounts = new ManagingAccounts(this);
     MediaManagement mediaManagement = new MediaManagement();
     ManagingActivityPreview managingActivityPreview = new ManagingActivityPreview();
 
@@ -237,7 +231,7 @@ public class RegisterProfileImageActivity extends AppCompatActivity {
         btnRegister.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                contactingFirebase.createUserWithEmailAndPassword(mEmail, mPassword, mFirstName, mSurname, mProfileImage, mUsername);
+                mangingAccounts.createUserWithEmailAndPassword(mEmail, mPassword, mFirstName, mSurname, mProfileImage, mUsername);
             }
         });
     }

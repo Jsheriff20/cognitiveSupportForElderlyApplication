@@ -14,8 +14,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.List;
 
-import messaging.app.ContactingFirebase;
 import messaging.app.R;
+import messaging.app.contactingFirebase.QueryingDatabase;
 import messaging.app.messages.sendingMedia.SendMediaToFriendsListAdapter;
 
 public class SelectSendToFriendsFragment extends Fragment implements SendMediaToFriendsListAdapter.onFriendsSelectRecyclerViewClickedUUIDListener {
@@ -25,9 +25,9 @@ public class SelectSendToFriendsFragment extends Fragment implements SendMediaTo
     private RecyclerView recyclerView;
     private SendMediaToFriendsListAdapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
+    QueryingDatabase queryingDatabase = new QueryingDatabase();
 
     Context mContext;
-    ContactingFirebase contactingFirebase = new ContactingFirebase(mContext);
     onSelectedRowListener listener;
 
     public SelectSendToFriendsFragment(Context context, onSelectedRowListener listener) {
@@ -68,7 +68,7 @@ public class SelectSendToFriendsFragment extends Fragment implements SendMediaTo
 
 
     private void displayFriendsDetailsList(final SelectSendToFriendsFragment selectSendToFriendsFragment) {
-        contactingFirebase.getFriendsDetails(new ContactingFirebase.OnGetFriendsDetailsListener() {
+        queryingDatabase.getFriendsDetails(new QueryingDatabase.OnGetFriendsDetailsListener() {
             @Override
             public void onSuccess(List friendsDetailsList) {
                 //display to user

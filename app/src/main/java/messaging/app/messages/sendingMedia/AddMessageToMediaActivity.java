@@ -1,7 +1,6 @@
 package messaging.app.messages.sendingMedia;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
@@ -13,13 +12,10 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.media.ExifInterface;
 import android.media.MediaPlayer;
-import android.media.MediaRecorder;
 import android.os.Bundle;
-import android.os.Environment;
 import android.speech.RecognitionListener;
 import android.speech.RecognizerIntent;
 import android.speech.SpeechRecognizer;
-import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -27,21 +23,16 @@ import android.widget.ImageView;
 import android.widget.Toast;
 import android.widget.VideoView;
 
-import com.squareup.picasso.Picasso;
-
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Locale;
 
-import messaging.app.ContactingFirebase;
 import messaging.app.ManagingActivityPreview;
 import messaging.app.MediaManagement;
 import messaging.app.R;
-import messaging.app.login.LoginActivity;
-import messaging.app.login.ResetPasswordActivity;
+import messaging.app.contactingFirebase.ManagingMessages;
 import messaging.app.messages.ViewingMessages.ListOfReceivedMediaActivity;
-import messaging.app.messages.capturingMedia.CaptureActivity;
 
 import static android.widget.Toast.LENGTH_SHORT;
 
@@ -67,9 +58,9 @@ public class AddMessageToMediaActivity extends AppCompatActivity {
 
     private String mReplyingToUUID = null;
 
-    ContactingFirebase contactingFirebase = new ContactingFirebase(this);
     MediaManagement mediaManagement = new MediaManagement();
     ManagingActivityPreview managingActivityPreview = new ManagingActivityPreview();
+    ManagingMessages managingMessages = new ManagingMessages(this);
 
 
     @Override
@@ -173,7 +164,7 @@ public class AddMessageToMediaActivity extends AppCompatActivity {
         directMessagesUUID.add(friendsUUID);
 
         try {
-            contactingFirebase.sendMessages(directMessagesUUID, storyMessagesUUID, pathToMedia, typeOfMediaCaptured, message, deviceOrientationMode);
+            managingMessages.sendMessages(directMessagesUUID, storyMessagesUUID, pathToMedia, typeOfMediaCaptured, message, deviceOrientationMode);
         } catch (IOException e) {
             e.printStackTrace();
         }

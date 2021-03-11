@@ -8,9 +8,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
-import messaging.app.ContactingFirebase;
-import messaging.app.ManagingActivityPreview;
 import messaging.app.R;
+import messaging.app.contactingFirebase.ManagingAccounts;
 
 public class ResetPasswordActivity extends AppCompatActivity {
 
@@ -18,8 +17,7 @@ public class ResetPasswordActivity extends AppCompatActivity {
     Button btnResetPassword;
     Button btnLoadLogin;
 
-    ContactingFirebase contactingFirebase = new ContactingFirebase(this);
-    ManagingActivityPreview managingActivityPreview = new ManagingActivityPreview();
+    ManagingAccounts managingAccounts = new ManagingAccounts(this);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,8 +40,6 @@ public class ResetPasswordActivity extends AppCompatActivity {
     }
 
 
-
-
     private void setBtnLoadLoginOnClick(){
         btnLoadLogin.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -59,7 +55,7 @@ public class ResetPasswordActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 //set user email to reset password and load login if successful;
-                contactingFirebase.resetPassword(txtEmail.getText().toString());
+                managingAccounts.resetPassword(txtEmail.getText().toString());
             }
         });
     }

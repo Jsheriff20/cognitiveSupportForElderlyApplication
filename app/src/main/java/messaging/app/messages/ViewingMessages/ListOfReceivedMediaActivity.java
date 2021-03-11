@@ -6,24 +6,17 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
 
-import messaging.app.ContactingFirebase;
 import messaging.app.Formatting;
 import messaging.app.ManagingActivityPreview;
 import messaging.app.R;
-import messaging.app.login.LoginActivity;
-import messaging.app.login.ResetPasswordActivity;
+import messaging.app.contactingFirebase.QueryingDatabase;
 import messaging.app.messages.MessagesActivity;
-import messaging.app.messages.capturingMedia.CaptureActivity;
 
 public class ListOfReceivedMediaActivity extends AppCompatActivity {
 
@@ -33,9 +26,10 @@ public class ListOfReceivedMediaActivity extends AppCompatActivity {
 
     private ViewingMessagesReceivedAdapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
-    ContactingFirebase contactingFirebase = new ContactingFirebase(this);
+
     Formatting formatting = new Formatting();
     ManagingActivityPreview managingActivityPreview = new ManagingActivityPreview();
+    QueryingDatabase queryingDatabase = new QueryingDatabase();
 
 
     @Override
@@ -91,7 +85,7 @@ public class ListOfReceivedMediaActivity extends AppCompatActivity {
     }
 
     private void displayConversations() {
-        contactingFirebase.getExistingReceivedMediaDetails(new ContactingFirebase.OnGetExistingReceivedMediaDetailsListener() {
+        queryingDatabase.getExistingReceivedMediaDetails(this, new QueryingDatabase.OnGetExistingReceivedMediaDetailsListener() {
             @Override
             public void onSuccess(List<HashMap<String, String>> receivedMediaDetails, int numberOfStories) {
 

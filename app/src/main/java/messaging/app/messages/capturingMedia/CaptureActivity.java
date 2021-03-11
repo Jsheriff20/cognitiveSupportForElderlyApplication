@@ -381,6 +381,9 @@ public class CaptureActivity extends AppCompatActivity {
                     if (checkWriteToStoragePermissions() != false) {
                         lockFocus();
                     }
+                    else{
+                        mButtonPressProcessing = false;
+                    }
                 }
 
             }
@@ -637,6 +640,7 @@ public class CaptureActivity extends AppCompatActivity {
         @Override
         public void onCaptureCompleted(@NonNull CameraCaptureSession session, @NonNull CaptureRequest request, @NonNull TotalCaptureResult result) {
             super.onCaptureCompleted(session, request, result);
+
             startCaptureImageRequest();
         }
     };
@@ -786,7 +790,7 @@ public class CaptureActivity extends AppCompatActivity {
                         //if permissions are denied say why permission is needed
                         Toast.makeText(this, "Please enable Camera Access", LENGTH_SHORT).show();
                     }
-                    requestPermissions(new String[]{Manifest.permission.CAMERA, Manifest.permission.RECORD_AUDIO, Manifest.permission.READ_EXTERNAL_STORAGE}, REQUEST_CAMERA_PERMISSION_RESULT);
+                    requestPermissions(new String[]{Manifest.permission.CAMERA, Manifest.permission.RECORD_AUDIO, Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUEST_CAMERA_PERMISSION_RESULT);
                 }
 
             } else {
@@ -861,6 +865,7 @@ public class CaptureActivity extends AppCompatActivity {
                 public void onCaptureStarted(@NonNull CameraCaptureSession session, @NonNull CaptureRequest request, long timestamp, long frameNumber) {
                     super.onCaptureStarted(session, request, timestamp, frameNumber);
                     try {
+
                         mImageFilePath = mediaManagement.createImageFileName(mImageFolder).getAbsolutePath();
                     } catch (IOException e) {
                         e.printStackTrace();

@@ -1,41 +1,28 @@
 package messaging.app.messages.sendingMedia;
 
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.tabs.TabLayout;
 
 import androidx.viewpager.widget.ViewPager;
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageButton;
-import android.widget.Toast;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
 
-import messaging.app.ContactingFirebase;
 import messaging.app.ManagingActivityPreview;
 import messaging.app.R;
-import messaging.app.messages.MessagesActivity;
+import messaging.app.contactingFirebase.ManagingMessages;
 import messaging.app.messages.capturingMedia.CaptureActivity;
 import messaging.app.messages.sendingMedia.ui.main.SectionsPagerAdapter;
 
-import static android.widget.Toast.LENGTH_SHORT;
-
 public class SendMediaTabsActivity extends AppCompatActivity implements SectionsPagerAdapter.onRowSelectedListener {
-    ContactingFirebase contactingFirebase = new ContactingFirebase(this);
     ManagingActivityPreview managingActivityPreview = new ManagingActivityPreview();
+    ManagingMessages managingMessages = new ManagingMessages(this);
 
     String pathToMedia;
     String typeOfMediaCaptured;
@@ -44,6 +31,7 @@ public class SendMediaTabsActivity extends AppCompatActivity implements Sections
     private ImageButton btnSend;
     ArrayList<String> directMessagesUUID = new ArrayList<String>();
     ArrayList<String> storyMessagesUUID = new ArrayList<String>();;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -91,7 +79,7 @@ public class SendMediaTabsActivity extends AppCompatActivity implements Sections
 
         try {
 
-            contactingFirebase.sendMessages(directMessagesUUID, storyMessagesUUID, pathToMedia, typeOfMediaCaptured, message, mDeviceOrientationMode);
+            managingMessages.sendMessages(directMessagesUUID, storyMessagesUUID, pathToMedia, typeOfMediaCaptured, message, mDeviceOrientationMode);
         } catch (IOException e) {
             e.printStackTrace();
         }

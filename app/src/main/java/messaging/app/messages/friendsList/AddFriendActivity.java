@@ -13,11 +13,10 @@ import android.widget.ImageButton;
 import java.util.List;
 
 import messaging.app.CheckInputsValidity;
-import messaging.app.ContactingFirebase;
 import messaging.app.ManagingActivityPreview;
 import messaging.app.R;
-import messaging.app.login.LoginActivity;
-import messaging.app.login.ResetPasswordActivity;
+import messaging.app.contactingFirebase.ManagingFriends;
+import messaging.app.contactingFirebase.QueryingDatabase;
 
 public class AddFriendActivity extends AppCompatActivity {
 
@@ -29,8 +28,9 @@ public class AddFriendActivity extends AppCompatActivity {
     private RecyclerView recyclerView;
 
     CheckInputsValidity checkInputsValidity = new CheckInputsValidity(this);
-    ContactingFirebase contactingFirebase = new ContactingFirebase(this);
     ManagingActivityPreview managingActivityPreview = new ManagingActivityPreview();
+    QueryingDatabase queryingDatabase = new QueryingDatabase();
+    ManagingFriends managingFriends = new ManagingFriends(this);
 
     private RecyclerView.Adapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
@@ -90,10 +90,10 @@ public class AddFriendActivity extends AppCompatActivity {
     }
 
     private void displayFriendRequests() {
-        contactingFirebase.getReceivedFriendRequests(new ContactingFirebase.OnGetReceivedFriendRequestsListener() {
+        queryingDatabase.getReceivedFriendRequests(new QueryingDatabase.OnGetReceivedFriendRequestsListener() {
             @Override
             public void onSuccess(final List receivedFriendRequests) {
-                contactingFirebase.getSentFriendRequests(new ContactingFirebase.OnGetSentFriendRequestsListener() {
+                queryingDatabase.getSentFriendRequests(new QueryingDatabase.OnGetSentFriendRequestsListener() {
                     @Override
                     public void onSuccess(List sentFriendRequests) {
 
@@ -118,7 +118,7 @@ public class AddFriendActivity extends AppCompatActivity {
                 String relationship = txtRelationship.getText().toString();
 
                 if(checkInputsValidity.isUsernameValid(username) && checkInputsValidity.isRelationshipValid(relationship)){
-                    contactingFirebase.addFriend(username, relationship);
+                    managingFriends.addFriend(username, relationship);
                     finish();
                     startActivity(getIntent());
                 }

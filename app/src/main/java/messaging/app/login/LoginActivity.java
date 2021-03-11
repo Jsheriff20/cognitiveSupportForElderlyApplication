@@ -4,7 +4,6 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -14,19 +13,14 @@ import android.widget.Toast;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
-import java.text.Normalizer;
-
 import messaging.app.CheckInputsValidity;
-import messaging.app.ContactingFirebase;
-import messaging.app.Formatting;
 import messaging.app.ManagingActivityPreview;
-import messaging.app.NotifyMessageReceivedService;
 import messaging.app.R;
 import messaging.app.SelectAreaOfApplicationActivity;
+import messaging.app.contactingFirebase.ManagingAccounts;
 import messaging.app.register.RegisterEmailActivity;
-import messaging.app.register.RegisterProfileImageActivity;
 
-public class LoginActivity extends AppCompatActivity {
+ public class LoginActivity extends AppCompatActivity {
 
     EditText txtEmail;
     EditText txtPassword;
@@ -34,10 +28,10 @@ public class LoginActivity extends AppCompatActivity {
     Button btnLoadRegister;
     TextView lblResetPassword;
 
-    ContactingFirebase contactingFirebase = new ContactingFirebase(this);
-    Formatting formatting = new Formatting();
+    ManagingAccounts managingAccounts = new ManagingAccounts(this);
     CheckInputsValidity checkInputsValidity = new CheckInputsValidity(this);
     ManagingActivityPreview managingActivityPreview = new ManagingActivityPreview();
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -116,7 +110,7 @@ public class LoginActivity extends AppCompatActivity {
                     return;
                 }
                 else {
-                    boolean loginSuccess = contactingFirebase.loginUser(email, txtPassword.getText().toString());
+                    boolean loginSuccess = managingAccounts.loginUser(email, txtPassword.getText().toString());
 
                 }
             }

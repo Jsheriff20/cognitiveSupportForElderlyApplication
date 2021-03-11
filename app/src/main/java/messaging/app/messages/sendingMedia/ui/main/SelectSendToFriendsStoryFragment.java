@@ -2,11 +2,9 @@ package messaging.app.messages.sendingMedia.ui.main;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageButton;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -16,9 +14,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.List;
 
-import messaging.app.ContactingFirebase;
 import messaging.app.R;
-import messaging.app.messages.sendingMedia.SendMediaToFriendsListAdapter;
+import messaging.app.contactingFirebase.QueryingDatabase;
 import messaging.app.messages.sendingMedia.SendMediaToFriendsStoryListAdapter;
 
 public class SelectSendToFriendsStoryFragment extends Fragment implements SendMediaToFriendsStoryListAdapter.onFriendsStorySelectRecyclerViewClickedUUIDListener{
@@ -30,8 +27,8 @@ public class SelectSendToFriendsStoryFragment extends Fragment implements SendMe
     private RecyclerView.LayoutManager mLayoutManager;
 
     Context mContext;
-    ContactingFirebase contactingFirebase = new ContactingFirebase(mContext);
     onSelectedRowListener listener;
+    QueryingDatabase queryingDatabase = new QueryingDatabase();
 
     public interface onSelectedRowListener{
         void onSelectedStoryFragmentRowListener(String UUID, String messageType);
@@ -70,7 +67,7 @@ public class SelectSendToFriendsStoryFragment extends Fragment implements SendMe
 
 
     private void displayFriendsDetailsList(final SelectSendToFriendsStoryFragment selectSendToFriendsStoryFragment) {
-        contactingFirebase.getFriendsDetails(new ContactingFirebase.OnGetFriendsDetailsListener() {
+        queryingDatabase.getFriendsDetails(new QueryingDatabase.OnGetFriendsDetailsListener() {
             @Override
             public void onSuccess(List friendsDetailsList) {
                 //display to user

@@ -1,7 +1,6 @@
 package messaging.app.messages.friendsList;
 
 import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,14 +14,15 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.HashMap;
 import java.util.List;
 
-import messaging.app.ContactingFirebase;
 import messaging.app.R;
+import messaging.app.contactingFirebase.ManagingFriends;
 
 public class AddFriendsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     List<HashMap<String, FriendRequestHelper>> mSentFriendRequests;
     List<HashMap<String, String>> mReceivedFriendRequests;
     Context context;
-    ContactingFirebase contactingFirebase = new ContactingFirebase(context);;
+
+    ManagingFriends managingFriends = new ManagingFriends(context);
 
 
     public AddFriendsAdapter(List<HashMap<String, FriendRequestHelper>> mSentFriendRequests, List<HashMap<String, String>> mReceivedFriendRequests, Context context) {
@@ -109,7 +109,7 @@ public class AddFriendsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                     public void onClick(View v) {
 
                         //cancel the friend requests
-                        contactingFirebase.cancelSentFriendRequest(sentFriendRequestsViewHolder.UUID);
+                        managingFriends.cancelSentFriendRequest(sentFriendRequestsViewHolder.UUID);
 
                         //hide the friend request
                         sentFriendRequestsViewHolder.itemView.setVisibility(View.GONE);
@@ -136,7 +136,7 @@ public class AddFriendsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                     public void onClick(View v) {
                         String newRelationship = ((ReceivedFriendRequestsViewHolder) holder).txtReceivedFriendRequestRelationship.getText().toString();
                         //accept friend request
-                        contactingFirebase.acceptFriendRequest(receivedFriendRequestsViewHolder.UUID, newRelationship);
+                        managingFriends.acceptFriendRequest(receivedFriendRequestsViewHolder.UUID, newRelationship);
 
                         //hide the friend request
                         receivedFriendRequestsViewHolder.itemView.setVisibility(View.GONE);
@@ -154,7 +154,7 @@ public class AddFriendsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                     @Override
                     public void onClick(View v) {
                         //remove the friend request
-                        contactingFirebase.cancelReceivedFriendRequest(receivedFriendRequestsViewHolder.UUID);
+                        managingFriends.cancelReceivedFriendRequest(receivedFriendRequestsViewHolder.UUID);
 
                         //hide the friend request
                         receivedFriendRequestsViewHolder.itemView.setVisibility(View.GONE);
