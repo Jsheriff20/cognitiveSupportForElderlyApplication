@@ -45,7 +45,7 @@
         <activity android:name=".register.RegisterPasswordActivity" />
         <activity android:name=".register.RegisterUsernameActivity" />
         <activity android:name=".register.RegisterPersonalInfoActivity" />
-        <activity android:name=".register.RegisterProfileImageActivity" />
+        <activity android:name=".register.RegisterProfileImageActivity"/>
         <activity android:name=".messages.capturingMedia.CaptureActivity" />
         <activity android:name=".SelectAreaOfApplicationActivity" />
         <service android:name=".NotifyMessageReceivedService"/>

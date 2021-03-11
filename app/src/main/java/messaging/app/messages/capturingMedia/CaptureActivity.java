@@ -249,9 +249,18 @@ public class CaptureActivity extends AppCompatActivity {
                     }
 
 
-                    Intent intent = new Intent(CaptureActivity.this, MessagesActivity.class);
-                    CaptureActivity.this.startActivity(intent);
+                    Intent intent;
+                    if (mCaptureForProfileImage) {
+                        intent = new Intent(getApplicationContext(), RegisterProfileImageActivity.class);
+                        intent.putExtras(getIntent().getExtras());
+
+                    } else {
+                        intent = new Intent(CaptureActivity.this, MessagesActivity.class);
+                    }
+                    startActivity(intent);
                     mButtonPressProcessing = false;
+
+
                 }
             }
         });
@@ -380,8 +389,7 @@ public class CaptureActivity extends AppCompatActivity {
 
                     if (checkWriteToStoragePermissions() != false) {
                         lockFocus();
-                    }
-                    else{
+                    } else {
                         mButtonPressProcessing = false;
                     }
                 }
@@ -965,7 +973,7 @@ public class CaptureActivity extends AppCompatActivity {
             //setup capture request builder
             mCaptureRequestBuilder = mCameraDevice.createCaptureRequest(CameraDevice.TEMPLATE_PREVIEW);
             mCaptureRequestBuilder.addTarget(cameraPreviewSurface);
-            mCaptureRequestBuilder.set(CaptureRequest.CONTROL_AF_MODE, CaptureRequest.CONTROL_AF_MODE_CONTINUOUS_PICTURE);
+            mCaptureRequestBuilder.set(CaptureRequest.CONTROL_AF_MODE, CaptureRequest.CONTROL_AF_MODE_AUTO);
             mCaptureRequestBuilder.set(CaptureRequest.JPEG_ORIENTATION, ORIENTATIONS.get(mTotalRotation));
 
 

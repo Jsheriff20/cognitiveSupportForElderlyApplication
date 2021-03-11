@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/friendsListRow"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     android:background="@color/white">
 
     <TextView
@@ -68,6 +68,6 @@
         app:layout_constraintBottom_toTopOf="@+id/divider16"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/edit_shadow_icon"/>
+        app:srcCompat="@drawable/edit_shadow_icon" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

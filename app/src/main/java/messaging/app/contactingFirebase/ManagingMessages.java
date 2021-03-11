@@ -111,6 +111,8 @@ public class ManagingMessages {
         //add number of links to the media has been sent
         DatabaseReference databaseRef = mDatabase.getReference();
         databaseRef.child("sentMediaLog/" + editedFileName + "/sent").setValue(numberOfMessagesSent);
+
+        increaseNumOfSentMessagesFromUUID(numberOfMessagesSent);
     }
 
 
@@ -152,6 +154,35 @@ public class ManagingMessages {
                 } else {
                     databaseRef.child("viewed").setValue(newValue);
                 }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+
+    }
+
+
+    private void increaseNumOfSentMessagesFromUUID(int numberOfMessagesSent) {
+
+        final DatabaseReference databaseRef = mDatabase.getReference("userDetails").child(queryingDatabase.getCurrentUsersUUID());
+        databaseRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                int currentValue = 0;
+                for (DataSnapshot ds : snapshot.getChildren()) {
+                    if (ds.getKey().equals("numberOfSentMessages")) {
+                        long longCurrentValue = (long) ds.getValue();
+                        currentValue = (int) longCurrentValue;
+                    }
+
+                }
+                int newValue = currentValue + numberOfMessagesSent;
+
+                databaseRef.child("numberOfSentMessages").setValue(newValue);
+
             }
 
             @Override

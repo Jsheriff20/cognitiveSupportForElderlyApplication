@@ -11,82 +11,53 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
 
         <TextView
             android:id="@+id/txtAskRelationship"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="40dp"
+            android:layout_marginStart="32dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
             android:text="Enter Relationship"
             android:textColor="#000000"
             android:textSize="24sp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintEnd_toStartOf="@+id/btnRefreshFriendRequests"
             app:layout_constraintStart_toEndOf="@+id/divider15"
             app:layout_constraintTop_toTopOf="parent" />
 
         <EditText
             android:id="@+id/txtReceivedFriendRequestRelationship"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
+            android:layout_marginStart="32dp"
+            android:layout_marginEnd="8dp"
             android:ems="10"
             android:hint="e.g Son, Farther, Niece"
             android:inputType="textPersonName"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.5"
+            android:textSize="22sp"
+            app:layout_constraintEnd_toStartOf="@+id/btnRefreshFriendRequests"
             app:layout_constraintStart_toEndOf="@+id/divider15"
             app:layout_constraintTop_toBottomOf="@+id/txtAskRelationship" />
 
         <TextView
             android:id="@+id/txtAskUsername"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="40dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="32dp"
             android:text="Enter Username"
             android:textColor="#000000"
             android:textSize="24sp"
             app:layout_constraintEnd_toStartOf="@+id/divider15"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/btnBackToFriendsList"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <LinearLayout
-            android:id="@+id/linearLayout5"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:orientation="horizontal"
-            app:layout_constraintEnd_toStartOf="@+id/divider15"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/txtAskUsername">
-
-            <EditText
-                android:id="@+id/txtAddingUsername"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:ems="10"
-                android:hint="Username"
-                android:inputType="textPersonName"
-                app:layout_constraintEnd_toStartOf="@+id/btnSearchFriend"
-                app:layout_constraintHorizontal_bias="0.5"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/txtAskUsername" />
-
-
-            <ImageButton
-                android:id="@+id/btnSearchFriend"
-                android:layout_width="51dp"
-                android:layout_height="45dp"
-                android:background="@null"
-                app:layout_constraintStart_toEndOf="@+id/txtAddingUsername"
-                app:srcCompat="@android:drawable/ic_menu_search"
-                tools:layout_editor_absoluteY="60dp" />
-        </LinearLayout>
 
         <View
             android:id="@+id/divider15"
@@ -111,6 +82,45 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:srcCompat="@drawable/back_icon" />
+
+
+        <ImageButton
+            android:id="@+id/btnRefreshFriendRequests"
+            android:layout_width="70dp"
+            android:layout_height="70dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="24dp"
+            android:background="@null"
+            android:scaleType="centerCrop"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/refresh_icon" />
+
+        <EditText
+            android:id="@+id/txtAddingUsername"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginStart="8dp"
+            android:ems="10"
+            android:hint="Username"
+            android:inputType="textPersonName"
+            android:textSize="22sp"
+            app:layout_constraintEnd_toStartOf="@+id/btnSearchFriend"
+            app:layout_constraintStart_toEndOf="@+id/btnBackToFriendsList"
+            app:layout_constraintTop_toBottomOf="@+id/txtAskUsername" />
+
+        <ImageButton
+            android:id="@+id/btnSearchFriend"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:layout_marginEnd="32dp"
+            android:background="@null"
+            android:padding="5dp"
+            android:scaleType="centerCrop"
+            app:layout_constraintEnd_toStartOf="@+id/divider15"
+            app:layout_constraintTop_toBottomOf="@+id/txtAskUsername"
+            app:srcCompat="@drawable/add_icon" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <androidx.recyclerview.widget.RecyclerView
@@ -122,4 +132,5 @@
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/constraintLayout" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

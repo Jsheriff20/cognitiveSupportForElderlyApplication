@@ -9,6 +9,7 @@ import android.media.ExifInterface;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -76,7 +77,8 @@ public class RegisterProfileImageActivity extends AppCompatActivity {
         mFirstName = getIntent().getStringExtra("firstName");
         mSurname = getIntent().getStringExtra("surname");
 
-        if(getIntent().getStringExtra("profileImage") != null){
+
+        if (getIntent().getStringExtra("profileImage") != null) {
             mProfileImagePath = getIntent().getStringExtra("profileImage");
             mProfileImageRotation = getIntent().getIntExtra("profileImageRotation", 0);
 
@@ -99,6 +101,7 @@ public class RegisterProfileImageActivity extends AppCompatActivity {
             } catch (IOException e) {
                 e.printStackTrace();
             }
+            mButtonPressProcessing = false;
 
 
         }
@@ -128,33 +131,40 @@ public class RegisterProfileImageActivity extends AppCompatActivity {
     }
 
 
-    private void setBtnBackToRegisterPasswordOnClick(){
+    private void setBtnBackToRegisterPasswordOnClick() {
         btnBackToRegisterPersonalInfo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(!mProfileImagePath.equals(null)) {
-                    mediaManagement.deleteMediaFile(mProfileImagePath, getApplicationContext());
-                }
+                if (!mButtonPressProcessing) {
+                    mButtonPressProcessing = true;
 
-                Intent intent = new Intent(RegisterProfileImageActivity.this, RegisterPersonalInfoActivity.class);
-                intent.putExtra("email", mEmail);
-                intent.putExtra("password", mPassword);
-                intent.putExtra("username", mUsername);
-                intent.putExtra("firstName", mFirstName);
-                intent.putExtra("surname", mSurname);
-                RegisterProfileImageActivity.this.startActivity(intent);
-                return;
+                    if (mProfileImagePath != null) {
+                        mediaManagement.deleteMediaFile(mProfileImagePath, getApplicationContext());
+                    }
+
+                    Intent intent = new Intent(RegisterProfileImageActivity.this, RegisterPersonalInfoActivity.class);
+                    intent.putExtra("email", mEmail);
+                    intent.putExtra("password", mPassword);
+                    intent.putExtra("username", mUsername);
+                    intent.putExtra("firstName", mFirstName);
+                    intent.putExtra("surname", mSurname);
+                    RegisterProfileImageActivity.this.startActivity(intent);
+
+                    mButtonPressProcessing = false;
+                    return;
+                }
             }
         });
     }
 
 
-    private void setBtnUploadPhotoOnClick(){
+    private void setBtnUploadPhotoOnClick() {
         btnUploadPhoto.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(!mButtonPressProcessing) {
+                if (!mButtonPressProcessing) {
                     mButtonPressProcessing = true;
+
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                         if (ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
                             //open the storage if permissions are granted
@@ -175,11 +185,11 @@ public class RegisterProfileImageActivity extends AppCompatActivity {
     }
 
 
-    private void setBtnCapturePhotoOnClick(){
+    private void setBtnCapturePhotoOnClick() {
         btnCapturePhoto.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(!mButtonPressProcessing) {
+                if (!mButtonPressProcessing) {
                     //do not need to set button press processing to false as a new activity will be created instead
                     mButtonPressProcessing = true;
                     Intent intent = new Intent(RegisterProfileImageActivity.this, CaptureActivity.class);
@@ -193,7 +203,7 @@ public class RegisterProfileImageActivity extends AppCompatActivity {
     }
 
 
-    private void openFileSelector(){
+    private void openFileSelector() {
         Intent intent = new Intent();
         intent.setType("image/*");
         intent.setAction(Intent.ACTION_GET_CONTENT);
@@ -206,7 +216,7 @@ public class RegisterProfileImageActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
         //cancel button process for selecting an image
         mButtonPressProcessing = false;
-        if(resultCode != RESULT_OK){
+        if (resultCode != RESULT_OK) {
             Toast.makeText(this, "No new profile image", LENGTH_SHORT).show();
             return;
         }
@@ -215,7 +225,7 @@ public class RegisterProfileImageActivity extends AppCompatActivity {
         mProfileImage = data.getData();
         imgProfileImage.setImageURI(mProfileImage);
 
-        if(requestCode == REQUEST_EXTERNAL_STORAGE_PERMISSION_RESULT){
+        if (requestCode == REQUEST_EXTERNAL_STORAGE_PERMISSION_RESULT) {
             //store the captured image
             mProfileImage = data.getData();
 
@@ -227,17 +237,27 @@ public class RegisterProfileImageActivity extends AppCompatActivity {
     }
 
 
-    private void setBtnRegisterOnClick(){
+    private void setBtnRegisterOnClick() {
         btnRegister.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mangingAccounts.createUserWithEmailAndPassword(mEmail, mPassword, mFirstName, mSurname, mProfileImage, mUsername);
+                btnUploadPhoto.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        if (!mButtonPressProcessing) {
+                            mButtonPressProcessing = true;
+
+                            mangingAccounts.createUserWithEmailAndPassword(mEmail, mPassword, mFirstName, mSurname, mProfileImage, mUsername);
+                        }
+
+                    }
+                });
             }
         });
     }
 
 
-    private void setBtnLoadLoginOnClick(){
+    private void setBtnLoadLoginOnClick() {
         btnLoadLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

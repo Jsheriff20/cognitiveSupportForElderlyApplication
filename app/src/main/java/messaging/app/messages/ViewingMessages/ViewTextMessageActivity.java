@@ -5,12 +5,15 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Parcelable;
+import android.speech.tts.TextToSpeech;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+import java.util.Locale;
 
 import messaging.app.Formatting;
 import messaging.app.ManagingActivityPreview;
@@ -24,6 +27,8 @@ public class ViewTextMessageActivity extends AppCompatActivity {
     TextView lblDisplayingMessage;
     TextView lblReceivedTime;
     Button btnViewMediaMessage;
+    ImageButton btnTextToSpeech;
+    TextToSpeech textToSpeech;
 
     Formatting formatting = new Formatting();
     ManagingActivityPreview managingActivityPreview = new ManagingActivityPreview();
@@ -37,6 +42,7 @@ public class ViewTextMessageActivity extends AppCompatActivity {
         lblDisplayingMessage = findViewById(R.id.lblDisplayingMessage);
         lblReceivedTime = findViewById(R.id.lblReceivedTime);
         btnViewMediaMessage = findViewById(R.id.btnViewMediaMessage);
+        btnTextToSpeech = findViewById(R.id.btnTextToSpeech);
 
 
         intent = getIntent();
@@ -60,6 +66,8 @@ public class ViewTextMessageActivity extends AppCompatActivity {
         lblReceivedTime.setText(formattedTimeAgo + " Ago");
 
         setBtnViewMediaMessageOnClick();
+        setBtnTextToSpeechOnClick();
+        setupTextToSpeech();
     }
 
 
@@ -76,6 +84,31 @@ public class ViewTextMessageActivity extends AppCompatActivity {
         if (hasFocus) {
             managingActivityPreview.hideSystemUI(getWindow().getDecorView());
         }
+    }
+
+
+    private void setupTextToSpeech(){
+        textToSpeech = new TextToSpeech(getApplicationContext(), new TextToSpeech.OnInitListener() {
+            @Override
+            public void onInit(int i) {
+                if(i == TextToSpeech.SUCCESS){
+                     textToSpeech.setLanguage(Locale.ENGLISH);
+                }
+            }
+        });
+    }
+
+
+    private void setBtnTextToSpeechOnClick(){
+        btnTextToSpeech.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String text = lblDisplayingMessage.getText().toString();
+
+                //convert text to speech
+               textToSpeech.speak(text, TextToSpeech.QUEUE_FLUSH, null);
+            }
+        });
     }
 
 
