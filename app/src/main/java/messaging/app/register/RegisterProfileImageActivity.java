@@ -51,7 +51,7 @@ public class RegisterProfileImageActivity extends AppCompatActivity {
     String mFirstName;
     String mSurname;
     Uri mProfileImage = null;
-    String mProfileImagePath = null;
+    String mProfileImagePath = "";
     int mProfileImageRotation = 0;
     private boolean mButtonPressProcessing = false;
 
@@ -101,7 +101,6 @@ public class RegisterProfileImageActivity extends AppCompatActivity {
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            mButtonPressProcessing = false;
 
 
         }
@@ -115,6 +114,11 @@ public class RegisterProfileImageActivity extends AppCompatActivity {
         setBtnBackToRegisterPasswordOnClick();
     }
 
+    @Override
+    protected void onStart() {
+        mButtonPressProcessing = false;
+        super.onStart();
+    }
 
     @Override
     public void onBackPressed() {
@@ -190,12 +194,13 @@ public class RegisterProfileImageActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if (!mButtonPressProcessing) {
-                    //do not need to set button press processing to false as a new activity will be created instead
+
                     mButtonPressProcessing = true;
                     Intent intent = new Intent(RegisterProfileImageActivity.this, CaptureActivity.class);
                     intent.putExtra("captureForProfileImage", true);
                     intent.putExtras(getIntent().getExtras());
                     RegisterProfileImageActivity.this.startActivity(intent);
+                    mButtonPressProcessing = false;
                 }
 
             }
@@ -241,17 +246,11 @@ public class RegisterProfileImageActivity extends AppCompatActivity {
         btnRegister.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                btnUploadPhoto.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        if (!mButtonPressProcessing) {
-                            mButtonPressProcessing = true;
+                if (!mButtonPressProcessing) {
+                    mButtonPressProcessing = true;
+                    mangingAccounts.createUserWithEmailAndPassword(mEmail, mPassword, mFirstName, mSurname, mProfileImage, mUsername);
+                }
 
-                            mangingAccounts.createUserWithEmailAndPassword(mEmail, mPassword, mFirstName, mSurname, mProfileImage, mUsername);
-                        }
-
-                    }
-                });
             }
         });
     }

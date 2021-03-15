@@ -64,8 +64,15 @@ public class ManagingAccounts {
                             mCurrentUser.updateProfile(request).addOnSuccessListener(new OnSuccessListener<Void>() {
                                 @Override
                                 public void onSuccess(Void aVoid) {
+
+                                    String tempProfileImage = "";
+
+                                    if (profileImage.equals(null)) {
+                                        tempProfileImage = profileImage.toString();
+                                    }
+
                                     //add usersData to the database
-                                    addNewUsersData(firstName, surname, profileImage, UUID, username, new OnAddNewUserDataListener() {
+                                    addNewUsersData(firstName, surname, tempProfileImage, UUID, username, new OnAddNewUserDataListener() {
                                         @Override
                                         public void onSuccess(boolean success) {
                                             if (success) {
@@ -100,74 +107,90 @@ public class ManagingAccounts {
     }
 
 
-
-
     public interface OnAddNewUserDataListener {
         void onSuccess(boolean success);
     }
 
-    private void addNewUsersData(final String firstName, final String surname, final Uri profileImageUri, final String UUID, final String username, final OnAddNewUserDataListener listener) {
+    private void addNewUsersData(final String firstName, final String surname, final String profileImageUri, final String UUID, final String username, final OnAddNewUserDataListener listener) {
 
-        String fileName = UUID + "_profileImage.jpg";
+        //add new user without profile image
+        if (profileImageUri.equals("") || profileImageUri.equals(null)) {
 
-        mStorage = FirebaseStorage.getInstance();
-        StorageReference storageRef = mStorage.getReference("images").child(fileName);
+            //create new user in database using UUID already created
+            UserHelperClass userHelperClass = new UserHelperClass(username, firstName, surname, "", 0);
+
+            DatabaseReference databaseRef = mDatabase.getReference("userDetails");
+            databaseRef.child(UUID).setValue(userHelperClass);
+
+            databaseRef = mDatabase.getReference("usernames");
+            databaseRef.child(username).setValue(UUID);
 
 
-        //upload profile image to storage
-        storageRef.putFile(profileImageUri).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
-                if (task.isSuccessful()) {
+            listener.onSuccess(true);
+        }
+        else {
 
-                    //get profile image's download url
-                    task.getResult().getStorage().getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-                        @Override
-                        public void onSuccess(Uri uri) {
-                            String profileImageUrl = uri.toString();
-                            //remove the unnecessary data from the url
-                            String[] partsOfProfileImageUrl = profileImageUrl.split("\\?");
-                            profileImageUrl = partsOfProfileImageUrl[0];
+            String fileName = UUID + "_profileImage.jpg";
 
-                            //get image rotation
-                            int rotation = 0;
-                            try {
-                                ExifInterface exif = null;
-                                exif = new ExifInterface(profileImageUri.getPath());
-                                rotation = exif.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL);
-                            } catch (IOException e) {
-                                e.printStackTrace();
+            mStorage = FirebaseStorage.getInstance();
+            StorageReference storageRef = mStorage.getReference("images").child(fileName);
+
+            //upload profile image to storage
+            storageRef.putFile(Uri.parse(profileImageUri)).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
+                @Override
+                public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
+                    if (task.isSuccessful()) {
+
+                        //get profile image's download url
+                        task.getResult().getStorage().getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                            @Override
+                            public void onSuccess(Uri uri) {
+                                String profileImageUrl = uri.toString();
+                                //remove the unnecessary data from the url
+                                String[] partsOfProfileImageUrl = profileImageUrl.split("\\?");
+                                profileImageUrl = partsOfProfileImageUrl[0];
+
+                                //get image rotation
+                                int rotation = 0;
+                                try {
+                                    ExifInterface exif = null;
+                                    exif = new ExifInterface(Uri.parse(profileImageUri).getPath());
+                                    rotation = exif.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL);
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                }
+
+                                //create new user in database using UUID already created
+                                UserHelperClass userHelperClass = new UserHelperClass(username, firstName, surname, profileImageUrl, rotation);
+
+                                DatabaseReference databaseRef = mDatabase.getReference("userDetails");
+                                databaseRef.child(UUID).setValue(userHelperClass);
+
+                                databaseRef = mDatabase.getReference("usernames");
+                                databaseRef.child(username).setValue(UUID);
+
+
+                                listener.onSuccess(true);
                             }
+                        }).addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                listener.onSuccess(false);
+                            }
+                        });
 
-                            //create new user in database using UUID already created
-                            UserHelperClass userHelperClass = new UserHelperClass(username, firstName, surname, profileImageUrl, rotation);
-
-                            DatabaseReference databaseRef = mDatabase.getReference("userDetails");
-                            databaseRef.child(UUID).setValue(userHelperClass);
-
-                            databaseRef = mDatabase.getReference("usernames");
-                            databaseRef.child(username).setValue(UUID);
-
-
-                            listener.onSuccess(true);
-                        }
-                    }).addOnFailureListener(new OnFailureListener() {
+                    }
+                }
+            })
+                    .addOnFailureListener(new OnFailureListener() {
                         @Override
                         public void onFailure(@NonNull Exception e) {
                             listener.onSuccess(false);
+
                         }
                     });
+        }
 
-                }
-            }
-        })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        listener.onSuccess(false);
-
-                    }
-                });
     }
 
 
@@ -197,6 +220,7 @@ public class ManagingAccounts {
 
 
     boolean returnValue;
+
     public boolean loginUser(String email, String password) {
         mAuth = FirebaseAuth.getInstance();
         mAuth.signInWithEmailAndPassword(email, password)

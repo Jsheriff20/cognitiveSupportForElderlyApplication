@@ -10,7 +10,7 @@
     <TextView
         android:id="@+id/lblFriendsRelationship"
         android:layout_width="0dp"
-        android:layout_height="57dp"
+        android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="16dp"
@@ -24,7 +24,7 @@
     <TextView
         android:id="@+id/lblFriendsName"
         android:layout_width="0dp"
-        android:layout_height="32dp"
+        android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
         android:layout_marginEnd="16dp"

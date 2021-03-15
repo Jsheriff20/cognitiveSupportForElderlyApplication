@@ -110,7 +110,7 @@ import messaging.app.register.RegisterEmailActivity;
                     return;
                 }
                 else {
-                    boolean loginSuccess = managingAccounts.loginUser(email, txtPassword.getText().toString());
+                    managingAccounts.loginUser(email, txtPassword.getText().toString());
 
                 }
             }

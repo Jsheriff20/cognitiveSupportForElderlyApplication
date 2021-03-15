@@ -194,7 +194,11 @@ public class CaptureActivity extends AppCompatActivity {
                     mButtonPressProcessing = true;
                     if (useFrontFacingCamera) {
                         useFrontFacingCamera = false;
-                        btnCaptureVideo.setVisibility(View.VISIBLE);
+
+                        //if not capturing for profile image, allow capturing of video
+                        if(!mCaptureForProfileImage) {
+                            btnCaptureVideo.setVisibility(View.VISIBLE);
+                        }
                     } else {
                         useFrontFacingCamera = true;
                         btnCaptureVideo.setVisibility(View.INVISIBLE);
@@ -323,7 +327,6 @@ public class CaptureActivity extends AppCompatActivity {
 
                                 //start recording a video
                                 startRecording();
-                                mMediaRecorder.start();
 
                             }
                         } else {
@@ -341,27 +344,24 @@ public class CaptureActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                if (!mButtonPressProcessing) {
-                    mButtonPressProcessing = true;
-                    //check if video is record, if so stop and adjust view for user
-                    if (mIsRecording) {
-                        mIsRecording = false;
-                        btnStopVideo.setVisibility(View.INVISIBLE);
-                        btnCaptureVideo.setVisibility(View.VISIBLE);
-                        btnCaptureImage.setVisibility(View.VISIBLE);
+                //check if video is record, if so stop and adjust view for user
+                if (mIsRecording) {
+                    mIsRecording = false;
+                    btnStopVideo.setVisibility(View.INVISIBLE);
+                    btnCaptureVideo.setVisibility(View.VISIBLE);
+                    btnCaptureImage.setVisibility(View.VISIBLE);
 
-                        mMediaRecorder.stop();
-                        mMediaRecorder.reset();
-                        startPreview();
+                    mMediaRecorder.stop();
+                    mMediaRecorder.reset();
+                    startPreview();
 
 
-                        previewCapturedMedia("Video");
+                    previewCapturedMedia("Video");
 
-                    } else {
-                        Toast.makeText(getApplicationContext(), "An error has occurred", LENGTH_SHORT).show();
-                    }
-                    mButtonPressProcessing = false;
+                } else {
+                    Toast.makeText(getApplicationContext(), "An error has occurred", LENGTH_SHORT).show();
                 }
+
             }
         });
     }
@@ -849,12 +849,15 @@ public class CaptureActivity extends AppCompatActivity {
 
                         }
                     }, null);
+            mMediaRecorder.start();
 
         } catch (IOException e) {
             e.printStackTrace();
         } catch (CameraAccessException e) {
             e.printStackTrace();
         }
+
+
 
 
     }
@@ -973,7 +976,7 @@ public class CaptureActivity extends AppCompatActivity {
             //setup capture request builder
             mCaptureRequestBuilder = mCameraDevice.createCaptureRequest(CameraDevice.TEMPLATE_PREVIEW);
             mCaptureRequestBuilder.addTarget(cameraPreviewSurface);
-            mCaptureRequestBuilder.set(CaptureRequest.CONTROL_AF_MODE, CaptureRequest.CONTROL_AF_MODE_AUTO);
+            mCaptureRequestBuilder.set(CaptureRequest.CONTROL_AF_MODE, CaptureRequest.CONTROL_AF_MODE_CONTINUOUS_PICTURE);
             mCaptureRequestBuilder.set(CaptureRequest.JPEG_ORIENTATION, ORIENTATIONS.get(mTotalRotation));
 
 
