@@ -68,6 +68,7 @@
         android:id="@+id/txtUsername"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:hint="Press here"
         android:ems="10"
         android:inputType="text"
         app:layout_constraintEnd_toStartOf="@+id/divider10"

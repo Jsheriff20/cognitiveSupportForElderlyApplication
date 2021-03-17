@@ -38,8 +38,7 @@ public class ViewingMessagesReceivedAdapter extends RecyclerView.Adapter {
     Context context;
     private File mImageFolder;
     private String mImageFilePath;
-
-    MediaManagement mediaManagement = new MediaManagement();
+    MediaManagement mediaManagement;
     QueryingDatabase queryingDatabase = new QueryingDatabase();
 
 
@@ -47,6 +46,7 @@ public class ViewingMessagesReceivedAdapter extends RecyclerView.Adapter {
         this.mReceivedMediaDetails = receivedMediaDetails;
         this.mNumberOfStories = numberOfStories;
         this.context = context;
+        mediaManagement = new MediaManagement(context);
     }
 
 

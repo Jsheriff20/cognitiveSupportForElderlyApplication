@@ -35,7 +35,7 @@ public class SendMediaToFriendsStoryListAdapter extends RecyclerView.Adapter<Sen
     Context context;
     private List<AccountDetails> mFriendsDetailsList;
     public List mSelectedFriends = new ArrayList();
-    MediaManagement mediaManagement = new MediaManagement();
+    MediaManagement mediaManagement;
     onFriendsStorySelectRecyclerViewClickedUUIDListener listener;
     private File mImageFolder;
     private String mImageFilePath;
@@ -51,6 +51,7 @@ public class SendMediaToFriendsStoryListAdapter extends RecyclerView.Adapter<Sen
         mFriendsDetailsList = friendsDetailsList;
         this.context = context;
         this.listener = listener;
+        mediaManagement = new MediaManagement(context);
     }
 
 

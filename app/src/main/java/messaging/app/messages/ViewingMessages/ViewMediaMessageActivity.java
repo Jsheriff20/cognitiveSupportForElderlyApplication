@@ -36,7 +36,7 @@ public class ViewMediaMessageActivity extends AppCompatActivity {
 
     Intent intent;
     MessageData displayingMessage;
-    MediaManagement mediaManagement = new MediaManagement();
+    MediaManagement mediaManagement;
     int messageNum;
     int numberOfMessages;
     int newMessageNum;
@@ -51,6 +51,10 @@ public class ViewMediaMessageActivity extends AppCompatActivity {
 
     ManagingMessages managingMessages = new ManagingMessages(this);
     ManagingActivityPreview managingActivityPreview = new ManagingActivityPreview();
+
+    public ViewMediaMessageActivity() {
+         mediaManagement = new MediaManagement(this);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

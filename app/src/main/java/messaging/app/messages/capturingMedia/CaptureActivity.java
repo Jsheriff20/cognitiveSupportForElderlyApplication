@@ -67,7 +67,6 @@ public class CaptureActivity extends AppCompatActivity {
     //state orientation of output image
     private static final SparseIntArray ORIENTATIONS = new SparseIntArray();
     private static final int REQUEST_CAMERA_PERMISSION_RESULT = 101;
-    private static final int REQUEST_EXTERNAL_STORAGE_PERMISSION_RESULT = 102;
     private static final int REQUEST_RECORD_AUDIO_PERMISSION_RESULT = 103;
 
 
@@ -111,7 +110,7 @@ public class CaptureActivity extends AppCompatActivity {
     private CameraCaptureSession mCaptureSession;
 
     private String mTypeOfMediaCaptured;
-    private MediaManagement mediaManagement = new MediaManagement();
+    private MediaManagement mediaManagement = new MediaManagement(this);
     ManagingActivityPreview managingActivityPreview = new ManagingActivityPreview();
 
     private boolean mCaptureForProfileImage;
@@ -196,7 +195,7 @@ public class CaptureActivity extends AppCompatActivity {
                         useFrontFacingCamera = false;
 
                         //if not capturing for profile image, allow capturing of video
-                        if(!mCaptureForProfileImage) {
+                        if (!mCaptureForProfileImage) {
                             btnCaptureVideo.setVisibility(View.VISIBLE);
                         }
                     } else {
@@ -318,17 +317,14 @@ public class CaptureActivity extends AppCompatActivity {
                         btnBackToMessagesActivity.setVisibility(View.INVISIBLE);
                         btnRotateCamera.setVisibility(View.INVISIBLE);
                         if (!mIsRecording) {
-                            //check permissions are valid
-                            if (checkWriteToStoragePermissions() != false) {
-                                mIsRecording = true;
-                                btnStopVideo.setVisibility(View.VISIBLE);
-                                btnCaptureVideo.setVisibility(View.INVISIBLE);
-                                btnCaptureImage.setVisibility(View.INVISIBLE);
+                            mIsRecording = true;
+                            btnStopVideo.setVisibility(View.VISIBLE);
+                            btnCaptureVideo.setVisibility(View.INVISIBLE);
+                            btnCaptureImage.setVisibility(View.INVISIBLE);
 
-                                //start recording a video
-                                startRecording();
+                            //start recording a video
+                            startRecording();
 
-                            }
                         } else {
                             Toast.makeText(getApplicationContext(), "An error has occurred", LENGTH_SHORT).show();
                         }
@@ -387,11 +383,7 @@ public class CaptureActivity extends AppCompatActivity {
                 if (!mButtonPressProcessing) {
                     mButtonPressProcessing = true;
 
-                    if (checkWriteToStoragePermissions() != false) {
-                        lockFocus();
-                    } else {
-                        mButtonPressProcessing = false;
-                    }
+                    lockFocus();
                 }
 
             }
@@ -572,39 +564,6 @@ public class CaptureActivity extends AppCompatActivity {
             mMediaRecorder.setOrientationHint(mTotalRotation);
         }
         mMediaRecorder.prepare();
-    }
-
-
-    private boolean checkWriteToStoragePermissions() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
-                    == PackageManager.PERMISSION_GRANTED) {
-                try {
-                    //if permissions are granted create the video file
-                    mVideoFilePath = mediaManagement.createVideoFileName(mVideoFolder).getAbsolutePath();
-
-                    return true;
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            } else {
-                if (shouldShowRequestPermissionRationale(Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
-                    //if permissions are denied say why permission is needed
-                    Toast.makeText(this, "App requires permission to access storage", LENGTH_SHORT).show();
-                }
-                //request for permission
-                requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUEST_EXTERNAL_STORAGE_PERMISSION_RESULT);
-            }
-        } else {
-            try {
-                //if permissions are granted create the video file
-                mVideoFilePath = mediaManagement.createVideoFileName(mVideoFolder).getAbsolutePath();
-                return true;
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-        return false;
     }
 
 
@@ -798,7 +757,7 @@ public class CaptureActivity extends AppCompatActivity {
                         //if permissions are denied say why permission is needed
                         Toast.makeText(this, "Please enable Camera Access", LENGTH_SHORT).show();
                     }
-                    requestPermissions(new String[]{Manifest.permission.CAMERA, Manifest.permission.RECORD_AUDIO, Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUEST_CAMERA_PERMISSION_RESULT);
+                    requestPermissions(new String[]{Manifest.permission.CAMERA, Manifest.permission.RECORD_AUDIO}, REQUEST_CAMERA_PERMISSION_RESULT);
                 }
 
             } else {
@@ -856,8 +815,6 @@ public class CaptureActivity extends AppCompatActivity {
         } catch (CameraAccessException e) {
             e.printStackTrace();
         }
-
-
 
 
     }
@@ -1027,11 +984,6 @@ public class CaptureActivity extends AppCompatActivity {
             case REQUEST_CAMERA_PERMISSION_RESULT:
                 if (grantResults[0] != PackageManager.PERMISSION_GRANTED) {
                     Toast.makeText(this, "Camera will not work without access to camera", LENGTH_SHORT).show();
-                }
-                break;
-            case REQUEST_EXTERNAL_STORAGE_PERMISSION_RESULT:
-                if (grantResults[0] != PackageManager.PERMISSION_GRANTED) {
-                    Toast.makeText(this, "Camera will not work without access to storage", LENGTH_SHORT).show();
                 }
                 break;
             case REQUEST_RECORD_AUDIO_PERMISSION_RESULT:

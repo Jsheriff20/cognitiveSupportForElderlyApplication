@@ -35,7 +35,7 @@ public class SendMediaToFriendsListAdapter extends RecyclerView.Adapter<SendMedi
     Context context;
     private List<AccountDetails> mFriendsDetailsList;
     public List mSelectedFriends = new ArrayList();
-    MediaManagement mediaManagement = new MediaManagement();
+    MediaManagement mediaManagement;
     onFriendsSelectRecyclerViewClickedUUIDListener listener;
 
     private File mImageFolder;
@@ -52,6 +52,7 @@ public class SendMediaToFriendsListAdapter extends RecyclerView.Adapter<SendMedi
         mFriendsDetailsList = friendsDetailsList;
         this.context = context;
         this.listener = listener;
+        mediaManagement = new MediaManagement(context);
     }
 
 
@@ -75,6 +76,7 @@ public class SendMediaToFriendsListAdapter extends RecyclerView.Adapter<SendMedi
         holder.UUID = currentListItem.getUUID();
         holder.profileImageRotation = mediaManagement.exifToDegrees(currentListItem.getProfileImageRotation());
 
+        Log.d("test", "onBindViewHolder: " + currentListItem.getProfileImageUrl());
         if(currentListItem.getProfileImageUrl() != null && !currentListItem.getProfileImageUrl().equals("") ) {
             //create directories for files
             File[] mediaFolders = mediaManagement.createMediaFolders();

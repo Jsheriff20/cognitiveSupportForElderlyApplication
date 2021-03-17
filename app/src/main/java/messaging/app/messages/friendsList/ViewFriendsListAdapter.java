@@ -43,12 +43,13 @@ public class ViewFriendsListAdapter extends RecyclerView.Adapter<ViewFriendsList
     private File mImageFolder;
     private String mImageFilePath;
 
-    MediaManagement mediaManagement = new MediaManagement();
+    MediaManagement mediaManagement;
 
 
     public ViewFriendsListAdapter(List friendsDetailsList, Context context) {
         mFriendsDetailsList = friendsDetailsList;
         this.context = context;
+        mediaManagement = new MediaManagement(context);
     }
 
 

@@ -67,7 +67,7 @@ public class Formatting {
 
         String editedUrl;
 
-        String[] editedUrlArray = Url.split("\\?");
+        String[] editedUrlArray = Url.split("&");
         editedUrlArray = editedUrlArray[0].split("%2F");
         editedUrl = editedUrlArray[1];
 

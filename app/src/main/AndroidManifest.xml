@@ -9,19 +9,21 @@
 
     <uses-feature android:name="android.hardware.camera2.full" />
 
-    <permission android:name="android.permission.FLASHLIGHT"
+    <permission
+        android:name="android.permission.FLASHLIGHT"
         android:permissionGroup="android.permission-group.HARDWARE_CONTROLS"
         android:protectionLevel="normal" />
 
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
         android:requestLegacyExternalStorage="true"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:label="@string/app_name"
         android:theme="@style/AppTheme.NoActionBar">
-        <activity android:name=".messages.ViewingMessages.ViewMediaMessageActivity"/>
+        <activity android:name=".games.reflexGames.ButtonChangeColour"></activity>
+        <activity android:name=".messages.ViewingMessages.ViewMediaMessageActivity" />
         <activity android:name=".messages.ViewingMessages.ViewTextMessageActivity" />
         <activity android:name=".messages.ViewingMessages.ListOfReceivedMediaActivity" />
         <activity android:name=".messages.sendingMedia.AddMessageToMediaActivity" />
@@ -38,6 +40,7 @@
         <activity android:name=".login.LoginActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
@@ -45,10 +48,11 @@
         <activity android:name=".register.RegisterPasswordActivity" />
         <activity android:name=".register.RegisterUsernameActivity" />
         <activity android:name=".register.RegisterPersonalInfoActivity" />
-        <activity android:name=".register.RegisterProfileImageActivity"/>
+        <activity android:name=".register.RegisterProfileImageActivity" />
         <activity android:name=".messages.capturingMedia.CaptureActivity" />
         <activity android:name=".SelectAreaOfApplicationActivity" />
-        <service android:name=".NotifyMessageReceivedService"/>
+
+        <service android:name=".NotifyMessageReceivedService" />
     </application>
 
 </manifest>

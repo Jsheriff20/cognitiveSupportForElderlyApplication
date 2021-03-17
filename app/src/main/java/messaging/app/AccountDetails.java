@@ -7,7 +7,7 @@ public class AccountDetails {
     private String firstName;
     private String surname;
     private String relationship;
-    private String profileImageUrl;
+    private String profileImageUrl = null;
     private String username;
     private int profileImageRotation;
 

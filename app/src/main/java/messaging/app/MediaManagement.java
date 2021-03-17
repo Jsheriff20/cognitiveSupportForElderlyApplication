@@ -11,6 +11,8 @@ import android.util.Size;
 import android.view.Surface;
 import android.widget.Toast;
 
+import androidx.core.content.ContextCompat;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -21,6 +23,15 @@ import java.util.List;
 import static android.widget.Toast.LENGTH_SHORT;
 
 public class MediaManagement {
+
+    Context context;
+
+    public MediaManagement(Context context) {
+        this.context = context;
+    }
+
+    public MediaManagement() {
+    }
 
     public Bitmap FlipBitmap(Bitmap myBitmap, String flipType) {
 
@@ -157,13 +168,13 @@ public class MediaManagement {
     }
 
 
+
     public File[] createMediaFolders() {
         //create folders for media files
-        File movieDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MOVIES);
-        File imageDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES);
+        File directory = context.getFilesDir();
 
-        File videoFolder = new File(movieDir, "capturesFromElderlyApp");
-        File imageFolder = new File(imageDir, "capturesFromElderlyApp");
+        File videoFolder = new File(directory, "capturesFromElderlyApp");
+        File imageFolder = new File(directory, "capturesFromElderlyApp");
 
         if (!videoFolder.exists()) {
             videoFolder.mkdirs();
