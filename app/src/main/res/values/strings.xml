@@ -11,4 +11,7 @@
     <string name="tab_text_1">Conversation</string>
     <string name="tab_text_2">Story</string>
     <string name="title_activity_send_media_tabs">SendMediaTabsActivity</string>
+    <string name="title_activity_select_reflex_game">FullscreenActivity</string>
+    <string name="dummy_button">Dummy Button</string>
+    <string name="dummy_content">DUMMY\nCONTENT</string>
 </resources>

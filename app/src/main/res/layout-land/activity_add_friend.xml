@@ -85,6 +85,22 @@
 
 
         <ImageButton
+            android:id="@+id/btnSendFriendRequest"
+            android:layout_width="70dp"
+            android:layout_height="70dp"
+            android:layout_marginTop="8dp"
+            android:background="@null"
+            android:scaleType="centerCrop"
+            android:text="Send"
+            android:textSize="22sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/btnRefreshFriendRequests"
+            app:layout_constraintVertical_bias="1.0"
+            app:srcCompat="@drawable/add_icon" />
+
+        <ImageButton
             android:id="@+id/btnRefreshFriendRequests"
             android:layout_width="70dp"
             android:layout_height="70dp"
@@ -102,25 +118,15 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_marginStart="8dp"
+            android:layout_marginEnd="32dp"
             android:ems="10"
             android:hint="Username"
             android:inputType="textPersonName"
             android:textSize="22sp"
-            app:layout_constraintEnd_toStartOf="@+id/btnSearchFriend"
+            app:layout_constraintEnd_toStartOf="@+id/divider15"
             app:layout_constraintStart_toEndOf="@+id/btnBackToFriendsList"
             app:layout_constraintTop_toBottomOf="@+id/txtAskUsername" />
 
-        <ImageButton
-            android:id="@+id/btnSearchFriend"
-            android:layout_width="60dp"
-            android:layout_height="60dp"
-            android:layout_marginEnd="32dp"
-            android:background="@null"
-            android:padding="5dp"
-            android:scaleType="centerCrop"
-            app:layout_constraintEnd_toStartOf="@+id/divider15"
-            app:layout_constraintTop_toBottomOf="@+id/txtAskUsername"
-            app:srcCompat="@drawable/add_icon" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <androidx.recyclerview.widget.RecyclerView

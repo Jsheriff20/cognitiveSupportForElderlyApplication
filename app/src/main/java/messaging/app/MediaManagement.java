@@ -157,6 +157,7 @@ public class MediaManagement {
 
     public File createVideoFileName(File videoFolder) throws IOException {
         File videoFile = File.createTempFile("tempFile", ".mp4", videoFolder);
+        Log.d("test", "getAbsolutePath: " + videoFile.getAbsolutePath());
         return videoFile;
     }
 

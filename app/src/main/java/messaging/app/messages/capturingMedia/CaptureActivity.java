@@ -547,6 +547,7 @@ public class CaptureActivity extends AppCompatActivity {
         mMediaRecorder.setVideoSource(MediaRecorder.VideoSource.SURFACE);
         mMediaRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
         mMediaRecorder.setOutputFormat(MediaRecorder.OutputFormat.MPEG_4);
+        mVideoFilePath = mediaManagement.createVideoFileName(mVideoFolder).getAbsolutePath();
         mMediaRecorder.setOutputFile(mVideoFilePath);
         mMediaRecorder.setVideoEncodingBitRate(1000000);
         mMediaRecorder.setVideoFrameRate(30);
@@ -555,7 +556,6 @@ public class CaptureActivity extends AppCompatActivity {
         mMediaRecorder.setAudioEncodingBitRate(96000); //change to 128000 if needed
         mMediaRecorder.setVideoEncoder(MediaRecorder.VideoEncoder.HEVC);
         mMediaRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AAC);
-
         int landscape = 1;
         boolean inLandscapeMode = ((int) getWindowManager().getDefaultDisplay().getRotation() == landscape);
         if (inLandscapeMode) {
@@ -563,7 +563,9 @@ public class CaptureActivity extends AppCompatActivity {
         } else {
             mMediaRecorder.setOrientationHint(mTotalRotation);
         }
+        Log.d("test", "onClick: test7");
         mMediaRecorder.prepare();
+        Log.d("test", "onClick: test9");
     }
 
 
@@ -576,7 +578,9 @@ public class CaptureActivity extends AppCompatActivity {
             //if user wants to record create a new file and start the video and audio recoding
             if (mIsRecording) {
                 try {
+                    Log.d("test", "onOpened: " + mVideoFilePath);
                     mVideoFilePath = mediaManagement.createVideoFileName(mVideoFolder).getAbsolutePath();
+                    Log.d("test", "onOpened: " + mVideoFilePath);
                     startRecording();
                     mMediaRecorder.start();
                 } catch (IOException e) {
@@ -773,12 +777,16 @@ public class CaptureActivity extends AppCompatActivity {
     private void startRecording() {
 
         try {
+            Log.d("test", "onClick: test1");
+
             setupMediaRecorder();
+            Log.d("test", "onClick: test2");
 
             //setup target surface
             SurfaceTexture surfaceTexture = cameraView.getSurfaceTexture();
             surfaceTexture.setDefaultBufferSize(mPreviewSize.getWidth(), mPreviewSize.getHeight());
             Surface cameraPreviewSurface = new Surface(surfaceTexture);
+            Log.d("test", "onClick: test3");
 
             //setup capture request builder
             Surface recordingSurface = mMediaRecorder.getSurface();
@@ -786,6 +794,7 @@ public class CaptureActivity extends AppCompatActivity {
             mCaptureRequestBuilder.set(CaptureRequest.CONTROL_AF_MODE, CaptureRequest.CONTROL_AF_MODE_CONTINUOUS_VIDEO);
             mCaptureRequestBuilder.addTarget(cameraPreviewSurface);
             mCaptureRequestBuilder.addTarget(recordingSurface);
+            Log.d("test", "onClick: test4");
 
             mCameraDevice.createCaptureSession(Arrays.asList(cameraPreviewSurface, recordingSurface),
                     new CameraCaptureSession.StateCallback() {
@@ -808,6 +817,7 @@ public class CaptureActivity extends AppCompatActivity {
 
                         }
                     }, null);
+            Log.d("test", "onOpened: error");
             mMediaRecorder.start();
 
         } catch (IOException e) {

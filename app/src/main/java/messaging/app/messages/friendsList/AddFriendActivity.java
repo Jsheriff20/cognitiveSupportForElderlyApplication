@@ -22,7 +22,7 @@ public class AddFriendActivity extends AppCompatActivity {
 
     EditText txtAddingUsername;
     EditText txtRelationship;
-    ImageButton btnSearchFriend;
+    ImageButton btnSendFriendRequest;
     ImageButton btnBackToFriendsList;
     ImageButton btnRefreshFriendRequests;
     private RecyclerView recyclerView;
@@ -41,7 +41,7 @@ public class AddFriendActivity extends AppCompatActivity {
         setContentView(R.layout.activity_add_friend);
 
         txtAddingUsername = findViewById(R.id.txtAddingUsername);
-        btnSearchFriend = findViewById(R.id.btnSearchFriend);
+        btnSendFriendRequest = findViewById(R.id.btnSendFriendRequest);
         txtRelationship = findViewById(R.id.txtReceivedFriendRequestRelationship);
         recyclerView = findViewById(R.id.lstAddFriend);
         btnBackToFriendsList = findViewById(R.id.btnBackToFriendsList);
@@ -111,7 +111,7 @@ public class AddFriendActivity extends AppCompatActivity {
     }
 
     private void setBtnSearchFriendOnClick(){
-        btnSearchFriend.setOnClickListener(new View.OnClickListener() {
+        btnSendFriendRequest.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 String username = txtAddingUsername.getText().toString();

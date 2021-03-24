@@ -17,73 +17,59 @@
 
         <TextView
             android:id="@+id/txtAskUsername"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_marginStart="32dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="2dp"
             android:text="Enter Username"
             android:textColor="#000000"
             android:textSize="24sp"
-            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/btnSendFriendRequest"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/btnBackToFriendsList" />
 
 
         <TextView
             android:id="@+id/txtAskRelationship"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_marginStart="32dp"
             android:layout_marginTop="16dp"
+            android:layout_marginEnd="2dp"
             android:text="Enter Relationship"
             android:textColor="#000000"
             android:textSize="24sp"
-            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/btnSendFriendRequest"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/linearLayout" />
+            app:layout_constraintTop_toBottomOf="@+id/txtAddingUsername" />
 
-        <LinearLayout
-            android:id="@+id/linearLayout"
-            android:layout_width="wrap_content"
+
+        <EditText
+            android:id="@+id/txtAddingUsername"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.5"
+            android:layout_gravity="center"
+            android:layout_marginStart="32dp"
+            android:layout_marginEnd="2dp"
+            android:ems="10"
+            android:hint="Username"
+            android:inputType="textPersonName"
+            app:layout_constraintEnd_toStartOf="@+id/btnSendFriendRequest"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/txtAskUsername">
+            app:layout_constraintTop_toBottomOf="@+id/txtAskUsername" />
 
-            <EditText
-                android:id="@+id/txtAddingUsername"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:ems="10"
-                android:hint="Username"
-                android:inputType="textPersonName"
-                app:layout_constraintEnd_toStartOf="@+id/btnSearchFriend"
-                app:layout_constraintHorizontal_bias="0.5"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/txtAskUsername" />
-
-
-            <ImageButton
-                android:id="@+id/btnSearchFriend"
-                android:layout_width="70dp"
-                android:layout_height="70dp"
-                android:background="@null"
-                android:scaleType="centerCrop"
-                android:padding="5dp"
-                app:layout_constraintStart_toEndOf="@+id/txtAddingUsername"
-                app:srcCompat="@drawable/add_icon"
-                tools:layout_editor_absoluteY="60dp" />
-        </LinearLayout>
 
         <EditText
             android:id="@+id/txtReceivedFriendRequestRelationship"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_marginStart="32dp"
+            android:layout_marginEnd="2dp"
             android:ems="10"
             android:hint="e.g Son, Farther, Niece"
             android:inputType="textPersonName"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintEnd_toStartOf="@+id/btnSendFriendRequest"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/txtAskRelationship" />
 
@@ -110,6 +96,21 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:srcCompat="@drawable/refresh_icon" />
+
+        <ImageButton
+            android:id="@+id/btnSendFriendRequest"
+            android:layout_width="70dp"
+            android:layout_height="70dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="24dp"
+            android:text="Send"
+            android:textSize="22sp"
+            android:background="@null"
+            android:scaleType="centerCrop"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/btnRefreshFriendRequests"
+            app:srcCompat="@drawable/add_icon" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

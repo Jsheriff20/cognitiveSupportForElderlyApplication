@@ -44,13 +44,6 @@ public class ViewFriendsListActivity extends AppCompatActivity {
 
 
     @Override
-    public void onBackPressed() {
-        Intent intent = new Intent(ViewFriendsListActivity.this, MessagesActivity.class);
-        ViewFriendsListActivity.this.startActivity(intent);
-    }
-
-
-    @Override
     public void onWindowFocusChanged(boolean hasFocus) {
         super.onWindowFocusChanged(hasFocus);
         if (hasFocus) {
@@ -68,6 +61,7 @@ public class ViewFriendsListActivity extends AppCompatActivity {
             }
         });
     }
+
 
     private void displayFriends() {
         queryingDatabase.getFriendsDetails(new QueryingDatabase.OnGetFriendsDetailsListener() {

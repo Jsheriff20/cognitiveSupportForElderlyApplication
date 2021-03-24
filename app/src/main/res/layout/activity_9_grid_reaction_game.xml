@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:weightSum="3"
+    tools:context=".games.reflexGames.gridReactionGames.GridReactionGame9ButtonsActivity">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="horizontal"
+        android:layout_weight="1"
+        android:weightSum="3"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ImageButton
+            android:id="@+id/btnGrid1Of9"
+            android:layout_weight="1"
+            android:layout_margin="5dp"
+            android:background="@drawable/btn_rectangle_grey_gradient"
+            android:scaleType="fitCenter"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"/>
+        <ImageButton
+            android:id="@+id/btnGrid2Of9"
+            android:layout_weight="1"
+            android:layout_margin="5dp"
+            android:background="@drawable/btn_rectangle_grey_gradient"
+            android:scaleType="fitCenter"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"/>
+        <ImageButton
+            android:id="@+id/btnGrid3Of9"
+            android:layout_weight="1"
+            android:layout_margin="5dp"
+            android:background="@drawable/btn_rectangle_grey_gradient"
+            android:scaleType="fitCenter"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"/>
+
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="horizontal"
+        android:layout_weight="1"
+        android:weightSum="3"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ImageButton
+            android:id="@+id/btnGrid4Of9"
+            android:layout_weight="1"
+            android:layout_margin="5dp"
+            android:background="@drawable/btn_rectangle_grey_gradient"
+            android:scaleType="fitCenter"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"/>
+        <ImageButton
+            android:id="@+id/btnGrid5Of9"
+            android:layout_weight="1"
+            android:layout_margin="5dp"
+            android:background="@drawable/btn_rectangle_grey_gradient"
+            android:scaleType="fitCenter"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"/>
+        <ImageButton
+            android:id="@+id/btnGrid6Of9"
+            android:layout_weight="1"
+            android:layout_margin="5dp"
+            android:background="@drawable/btn_rectangle_grey_gradient"
+            android:scaleType="fitCenter"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="horizontal"
+        android:layout_weight="1"
+        android:weightSum="3"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ImageButton
+            android:id="@+id/btnGrid7Of9"
+            android:layout_weight="1"
+            android:layout_margin="5dp"
+            android:background="@drawable/btn_rectangle_grey_gradient"
+            android:scaleType="fitCenter"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"/>
+        <ImageButton
+            android:id="@+id/btnGrid8Of9"
+            android:layout_weight="1"
+            android:layout_margin="5dp"
+            android:background="@drawable/btn_rectangle_grey_gradient"
+            android:scaleType="fitCenter"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"/>
+        <ImageButton
+            android:id="@+id/btnGrid9Of9"
+            android:layout_weight="1"
+            android:layout_margin="5dp"
+            android:background="@drawable/btn_rectangle_grey_gradient"
+            android:scaleType="fitCenter"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"/>
+
+    </LinearLayout>
+</LinearLayout>

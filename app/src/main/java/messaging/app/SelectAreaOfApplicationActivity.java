@@ -10,13 +10,15 @@ import android.provider.Settings;
 import android.util.Log;
 import android.view.View;
 
+import messaging.app.games.SelectGameActivity;
 import messaging.app.messages.MessagesActivity;
+import messaging.app.messages.friendsList.ViewFriendsListActivity;
 import messaging.app.settings.SettingsActivity;
 
 public class SelectAreaOfApplicationActivity extends AppCompatActivity {
 
     LinearLayoutCompat llayMessages;
-    LinearLayoutCompat llayMemories;
+    LinearLayoutCompat llayFriends;
     LinearLayoutCompat llayGames;
     LinearLayoutCompat llaySettings;
     ManagingActivityPreview managingActivityPreview = new ManagingActivityPreview();
@@ -27,7 +29,7 @@ public class SelectAreaOfApplicationActivity extends AppCompatActivity {
         setContentView(R.layout.activity_select_area_of_application_activity);
 
         llayMessages = findViewById(R.id.llayMessages);
-        llayMemories = findViewById(R.id.llayMemories);
+        llayFriends = findViewById(R.id.llayFriends);
         llayGames = findViewById(R.id.llayGames);
         llaySettings = findViewById(R.id.llaySettings);
 
@@ -69,13 +71,11 @@ public class SelectAreaOfApplicationActivity extends AppCompatActivity {
         });
 
 
-        llayMemories.setOnClickListener(new View.OnClickListener() {
+        llayFriends.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //TODO:
-                //add activity to open
-//                Intent intent = new Intent(SelectAreaOfApplicationActivity.this, .class);
-//                SelectAreaOfApplicationActivity.this.startActivity(intent);
+                Intent intent = new Intent(SelectAreaOfApplicationActivity.this, ViewFriendsListActivity.class);
+                SelectAreaOfApplicationActivity.this.startActivity(intent);
             }
         });
 
@@ -84,10 +84,8 @@ public class SelectAreaOfApplicationActivity extends AppCompatActivity {
         llayGames.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //TODO:
-                //add activity to open
-//                Intent intent = new Intent(SelectAreaOfApplicationActivity.this, .class);
-//                SelectAreaOfApplicationActivity.this.startActivity(intent);
+                Intent intent = new Intent(SelectAreaOfApplicationActivity.this, SelectGameActivity.class);
+                SelectAreaOfApplicationActivity.this.startActivity(intent);
             }
         });
 

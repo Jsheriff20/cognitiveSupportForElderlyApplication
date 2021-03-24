@@ -18,6 +18,33 @@
         tools:layout_editor_absoluteX="9dp"
         tools:layout_editor_absoluteY="4dp">
 
+        <androidx.appcompat.widget.LinearLayoutCompat
+            android:id="@+id/llayFriends"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginBottom="8dp"
+            android:layout_weight="1"
+            android:background="@drawable/btn_rectangle_blue_gradient"
+            android:orientation="horizontal"
+            android:padding="20dp"
+            android:weightSum="3">
+
+            <ImageView
+                android:layout_height="match_parent"
+                android:layout_width="30dp"
+                android:layout_weight="1"
+                android:src="@drawable/friends_shadow_icon" />
+
+            <TextView
+                android:layout_height="match_parent"
+                android:layout_width="30dp"
+                android:layout_weight="2"
+                android:text="Friends"
+                android:gravity="center"
+                android:textColor="@color/white"
+                android:textSize="40dp"/>
+        </androidx.appcompat.widget.LinearLayoutCompat>
+
 
         <androidx.appcompat.widget.LinearLayoutCompat
             android:id="@+id/llayMessages"
@@ -47,33 +74,6 @@
         </androidx.appcompat.widget.LinearLayoutCompat>
 
 
-        <androidx.appcompat.widget.LinearLayoutCompat
-            android:id="@+id/llayMemories"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginBottom="8dp"
-            android:layout_weight="1"
-            android:background="@drawable/btn_rectangle_orange_gradient"
-            android:orientation="horizontal"
-            android:padding="20dp"
-            android:weightSum="3">
-
-            <ImageView
-                android:layout_height="match_parent"
-                android:layout_width="30dp"
-                android:layout_weight="1"
-                android:src="@drawable/clock_shadow_icon" />
-
-            <TextView
-                android:layout_height="match_parent"
-                android:layout_width="30dp"
-                android:layout_weight="2"
-                android:text="Memories"
-                android:gravity="center"
-                android:textColor="@color/white"
-                android:textSize="40dp"/>
-        </androidx.appcompat.widget.LinearLayoutCompat>
-
 
 
         <androidx.appcompat.widget.LinearLayoutCompat
@@ -82,7 +82,7 @@
             android:layout_height="match_parent"
             android:layout_marginBottom="8dp"
             android:layout_weight="1"
-            android:background="@drawable/btn_rectangle_blue_gradient"
+            android:background="@drawable/btn_rectangle_orange_gradient"
             android:orientation="horizontal"
             android:padding="20dp"
             android:weightSum="3">

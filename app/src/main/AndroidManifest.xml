@@ -22,7 +22,15 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme.NoActionBar">
-        <activity android:name=".games.reflexGames.ButtonChangeColour"></activity>
+        <activity android:name=".games.memoryGames.StartMemorizingPatternActivity"></activity>
+        <activity android:name=".games.reflexGames.StoopTestActivity" />
+        <activity android:name=".games.SelectGameActivity" />
+        <activity android:name=".games.reflexGames.SelectReactionGameActivity" />
+        <activity android:name=".games.reflexGames.gridReactionGames.StartGridReactionGameActivity" />
+        <activity android:name=".games.reflexGames.gridReactionGames.GridReactionGame9ButtonsActivity" />
+        <activity android:name=".games.reflexGames.gridReactionGames.GridReactionGame6ButtonsActivity" />
+        <activity android:name=".games.reflexGames.gridReactionGames.GridReactionGame4ButtonsActivity" />
+        <activity android:name=".games.reflexGames.ButtonChangeColourActivity" />
         <activity android:name=".messages.ViewingMessages.ViewMediaMessageActivity" />
         <activity android:name=".messages.ViewingMessages.ViewTextMessageActivity" />
         <activity android:name=".messages.ViewingMessages.ListOfReceivedMediaActivity" />
