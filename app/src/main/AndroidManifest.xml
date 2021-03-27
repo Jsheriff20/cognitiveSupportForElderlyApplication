@@ -22,7 +22,21 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme.NoActionBar">
-        <activity android:name=".games.memoryGames.StartMemorizingPatternActivity"></activity>
+        <activity android:name=".games.memoryGames.pairGame.PairGame8ButtonsActivity" />
+        <activity android:name=".games.memoryGames.pairGame.PairGame12ButtonsActivity" />
+        <activity android:name=".games.memoryGames.pairGame.PairGame16ButtonsActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity android:name=".games.memoryGames.pairGame.PairGame6ButtonsActivity" />
+        <activity android:name=".games.memoryGames.pairGame.StartPairsGameActivity" />
+        <activity android:name=".games.memoryGames.MemorizingPatternGame.PatternMemorizing4ButtonsActivity" />
+        <activity android:name=".games.memoryGames.MemorizingPatternGame.PatternMemorizing6ButtonsActivity" />
+        <activity android:name=".games.memoryGames.MemorizingPatternGame.PatternMemorizing9ButtonsActivity" />
+        <activity android:name=".games.memoryGames.MemorizingPatternGame.StartMemorizingPatternActivity" />
         <activity android:name=".games.reflexGames.StoopTestActivity" />
         <activity android:name=".games.SelectGameActivity" />
         <activity android:name=".games.reflexGames.SelectReactionGameActivity" />
@@ -46,11 +60,11 @@
         <activity android:name=".messages.MessagesActivity" />
         <activity android:name=".login.ResetPasswordActivity" />
         <activity android:name=".login.LoginActivity">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
+            <!--            <intent-filter>-->
+            <!--                <action android:name="android.intent.action.MAIN" />-->
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
+            <!--                <category android:name="android.intent.category.LAUNCHER" />-->
+            <!--            </intent-filter>-->
         </activity>
         <activity android:name=".register.RegisterEmailActivity" />
         <activity android:name=".register.RegisterPasswordActivity" />
