@@ -23,6 +23,8 @@ public class StartPairsGameActivity extends AppCompatActivity {
     ImageButton btnBackToMemoryGames;
     Button btnWatchPairGameVid;
     Button btnStartPairGame;
+    TextView lblPairGameTitle;
+    TextView lblPairGameDesc;
 
 
     @Override
@@ -33,6 +35,22 @@ public class StartPairsGameActivity extends AppCompatActivity {
         btnBackToMemoryGames = findViewById(R.id.btnBackToMemoryGames);
         btnWatchPairGameVid = findViewById(R.id.btnWatchPairGameVid);
         btnStartPairGame = findViewById(R.id.btnStartPairGame);
+        lblPairGameTitle = findViewById(R.id.lblPairGameTitle);
+        lblPairGameDesc = findViewById(R.id.lblPairGameDesc);
+
+
+        if(getIntent().getStringExtra("numberOfPairs")  != null){
+
+            //display to user
+            String numberOfPairs = getIntent().getStringExtra("numberOfPairs");
+            int streak = getIntent().getIntExtra("streak", 0);
+            int numberOfPairsFound = getIntent().getIntExtra("numberOfPairsFound", 0);
+            lblPairGameTitle.setText("You scores:");
+            lblPairGameDesc.setText("You found " + numberOfPairsFound +" pairs and completed " + streak + " round(s), with " + numberOfPairs + " pairs per round");
+
+            //store score in database
+            //if high score set as their high score
+        }
 
         setBtnBackToMemoryGamesOnClick();
         setBtnStartPairGameOnClick();
@@ -56,7 +74,7 @@ public class StartPairsGameActivity extends AppCompatActivity {
         btnStartPairGame.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(StartPairsGameActivity.this, PairGame6ButtonsActivity.class);
+                Intent intent = new Intent(StartPairsGameActivity.this, PairGame16ButtonsActivity.class);
                 StartPairsGameActivity.this.startActivity(intent);
             }
         });

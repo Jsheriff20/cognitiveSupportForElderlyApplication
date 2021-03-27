@@ -19,6 +19,8 @@ public class StartGridReactionGameActivity extends AppCompatActivity {
     ImageButton btnBackToReactionGames;
     Button btnWatchGridReactionGameVid;
     Button btnStartGridReactionGame;
+    TextView lblGridReactionGameTitle;
+    TextView lblGridReactionGameDesc;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,6 +30,21 @@ public class StartGridReactionGameActivity extends AppCompatActivity {
         btnStartGridReactionGame = findViewById(R.id.btnStartGridReactionGame);
         btnWatchGridReactionGameVid = findViewById(R.id.btnWatchGridReactionGameVid);
         btnBackToReactionGames = findViewById(R.id.btnBackToReactionGames);
+        lblGridReactionGameTitle = findViewById(R.id.lblGridReactionGameTitle);
+        lblGridReactionGameDesc = findViewById(R.id.lblGridReactionGameDesc);
+
+
+        if(getIntent().getLongExtra("reactionTime", 999999999)  != 999999999){
+
+            //display to user
+            long reactionTime = getIntent().getLongExtra("reactionTime", 999999999);
+            lblGridReactionGameTitle.setText("You results:");
+            lblGridReactionGameDesc.setText("Your average reaction speed was " + reactionTime +" ms");
+
+            //store score in database
+            //if high score set as their high score
+        }
+
 
         setStartGridReactionGameOnClick();
         setBtnBackToReactionGamesOnClick();

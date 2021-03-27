@@ -2,6 +2,7 @@ package messaging.app.games.memoryGames.memorizingPatternGame;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.CountDownTimer;
@@ -14,6 +15,7 @@ import java.util.List;
 import java.util.Random;
 
 import messaging.app.R;
+import messaging.app.games.memoryGames.SelectMemoryGameActivity;
 
 public class PatternMemorizing4ButtonsActivity extends AppCompatActivity {
 
@@ -24,7 +26,6 @@ public class PatternMemorizing4ButtonsActivity extends AppCompatActivity {
 
     int currentRound;
     int currentLevel = 3;
-    List<Integer> levels = new ArrayList();
     List<Integer> buttonPatternOrder = new ArrayList();
     Integer[] possibleButtonIDs;
 
@@ -51,18 +52,6 @@ public class PatternMemorizing4ButtonsActivity extends AppCompatActivity {
 
         possibleButtonIDs = new Integer[]{btnGrid1Of4.getId(), btnGrid2Of4.getId(), btnGrid3Of4.getId(), btnGrid4Of4.getId()};
 
-
-        levels.add(1);
-        levels.add(2);
-        levels.add(3);
-        levels.add(4);
-        levels.add(5);
-        levels.add(6);
-        levels.add(7);
-        levels.add(8);
-        levels.add(9);
-
-
         startLevel();
         setButtonClicks();
     }
@@ -88,13 +77,17 @@ public class PatternMemorizing4ButtonsActivity extends AppCompatActivity {
                     toggleButton(btnGrid1Of4.getId(), (0), (500), displayedColoursOrder.get(currentRound));
 
                     currentRound++;
-                    if (currentRound == levels.get(currentLevel)) {
+                    if (currentRound == currentLevel + 2) {
                         currentLevel++;
                         startLevel();
                     }
                 } else {
                     Log.d("test", "Wrong");
-                    //wrong
+
+                    Intent intent = new Intent(PatternMemorizing4ButtonsActivity.this, StartMemorizingPatternActivity.class);
+                    intent.putExtra("level", "2x2");
+                    intent.putExtra("highScore", currentLevel);
+                    PatternMemorizing4ButtonsActivity.this.startActivity(intent);
                 }
             }
         });
@@ -116,13 +109,17 @@ public class PatternMemorizing4ButtonsActivity extends AppCompatActivity {
                     toggleButton(btnGrid2Of4.getId(), (0), (500), displayedColoursOrder.get(currentRound));
 
                     currentRound++;
-                    if (currentRound == levels.get(currentLevel)) {
+                    if (currentRound == currentLevel + 2) {
                         currentLevel++;
                         startLevel();
                     }
                 } else {
                     Log.d("test", "Wrong");
-                    //wrong
+
+                    Intent intent = new Intent(PatternMemorizing4ButtonsActivity.this, StartMemorizingPatternActivity.class);
+                    intent.putExtra("level", "2x2");
+                    intent.putExtra("highScore", currentLevel);
+                    PatternMemorizing4ButtonsActivity.this.startActivity(intent);
                 }
             }
         });
@@ -144,13 +141,17 @@ public class PatternMemorizing4ButtonsActivity extends AppCompatActivity {
                     toggleButton(btnGrid3Of4.getId(), (0), (500), displayedColoursOrder.get(currentRound));
 
                     currentRound++;
-                    if (currentRound == levels.get(currentLevel)) {
+                    if (currentRound == currentLevel + 2) {
                         currentLevel++;
                         startLevel();
                     }
                 } else {
                     Log.d("test", "Wrong");
-                    //wrong
+
+                    Intent intent = new Intent(PatternMemorizing4ButtonsActivity.this, StartMemorizingPatternActivity.class);
+                    intent.putExtra("level", "2x2");
+                    intent.putExtra("highScore", currentLevel);
+                    PatternMemorizing4ButtonsActivity.this.startActivity(intent);
                 }
             }
         });
@@ -172,13 +173,17 @@ public class PatternMemorizing4ButtonsActivity extends AppCompatActivity {
                     toggleButton(btnGrid4Of4.getId(), (0), (500), displayedColoursOrder.get(currentRound));
 
                     currentRound++;
-                    if (currentRound == levels.get(currentLevel)) {
+                    if (currentRound == currentLevel + 2) {
                         currentLevel++;
                         startLevel();
                     }
                 } else {
                     Log.d("test", "Wrong");
-                    //wrong
+
+                    Intent intent = new Intent(PatternMemorizing4ButtonsActivity.this, StartMemorizingPatternActivity.class);
+                    intent.putExtra("level", "2x2");
+                    intent.putExtra("highScore", currentLevel);
+                    PatternMemorizing4ButtonsActivity.this.startActivity(intent);
                 }
             }
         });
@@ -186,7 +191,7 @@ public class PatternMemorizing4ButtonsActivity extends AppCompatActivity {
 
 
     private void startLevel() {
-        int numberOfRounds = levels.get(currentLevel);
+        int numberOfRounds = currentLevel + 2;
         buttonPatternOrder = new ArrayList();
         currentRound = 0;
 

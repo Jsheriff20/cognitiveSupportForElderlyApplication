@@ -30,7 +30,6 @@ public class PatternMemorizing9ButtonsActivity extends AppCompatActivity {
 
     int currentRound;
     int currentLevel = 3;
-    List<Integer> levels = new ArrayList();
     List<Integer> buttonPatternOrder = new ArrayList();
     Integer[] possibleButtonIDs;
 
@@ -68,17 +67,6 @@ public class PatternMemorizing9ButtonsActivity extends AppCompatActivity {
         };
 
 
-        levels.add(1);
-        levels.add(2);
-        levels.add(3);
-        levels.add(4);
-        levels.add(5);
-        levels.add(6);
-        levels.add(7);
-        levels.add(8);
-        levels.add(9);
-
-
         startLevel();
         setButtonClicks();
     }
@@ -104,7 +92,7 @@ public class PatternMemorizing9ButtonsActivity extends AppCompatActivity {
                     toggleButton(btnGrid1Of9.getId(), (0), (500), displayedColoursOrder.get(currentRound));
 
                     currentRound++;
-                    if (currentRound == levels.get(currentLevel)) {
+                    if (currentRound == currentLevel + 2) {
                         currentLevel++;
                         startLevel();
                     }
@@ -132,7 +120,7 @@ public class PatternMemorizing9ButtonsActivity extends AppCompatActivity {
                     toggleButton(btnGrid2Of9.getId(), (0), (500), displayedColoursOrder.get(currentRound));
 
                     currentRound++;
-                    if (currentRound == levels.get(currentLevel)) {
+                    if (currentRound == currentLevel + 2) {
                         currentLevel++;
                         startLevel();
                     }
@@ -160,7 +148,7 @@ public class PatternMemorizing9ButtonsActivity extends AppCompatActivity {
                     toggleButton(btnGrid3Of9.getId(), (0), (500), displayedColoursOrder.get(currentRound));
 
                     currentRound++;
-                    if (currentRound == levels.get(currentLevel)) {
+                    if (currentRound == currentLevel + 2) {
                         currentLevel++;
                         startLevel();
                     }
@@ -188,7 +176,7 @@ public class PatternMemorizing9ButtonsActivity extends AppCompatActivity {
                     toggleButton(btnGrid4Of9.getId(), (0), (500), displayedColoursOrder.get(currentRound));
 
                     currentRound++;
-                    if (currentRound == levels.get(currentLevel)) {
+                    if (currentRound == currentLevel + 2) {
                         currentLevel++;
                         startLevel();
                     }
@@ -216,7 +204,7 @@ public class PatternMemorizing9ButtonsActivity extends AppCompatActivity {
                     toggleButton(btnGrid5Of9.getId(), (0), (500), displayedColoursOrder.get(currentRound));
 
                     currentRound++;
-                    if (currentRound == levels.get(currentLevel)) {
+                    if (currentRound == currentLevel + 2) {
                         currentLevel++;
                         startLevel();
                     }
@@ -244,7 +232,7 @@ public class PatternMemorizing9ButtonsActivity extends AppCompatActivity {
                     toggleButton(btnGrid6Of9.getId(), (0), (500), displayedColoursOrder.get(currentRound));
 
                     currentRound++;
-                    if (currentRound == levels.get(currentLevel)) {
+                    if (currentRound == currentLevel + 2) {
                         currentLevel++;
                         startLevel();
                     }
@@ -272,7 +260,7 @@ public class PatternMemorizing9ButtonsActivity extends AppCompatActivity {
                     toggleButton(btnGrid7Of9.getId(), (0), (500), displayedColoursOrder.get(currentRound));
 
                     currentRound++;
-                    if (currentRound == levels.get(currentLevel)) {
+                    if (currentRound == currentLevel + 2) {
                         currentLevel++;
                         startLevel();
                     }
@@ -300,7 +288,7 @@ public class PatternMemorizing9ButtonsActivity extends AppCompatActivity {
                     toggleButton(btnGrid8Of9.getId(), (0), (500), displayedColoursOrder.get(currentRound));
 
                     currentRound++;
-                    if (currentRound == levels.get(currentLevel)) {
+                    if (currentRound == currentLevel + 2) {
                         currentLevel++;
                         startLevel();
                     }
@@ -328,7 +316,7 @@ public class PatternMemorizing9ButtonsActivity extends AppCompatActivity {
                     toggleButton(btnGrid9Of9.getId(), (0), (500), displayedColoursOrder.get(currentRound));
 
                     currentRound++;
-                    if (currentRound == levels.get(currentLevel)) {
+                    if (currentRound == currentLevel + 2) {
                         currentLevel++;
                         startLevel();
                     }
@@ -342,7 +330,7 @@ public class PatternMemorizing9ButtonsActivity extends AppCompatActivity {
 
 
     private void startLevel() {
-        int numberOfRounds = levels.get(currentLevel);
+        int numberOfRounds = currentLevel + 2;
         buttonPatternOrder = new ArrayList();
         currentRound = 0;
 

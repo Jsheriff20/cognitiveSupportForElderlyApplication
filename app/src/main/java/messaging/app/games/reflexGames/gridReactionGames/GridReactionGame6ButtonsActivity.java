@@ -224,7 +224,7 @@ public class GridReactionGame6ButtonsActivity extends AppCompatActivity {
 
                     case 3:
                         btnGrid3Of6.setEnabled(true);
-                        btnGrid4Of6.setBackground(buttonColour);
+                        btnGrid3Of6.setBackground(buttonColour);
                         startTime = System.currentTimeMillis();
                         break;
 
@@ -266,6 +266,7 @@ public class GridReactionGame6ButtonsActivity extends AppCompatActivity {
 
         Log.d("Test", "Average: " + getAverage(pastScores));
         Intent intent = new Intent(GridReactionGame6ButtonsActivity.this, StartGridReactionGameActivity.class);
+        intent.putExtra("reactionTime", getAverage(pastScores));
         GridReactionGame6ButtonsActivity.this.startActivity(intent);
     }
 }

@@ -20,6 +20,8 @@ public class StartMemorizingPatternActivity extends AppCompatActivity {
     ImageButton btnBackToMemoryGames;
     Button btnWatchPatternGameVid;
     Button btnStartPatternGame;
+    TextView lblPatternGameTitle;
+    TextView lblPatternGameDesc;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,6 +31,19 @@ public class StartMemorizingPatternActivity extends AppCompatActivity {
         btnBackToMemoryGames = findViewById(R.id.btnBackToMemoryGames);
         btnWatchPatternGameVid = findViewById(R.id.btnWatchPatternGameVid);
         btnStartPatternGame = findViewById(R.id.btnStartPatternGame);
+        lblPatternGameTitle = findViewById(R.id.lblPatternGameTitle);
+        lblPatternGameDesc = findViewById(R.id.lblPatternGameDesc);
+
+        if(getIntent().getStringExtra("level")  != null){
+            //display scores to user
+            String level = getIntent().getStringExtra("level");
+            int highScore = getIntent().getIntExtra("highScore", 0);
+            lblPatternGameTitle.setText("You scored:");
+            lblPatternGameDesc.setText(highScore + " on the " + level + " level");
+
+            //store score in database
+            //if high score set as their high score
+        }
 
         setBtnBackToMemoryGamesOnClick();
         setBtnStartPatternGameOnClick();

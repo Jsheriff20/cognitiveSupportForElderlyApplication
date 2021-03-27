@@ -74,16 +74,20 @@ public class ButtonChangeColourActivity extends AppCompatActivity {
                     btnColourChangingButton.setText("");
 
                     greenColourActive = false;
+                    pastScores.add(reactionTime);
 
                     if (roundNum < 4) {
-                        pastScores.add(reactionTime);
                         startNewRound();
                         roundNum++;
                     } else {
-                        pastScores.add(reactionTime);
-                        Log.d("Test", "Average: " + getAverage(pastScores));
                         btnStartButtonChangeColour.setVisibility(View.VISIBLE);
                         btnBackToReactionGames.setVisibility(View.VISIBLE);
+                        lblColourChangeTitle.setVisibility(View.VISIBLE);
+                        lblColourChangeDesc.setVisibility(View.VISIBLE);
+
+                        lblColourChangeTitle.setText("Your results:");
+                        lblColourChangeDesc.setText("Your average reaction speed was " + getAverage(pastScores) +" ms");
+
                     }
                 }
             }

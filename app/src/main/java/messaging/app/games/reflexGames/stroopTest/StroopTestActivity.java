@@ -2,6 +2,7 @@ package messaging.app.games.reflexGames.stroopTest;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
@@ -19,6 +20,8 @@ import java.util.List;
 import java.util.Random;
 
 import messaging.app.R;
+import messaging.app.games.reflexGames.gridReactionGames.GridReactionGame9ButtonsActivity;
+import messaging.app.games.reflexGames.gridReactionGames.StartGridReactionGameActivity;
 
 public class StroopTestActivity extends AppCompatActivity {
     ImageButton btn1Of6Option;
@@ -40,6 +43,8 @@ public class StroopTestActivity extends AppCompatActivity {
     Random rand = new Random();
     List<String> wordOptions;
     List<String> wordColourOptions;
+
+    int numberOfRounds = 10;
 
     HashMap<String, Drawable> colourOptions;
     long startTime, endTime, reactionTime;
@@ -124,13 +129,17 @@ public class StroopTestActivity extends AppCompatActivity {
                     public void onClick(View view) {
                         //stop timer and store reaction time
                         imageButton.setOnClickListener(null);
-                        if(roundNumber <= 10) {
+                        if(roundNumber <= numberOfRounds) {
                             newRound();
                         }
                         else{
                             endTime = System.currentTimeMillis();
-                            reactionTime = (endTime - startTime) / 10;
+                            reactionTime = (endTime - startTime) / numberOfRounds;
                             Log.d("testLog", "reaction time: " + reactionTime);
+
+                            Intent intent = new Intent(StroopTestActivity.this, StartStroopTestActivity.class);
+                            intent.putExtra("reactionTime", reactionTime);
+                            StroopTestActivity.this.startActivity(intent);
                         }
                     }
                 });

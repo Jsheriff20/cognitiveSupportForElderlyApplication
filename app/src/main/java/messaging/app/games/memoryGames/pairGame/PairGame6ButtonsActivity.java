@@ -2,6 +2,7 @@ package messaging.app.games.memoryGames.pairGame;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.media.Image;
 import android.os.Bundle;
@@ -18,6 +19,8 @@ import java.util.Random;
 import java.util.Set;
 
 import messaging.app.R;
+import messaging.app.games.memoryGames.memorizingPatternGame.PatternMemorizing4ButtonsActivity;
+import messaging.app.games.memoryGames.memorizingPatternGame.StartMemorizingPatternActivity;
 
 public class PairGame6ButtonsActivity extends AppCompatActivity {
 
@@ -28,7 +31,10 @@ public class PairGame6ButtonsActivity extends AppCompatActivity {
     int delayTime = 2000;
     boolean secondClick = false;
     HashMap<ImageButton, Drawable> clickedButtonDetails = new HashMap<ImageButton, Drawable>();
+    int pairsFound = 0;
     int numberCorrect = 0;
+
+    int streak = 0;
 
 
     List<Drawable> images = new ArrayList<>();
@@ -87,11 +93,46 @@ public class PairGame6ButtonsActivity extends AppCompatActivity {
                             button.setVisibility(View.INVISIBLE);
                             firstButton.setVisibility(View.INVISIBLE);
 
+                            pairsFound++;
                             numberCorrect++;
                             if(numberCorrect == (imageButtonsList.size() / 2)){
                                 //game finished
                                 Log.d("test", "game finished: ");
+
+                                streak++;
+
+                                //restart the game
+                                //have to repeat code to allow button for loops to have the correct target variable
+                                images = new ArrayList<>();
+                                images.addAll(Arrays.asList(
+                                        getDrawable(R.drawable.ant), getDrawable(R.drawable.basketball), getDrawable(R.drawable.carrot),
+                                        getDrawable(R.drawable.cat), getDrawable(R.drawable.cow), getDrawable(R.drawable.dog),
+                                        getDrawable(R.drawable.football), getDrawable(R.drawable.horse), getDrawable(R.drawable.monkey),
+                                        getDrawable(R.drawable.pie), getDrawable(R.drawable.soup)
+                                ));
+                                imageButtonsList = new ArrayList<>();
+                                imageButtonsList.addAll(Arrays.asList(
+                                        btnGrid1Of6, btnGrid2Of6, btnGrid3Of6, btnGrid4Of6, btnGrid5Of6, btnGrid6Of6
+                                ));
+
+
+
+                                for(ImageButton button : imageButtonsList){
+                                    Log.d("test", "VISIBLE: ");
+                                    button.setEnabled(false);
+                                    button.setVisibility(View.VISIBLE);
+                                }
+
+                                startGame();
+
                             }
+                        }
+                        else{
+                            Intent intent = new Intent(PairGame6ButtonsActivity.this, StartPairsGameActivity.class);
+                            intent.putExtra("numberOfPairs", "3");
+                            intent.putExtra("streak", streak);
+                            intent.putExtra("numberOfPairsFound", pairsFound);
+                            PairGame6ButtonsActivity.this.startActivity(intent);
                         }
                         secondClick = false;
                         clickedButtonDetails = new HashMap<ImageButton, Drawable>();
@@ -108,6 +149,8 @@ public class PairGame6ButtonsActivity extends AppCompatActivity {
 
     private void startGame() {
 
+        numberCorrect = 0;
+
         //assign 2 buttons an the same image
         int numberOfPairsNeeded = imageButtonsList.size()/2;
         for(int i = 0; i < numberOfPairsNeeded; i++){
@@ -119,7 +162,8 @@ public class PairGame6ButtonsActivity extends AppCompatActivity {
 
                 //Assign the buttonID an image from the image list
                 //remove the button from the button list
-                ImageButton button  = imageButtonsList.get(randomButtonIndex);
+                ImageButton button = imageButtonsList.get(randomButtonIndex);
+                Log.d("test", "imageButtonsList " + imageButtonsList.get(randomButtonIndex));
                 imageButtonsList.remove(randomButtonIndex);
                 buttonAndImageMap.put(button, images.get(randomImageIndex));
             }

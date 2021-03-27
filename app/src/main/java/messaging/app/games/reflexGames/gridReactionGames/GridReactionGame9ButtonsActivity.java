@@ -424,6 +424,7 @@ public class GridReactionGame9ButtonsActivity extends AppCompatActivity {
 
         Log.d("Test", "Average: " + getAverage(pastScores));
         Intent intent = new Intent(GridReactionGame9ButtonsActivity.this, StartGridReactionGameActivity.class);
+        intent.putExtra("reactionTime", getAverage(pastScores));
         GridReactionGame9ButtonsActivity.this.startActivity(intent);
     }
 }

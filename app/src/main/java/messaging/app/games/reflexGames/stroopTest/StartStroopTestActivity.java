@@ -19,6 +19,8 @@ public class StartStroopTestActivity extends AppCompatActivity {
     ImageButton btnBackToReactionGame;
     Button btnWatchStoopTestVid;
     Button btnStartStoopTest;
+    TextView lblStoopTestTitle;
+    TextView lblStoopTestDesc;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,6 +30,22 @@ public class StartStroopTestActivity extends AppCompatActivity {
         btnBackToReactionGame = findViewById(R.id.btnBackToReactionGame);
         btnWatchStoopTestVid = findViewById(R.id.btnWatchStoopTestVid);
         btnStartStoopTest = findViewById(R.id.btnStartStoopTest);
+        lblStoopTestTitle = findViewById(R.id.lblStoopTestTitle);
+        lblStoopTestDesc = findViewById(R.id.lblStoopTestDesc);
+
+
+
+        if(getIntent().getLongExtra("reactionTime", 999999999)  != 999999999){
+
+            //display to user
+            long reactionTime = getIntent().getLongExtra("reactionTime", 999999999);
+            lblStoopTestTitle.setText("You results:");
+            lblStoopTestDesc.setText("Your average reaction speed was " + reactionTime +" ms");
+
+            //store score in database
+            //if high score set as their high score
+        }
+
 
         setBtnBackToReactionGamesOnClick();
         setBtnStartStoopTestOnClick();
