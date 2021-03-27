@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-xmlns:app="http://schemas.android.com/apk/res-auto"
-xmlns:tools="http://schemas.android.com/tools"
-android:layout_width="match_parent"
-android:layout_height="match_parent"
-android:orientation="vertical"
-tools:context=".games.reflexGames.SelectReactionGameActivity">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".games.reflexGames.SelectReactionGameActivity">
 
     <TextView
         android:id="@+id/textView2"
@@ -13,6 +13,7 @@ tools:context=".games.reflexGames.SelectReactionGameActivity">
         android:layout_height="wrap_content"
         android:layout_marginTop="24dp"
         android:text="Reaction Games"
+        android:textAlignment="center"
         android:textColor="#000000"
         android:textSize="36sp"
         app:layout_constraintEnd_toEndOf="parent"
@@ -36,67 +37,93 @@ tools:context=".games.reflexGames.SelectReactionGameActivity">
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_marginTop="16dp"
-        android:orientation="vertical"
-        android:weightSum="4"
+        android:orientation="horizontal"
+        android:weightSum="2"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView2"
         tools:layout_editor_absoluteX="9dp">
 
 
         <androidx.appcompat.widget.LinearLayoutCompat
-            android:id="@+id/llayReactionLeaderBoard"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginBottom="8dp"
+            android:layout_marginTop="16dp"
             android:layout_weight="1"
-            android:background="@drawable/btn_rectangle_blue_gradient"
-            android:orientation="horizontal"
-            android:padding="20dp"
-            android:weightSum="3">
+            android:orientation="vertical"
+            android:weightSum="2"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textView2"
+            tools:layout_editor_absoluteX="9dp">
 
-            <ImageView
-                android:layout_width="30dp"
+            <androidx.appcompat.widget.LinearLayoutCompat
+                android:id="@+id/llayReactionLeaderBoard"
+                android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:layout_marginBottom="8dp"
                 android:layout_weight="1"
-                android:src="@drawable/leaderboard_icon" />
+                android:background="@drawable/btn_rectangle_blue_gradient"
+                android:orientation="horizontal"
+                android:padding="20dp"
+                android:weightSum="3">
 
-            <TextView
-                android:layout_width="30dp"
+                <ImageView
+                    android:layout_width="30dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:src="@drawable/leaderboard_icon" />
+
+                <TextView
+                    android:layout_width="30dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="2"
+                    android:gravity="center"
+                    android:text="Rankings"
+                    android:textColor="@color/white"
+                    android:textSize="40dp" />
+            </androidx.appcompat.widget.LinearLayoutCompat>
+
+            <androidx.appcompat.widget.LinearLayoutCompat
+                android:id="@+id/llayColourChange"
+                android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_weight="2"
-                android:gravity="center"
-                android:text="Rankings"
-                android:textColor="@color/white"
-                android:textSize="40dp" />
+                android:layout_marginBottom="8dp"
+                android:layout_weight="1"
+                android:background="@drawable/btn_rectangle_purple_gradient"
+                android:orientation="horizontal"
+                android:padding="20dp"
+                android:weightSum="3">
+
+                <ImageView
+                    android:layout_width="30dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:src="@drawable/colour_change_icon" />
+
+                <TextView
+                    android:layout_width="30dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="2"
+                    android:gravity="center"
+                    android:text="Colour Change"
+                    android:textColor="@color/white"
+                    android:textSize="40dp" />
+            </androidx.appcompat.widget.LinearLayoutCompat>
+
         </androidx.appcompat.widget.LinearLayoutCompat>
 
-        <androidx.appcompat.widget.LinearLayoutCompat
-            android:id="@+id/llayColourChange"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginBottom="8dp"
-            android:layout_weight="1"
-            android:background="@drawable/btn_rectangle_purple_gradient"
-            android:orientation="horizontal"
-            android:padding="20dp"
-            android:weightSum="3">
 
-            <ImageView
-                android:layout_width="30dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:src="@drawable/colour_change_icon" />
 
-            <TextView
-                android:layout_width="30dp"
-                android:layout_height="match_parent"
-                android:layout_weight="2"
-                android:gravity="center"
-                android:text="Colour Change"
-                android:textColor="@color/white"
-                android:textSize="40dp" />
-        </androidx.appcompat.widget.LinearLayoutCompat>
 
+    <androidx.appcompat.widget.LinearLayoutCompat
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="16dp"
+        android:orientation="vertical"
+        android:weightSum="2"
+        android:layout_weight="1"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView2"
+        tools:layout_editor_absoluteX="9dp">
 
         <androidx.appcompat.widget.LinearLayoutCompat
             android:id="@+id/llayGrid"
@@ -152,7 +179,7 @@ tools:context=".games.reflexGames.SelectReactionGameActivity">
                 android:textColor="@color/white"
                 android:textSize="40dp" />
         </androidx.appcompat.widget.LinearLayoutCompat>
-
+    </androidx.appcompat.widget.LinearLayoutCompat>
 
     </androidx.appcompat.widget.LinearLayoutCompat>
 

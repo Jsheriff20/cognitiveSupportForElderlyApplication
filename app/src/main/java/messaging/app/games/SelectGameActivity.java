@@ -6,14 +6,20 @@ import androidx.appcompat.widget.LinearLayoutCompat;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.ImageButton;
 
 import messaging.app.R;
+import messaging.app.SelectAreaOfApplicationActivity;
+import messaging.app.games.memoryGames.SelectMemoryGameActivity;
 import messaging.app.games.reflexGames.SelectReactionGameActivity;
+import messaging.app.games.reflexGames.stroopTest.StartStroopTestActivity;
 
 public class SelectGameActivity extends AppCompatActivity {
 
     LinearLayoutCompat llayReactionGames;
     LinearLayoutCompat llayMemoryGames;
+    ImageButton btnBackToOptions;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -21,7 +27,11 @@ public class SelectGameActivity extends AppCompatActivity {
 
         llayReactionGames = findViewById(R.id.llayReactionGames);
         llayMemoryGames = findViewById(R.id.llayMemoryGames);
+        btnBackToOptions = findViewById(R.id.btnBackToOptions);
+
         setLlayReactionGames();
+        setLlayMemoryGames();
+        setBtnBackToOptionsOnClick();
     }
 
     private void setLlayReactionGames(){
@@ -34,12 +44,26 @@ public class SelectGameActivity extends AppCompatActivity {
         });
     }
 
+
     private void setLlayMemoryGames(){
         llayMemoryGames.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                Intent intent = new Intent(SelectGameActivity.this, SelectMemoryGameActivity.class);
+                SelectGameActivity.this.startActivity(intent);
             }
         });
     }
+
+
+    private void setBtnBackToOptionsOnClick() {
+        btnBackToOptions.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(SelectGameActivity.this, SelectAreaOfApplicationActivity.class);
+                SelectGameActivity.this.startActivity(intent);
+            }
+        });
+    }
+
 }

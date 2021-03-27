@@ -1,4 +1,4 @@
-package messaging.app.games.reflexGames;
+package messaging.app.games.reflexGames.stroopTest;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -20,7 +20,7 @@ import java.util.Random;
 
 import messaging.app.R;
 
-public class StoopTestActivity extends AppCompatActivity {
+public class StroopTestActivity extends AppCompatActivity {
     ImageButton btn1Of6Option;
     ImageButton btn2Of6Option;
     ImageButton btn3Of6Option;

@@ -4,10 +4,10 @@ xmlns:app="http://schemas.android.com/apk/res-auto"
 xmlns:tools="http://schemas.android.com/tools"
 android:layout_width="match_parent"
 android:layout_height="match_parent"
-tools:context=".games.memoryGames.pairGame.StartPairsGameActivity">
+tools:context=".games.reflexGames.stroopTest.StartStroopTestActivity">
 
 <Button
-    android:id="@+id/btnStartPairGame"
+    android:id="@+id/btnStartStoopTest"
     android:layout_width="0dp"
     android:layout_height="135dp"
     android:layout_marginStart="32dp"
@@ -21,23 +21,23 @@ tools:context=".games.memoryGames.pairGame.StartPairsGameActivity">
     app:layout_constraintHorizontal_bias="0.5"
     app:layout_constraintStart_toStartOf="parent" />
 
-<Button
-    android:id="@+id/btnWatchPairGameVid"
-    android:layout_width="0dp"
-    android:layout_height="wrap_content"
-    android:layout_marginStart="16dp"
-    android:layout_marginTop="24dp"
-    android:layout_marginEnd="16dp"
-    android:text="Watch Example Video"
-    android:textSize="26sp"
-    android:background="@drawable/btn_rectangle_orange_gradient"
-    app:layout_constraintEnd_toEndOf="parent"
-    app:layout_constraintStart_toEndOf="@+id/btnBackToMemoryGames"
-    app:layout_constraintTop_toTopOf="parent" />
+    <Button
+        android:id="@+id/btnWatchStoopTestVid"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="24dp"
+        android:layout_marginEnd="16dp"
+        android:background="@drawable/btn_rectangle_orange_gradient"
+        android:text="Watch Example Video"
+        android:textSize="26sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/btnBackToReactionGame"
+        app:layout_constraintTop_toTopOf="parent" />
 
 
 <ImageButton
-    android:id="@+id/btnBackToMemoryGames"
+    android:id="@+id/btnBackToReactionGame"
     android:layout_width="70dp"
     android:layout_height="70dp"
     android:layout_marginStart="24dp"
@@ -48,30 +48,30 @@ tools:context=".games.memoryGames.pairGame.StartPairsGameActivity">
     app:layout_constraintTop_toTopOf="parent"
     app:srcCompat="@drawable/back_icon" />
 
-<TextView
-    android:id="@+id/lblPairGameTitle"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:layout_marginTop="50dp"
-    android:text="Where's The Pair?"
-    android:textColor="#000000"
-    android:textSize="36sp"
-    app:layout_constraintEnd_toEndOf="parent"
-    app:layout_constraintStart_toStartOf="parent"
-    app:layout_constraintTop_toBottomOf="@+id/btnWatchPairGameVid" />
+    <TextView
+        android:id="@+id/lblStoopTestTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="50dp"
+        android:text="Text Colour"
+        android:textColor="#000000"
+        android:textSize="36sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/btnWatchStoopTestVid" />
 
     <TextView
-        android:id="@+id/lblPairGameDesc"
+        android:id="@+id/lblStoopTestDesc"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="32dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="32dp"
-        android:text="Images will appear for a short period of time and will then disapear. You must then press on the pictures that you belive are pairs"
+        android:text="From the colour options provided you must select the ink colour of the word"
         android:textColor="#000000"
         android:textSize="30sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/lblPairGameTitle" />
+        app:layout_constraintTop_toBottomOf="@+id/lblStoopTestTitle" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

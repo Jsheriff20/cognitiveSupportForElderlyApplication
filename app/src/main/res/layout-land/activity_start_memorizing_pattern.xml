@@ -4,25 +4,26 @@ xmlns:app="http://schemas.android.com/apk/res-auto"
 xmlns:tools="http://schemas.android.com/tools"
 android:layout_width="match_parent"
 android:layout_height="match_parent"
-tools:context=".games.memoryGames.pairGame.StartPairsGameActivity">
+tools:context=".games.memoryGames.memorizingPatternGame.StartMemorizingPatternActivity">
+
+    <Button
+        android:id="@+id/btnStartPatternGame"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="32dp"
+        android:layout_marginEnd="32dp"
+        android:layout_marginBottom="16dp"
+        android:background="@drawable/btn_rectangle_grey_gradient"
+        android:text="START"
+        android:textSize="36sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/lblPatternGameDesc" />
 
 <Button
-    android:id="@+id/btnStartPairGame"
-    android:layout_width="0dp"
-    android:layout_height="135dp"
-    android:layout_marginStart="32dp"
-    android:layout_marginEnd="32dp"
-    android:layout_marginBottom="24dp"
-    android:background="@drawable/btn_rectangle_grey_gradient"
-    android:text="START"
-    android:textSize="36sp"
-    app:layout_constraintBottom_toBottomOf="parent"
-    app:layout_constraintEnd_toEndOf="parent"
-    app:layout_constraintHorizontal_bias="0.5"
-    app:layout_constraintStart_toStartOf="parent" />
-
-<Button
-    android:id="@+id/btnWatchPairGameVid"
+    android:id="@+id/btnWatchPatternGameVid"
     android:layout_width="0dp"
     android:layout_height="wrap_content"
     android:layout_marginStart="16dp"
@@ -48,30 +49,30 @@ tools:context=".games.memoryGames.pairGame.StartPairsGameActivity">
     app:layout_constraintTop_toTopOf="parent"
     app:srcCompat="@drawable/back_icon" />
 
-<TextView
-    android:id="@+id/lblPairGameTitle"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:layout_marginTop="50dp"
-    android:text="Where's The Pair?"
-    android:textColor="#000000"
-    android:textSize="36sp"
-    app:layout_constraintEnd_toEndOf="parent"
-    app:layout_constraintStart_toStartOf="parent"
-    app:layout_constraintTop_toBottomOf="@+id/btnWatchPairGameVid" />
+    <TextView
+        android:id="@+id/lblPatternGameTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:text="Pattern Repeat"
+        android:textColor="#000000"
+        android:textSize="36sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/btnWatchPatternGameVid" />
 
     <TextView
-        android:id="@+id/lblPairGameDesc"
+        android:id="@+id/lblPatternGameDesc"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="32dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="32dp"
-        android:text="Images will appear for a short period of time and will then disapear. You must then press on the pictures that you belive are pairs"
+        android:text="A grid will appear and a random button will change colour, it will then dissapear and another button's colour will change. You must then press the buttons in the same order as shown "
         android:textColor="#000000"
         android:textSize="30sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/lblPairGameTitle" />
+        app:layout_constraintTop_toBottomOf="@+id/lblPatternGameTitle" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

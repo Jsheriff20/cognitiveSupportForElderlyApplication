@@ -2,6 +2,7 @@ package messaging.app.games.reflexGames;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
@@ -16,6 +17,8 @@ import java.util.List;
 import java.util.Random;
 
 import messaging.app.R;
+import messaging.app.games.memoryGames.SelectMemoryGameActivity;
+import messaging.app.games.memoryGames.memorizingPatternGame.StartMemorizingPatternActivity;
 
 public class ButtonChangeColourActivity extends AppCompatActivity {
 
@@ -49,6 +52,7 @@ public class ButtonChangeColourActivity extends AppCompatActivity {
 
         setBtnColourChangingButton();
         setBtnStartButtonChangeColour();
+        setBtnBackToReactionGames();
     }
 
 
@@ -94,6 +98,17 @@ public class ButtonChangeColourActivity extends AppCompatActivity {
                 roundNum = 0;
                 pastScores = new ArrayList();
                 startNewRound();
+            }
+        });
+    }
+
+
+    private void setBtnBackToReactionGames(){
+        btnBackToReactionGames.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(ButtonChangeColourActivity.this, SelectReactionGameActivity.class);
+                ButtonChangeColourActivity.this.startActivity(intent);
             }
         });
     }

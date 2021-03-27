@@ -144,6 +144,7 @@ public class PairGame16ButtonsActivity extends AppCompatActivity {
         }
 
         //display the buttons to the user
+
         imageButtonsList = Arrays.asList(
                 btnGrid1Of16, btnGrid2Of16, btnGrid3Of16, btnGrid4Of16, btnGrid5Of16, btnGrid6Of16,
                 btnGrid7Of16, btnGrid8Of16, btnGrid9Of16, btnGrid10Of16, btnGrid11Of16, btnGrid12Of16,

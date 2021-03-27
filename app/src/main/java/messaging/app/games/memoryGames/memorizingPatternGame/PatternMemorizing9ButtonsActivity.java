@@ -1,4 +1,4 @@
-package messaging.app.games.memoryGames.MemorizingPatternGame;
+package messaging.app.games.memoryGames.memorizingPatternGame;
 
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;

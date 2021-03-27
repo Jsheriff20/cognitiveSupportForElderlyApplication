@@ -6,16 +6,21 @@ import androidx.appcompat.widget.LinearLayoutCompat;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.ImageButton;
 
 import messaging.app.R;
 import messaging.app.games.SelectGameActivity;
+import messaging.app.games.memoryGames.SelectMemoryGameActivity;
 import messaging.app.games.reflexGames.gridReactionGames.StartGridReactionGameActivity;
+import messaging.app.games.reflexGames.stroopTest.StartStroopTestActivity;
+import messaging.app.games.reflexGames.stroopTest.StroopTestActivity;
 
 public class SelectReactionGameActivity extends AppCompatActivity {
 
     LinearLayoutCompat llayColourChange;
     LinearLayoutCompat llayGrid;
     LinearLayoutCompat llayStoop;
+    ImageButton btnBackToSelectGames;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,9 +30,12 @@ public class SelectReactionGameActivity extends AppCompatActivity {
         llayColourChange = findViewById(R.id.llayColourChange);
         llayGrid = findViewById(R.id.llayGrid);
         llayStoop = findViewById(R.id.llayStoop);
+        btnBackToSelectGames = findViewById(R.id.btnBackToSelectGames);
+
         setLlayColourChange();
         setLlayGrid();
         setLlayStoop();
+        setBtnBackToSelectGamesOnClick();
     }
 
 
@@ -56,7 +64,19 @@ public class SelectReactionGameActivity extends AppCompatActivity {
         llayStoop.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(SelectReactionGameActivity.this, StoopTestActivity.class);
+                Intent intent = new Intent(SelectReactionGameActivity.this, StartStroopTestActivity.class);
+                SelectReactionGameActivity.this.startActivity(intent);
+            }
+        });
+    }
+
+
+
+    private void setBtnBackToSelectGamesOnClick() {
+        btnBackToSelectGames.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(SelectReactionGameActivity.this, SelectGameActivity.class);
                 SelectReactionGameActivity.this.startActivity(intent);
             }
         });

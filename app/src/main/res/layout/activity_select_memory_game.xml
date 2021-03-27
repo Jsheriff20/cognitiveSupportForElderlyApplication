@@ -5,14 +5,14 @@ xmlns:tools="http://schemas.android.com/tools"
 android:layout_width="match_parent"
 android:layout_height="match_parent"
 android:orientation="vertical"
-tools:context=".games.reflexGames.SelectReactionGameActivity">
+tools:context=".games.memoryGames.SelectMemoryGameActivity">
 
     <TextView
         android:id="@+id/textView2"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="24dp"
-        android:text="Reaction Games"
+        android:text="Memory Games"
         android:textColor="#000000"
         android:textSize="36sp"
         app:layout_constraintEnd_toEndOf="parent"
@@ -31,8 +31,8 @@ tools:context=".games.reflexGames.SelectReactionGameActivity">
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/back_icon" />
 
-
     <androidx.appcompat.widget.LinearLayoutCompat
+        android:id="@+id/linearLayoutCompat2"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_marginTop="16dp"
@@ -49,7 +49,7 @@ tools:context=".games.reflexGames.SelectReactionGameActivity">
             android:layout_height="match_parent"
             android:layout_marginBottom="8dp"
             android:layout_weight="1"
-            android:background="@drawable/btn_rectangle_blue_gradient"
+            android:background="@drawable/btn_rectangle_purple_gradient"
             android:orientation="horizontal"
             android:padding="20dp"
             android:weightSum="3">
@@ -71,63 +71,7 @@ tools:context=".games.reflexGames.SelectReactionGameActivity">
         </androidx.appcompat.widget.LinearLayoutCompat>
 
         <androidx.appcompat.widget.LinearLayoutCompat
-            android:id="@+id/llayColourChange"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginBottom="8dp"
-            android:layout_weight="1"
-            android:background="@drawable/btn_rectangle_purple_gradient"
-            android:orientation="horizontal"
-            android:padding="20dp"
-            android:weightSum="3">
-
-            <ImageView
-                android:layout_width="30dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:src="@drawable/colour_change_icon" />
-
-            <TextView
-                android:layout_width="30dp"
-                android:layout_height="match_parent"
-                android:layout_weight="2"
-                android:gravity="center"
-                android:text="Colour Change"
-                android:textColor="@color/white"
-                android:textSize="40dp" />
-        </androidx.appcompat.widget.LinearLayoutCompat>
-
-
-        <androidx.appcompat.widget.LinearLayoutCompat
-            android:id="@+id/llayGrid"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginBottom="8dp"
-            android:layout_weight="1"
-            android:background="@drawable/btn_rectangle_green_gradient"
-            android:orientation="horizontal"
-            android:padding="20dp"
-            android:weightSum="3">
-
-            <ImageView
-                android:layout_width="30dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:src="@drawable/grid_icon" />
-
-            <TextView
-                android:layout_width="30dp"
-                android:layout_height="match_parent"
-                android:layout_weight="2"
-                android:gravity="center"
-                android:text="Grid"
-                android:textColor="@color/white"
-                android:textSize="40dp" />
-        </androidx.appcompat.widget.LinearLayoutCompat>
-
-
-        <androidx.appcompat.widget.LinearLayoutCompat
-            android:id="@+id/llayStoop"
+            android:id="@+id/llayPattern"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginBottom="8dp"
@@ -141,14 +85,70 @@ tools:context=".games.reflexGames.SelectReactionGameActivity">
                 android:layout_width="30dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:src="@drawable/text_colour_icon" />
+                android:src="@drawable/pattern_game_icon" />
 
             <TextView
                 android:layout_width="30dp"
                 android:layout_height="match_parent"
                 android:layout_weight="2"
                 android:gravity="center"
-                android:text="Text Colour"
+                android:text="Pattern Repeat"
+                android:textColor="@color/white"
+                android:textSize="40dp" />
+        </androidx.appcompat.widget.LinearLayoutCompat>
+
+
+        <androidx.appcompat.widget.LinearLayoutCompat
+            android:id="@+id/llayPair"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginBottom="8dp"
+            android:layout_weight="1"
+            android:background="@drawable/btn_rectangle_blue_gradient"
+            android:orientation="horizontal"
+            android:padding="20dp"
+            android:weightSum="3">
+
+            <ImageView
+                android:layout_width="30dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:src="@drawable/pair_game_icon" />
+
+            <TextView
+                android:layout_width="30dp"
+                android:layout_height="match_parent"
+                android:layout_weight="2"
+                android:gravity="center"
+                android:text="Where's The Pair?"
+                android:textColor="@color/white"
+                android:textSize="40dp" />
+        </androidx.appcompat.widget.LinearLayoutCompat>
+
+
+        <androidx.appcompat.widget.LinearLayoutCompat
+            android:id="@+id/memoryGameButton4"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginBottom="8dp"
+            android:layout_weight="1"
+            android:background="@null"
+            android:orientation="horizontal"
+            android:padding="20dp"
+            android:weightSum="3">
+
+            <ImageView
+                android:layout_width="30dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:src="@null" />
+
+            <TextView
+                android:layout_width="30dp"
+                android:layout_height="match_parent"
+                android:layout_weight="2"
+                android:gravity="center"
+                android:text=""
                 android:textColor="@color/white"
                 android:textSize="40dp" />
         </androidx.appcompat.widget.LinearLayoutCompat>
