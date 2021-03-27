@@ -9,6 +9,7 @@ import android.os.Handler;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
+import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,6 +30,7 @@ public class GridReactionGame4ButtonsActivity extends AppCompatActivity {
 
     Drawable defaultColour;
     List<Drawable> possibleBackgroundColours = new ArrayList<>();
+    List<ImageButton> possibleButtons = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,97 +49,49 @@ public class GridReactionGame4ButtonsActivity extends AppCompatActivity {
         possibleBackgroundColours.add(getDrawable(R.drawable.btn_rectangle_red_gradient));
         defaultColour = getDrawable(R.drawable.btn_rectangle_grey_gradient);
 
+        possibleButtons.add(btnGrid1Of4);
+        possibleButtons.add(btnGrid2Of4);
+        possibleButtons.add(btnGrid3Of4);
+        possibleButtons.add(btnGrid4Of4);
 
-        btnGrid1Of4.setEnabled(false);
-        btnGrid2Of4.setEnabled(false);
-        btnGrid3Of4.setEnabled(false);
-        btnGrid4Of4.setEnabled(false);
 
+        for(ImageButton button : possibleButtons){
+            button.setEnabled(false);
+        }
 
-        setButtonClicks();
+        setButtons();
         newRound();
     }
 
-    private void setButtonClicks() {
+
+
+    private void setButtons() {
 
         //each button, stops the time and records it and resets the game for the next round
         //if there is no more rounds to go then stop and save the game
 
-        btnGrid1Of4.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                endTime = System.currentTimeMillis();
-                reactionTime = endTime - startTime;
-                pastScores.add(reactionTime);
-                btnGrid1Of4.setBackground(defaultColour);
-                btnGrid1Of4.setEnabled(false);
+        for(ImageButton button : possibleButtons){
+            button.setEnabled(false);
+            button.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    endTime = System.currentTimeMillis();
+                    reactionTime = endTime - startTime;
+                    pastScores.add(reactionTime);
+                    button.setBackground(defaultColour);
+                    button.setEnabled(false);
 
-                if (roundNum <= 4) {
-                    newRound();
+                    if (roundNum <= 4) {
+                        newRound();
+                    }
+                    else {
+                        completeGame();
+                    }
                 }
-                else {
-                    completeGame();
-                }
-            }
-        });
-
-
-        btnGrid2Of4.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                endTime = System.currentTimeMillis();
-                reactionTime = endTime - startTime;
-                pastScores.add(reactionTime);
-                btnGrid2Of4.setBackground(defaultColour);
-                btnGrid2Of4.setEnabled(false);
-
-                if (roundNum <= 4) {
-                    newRound();
-                }
-                else {
-                    completeGame();
-                }
-            }
-        });
-
-
-        btnGrid3Of4.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                endTime = System.currentTimeMillis();
-                reactionTime = endTime - startTime;
-                pastScores.add(reactionTime);
-                btnGrid3Of4.setBackground(defaultColour);
-                btnGrid3Of4.setEnabled(false);
-
-                if (roundNum <= 4) {
-                    newRound();
-                }
-                else {
-                    completeGame();
-                }
-            }
-        });
-
-
-        btnGrid4Of4.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                endTime = System.currentTimeMillis();
-                reactionTime = endTime - startTime;
-                pastScores.add(reactionTime);
-                btnGrid4Of4.setBackground(defaultColour);
-                btnGrid4Of4.setEnabled(false);
-
-                if (roundNum <= 4) {
-                    newRound();
-                }
-                else {
-                    completeGame();
-                }
-            }
-        });
+            });
+        }
     }
+
 
 
     private void newRound() {
@@ -193,6 +147,7 @@ public class GridReactionGame4ButtonsActivity extends AppCompatActivity {
     }
 
 
+
     private long getAverage(List<Long> pastScores) {
         long total = 0;
         for (Long score : pastScores) {
@@ -203,9 +158,9 @@ public class GridReactionGame4ButtonsActivity extends AppCompatActivity {
     }
 
 
+
     private void completeGame(){
 
-        Log.d("Test", "Average: " + getAverage(pastScores));
         Intent intent = new Intent(GridReactionGame4ButtonsActivity.this, StartGridReactionGameActivity.class);
         intent.putExtra("reactionTime", getAverage(pastScores));
         GridReactionGame4ButtonsActivity.this.startActivity(intent);

@@ -9,6 +9,7 @@ import android.os.Handler;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
+import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,6 +36,7 @@ public class GridReactionGame9ButtonsActivity extends AppCompatActivity {
     Drawable defaultColour;
     List<Drawable> possibleBackgrounds = new ArrayList<>();
     List<Drawable> possibleImages = new ArrayList<>();
+    List<ImageButton> possibleButtons = new ArrayList<>();
     Random rand = new Random();
 
     String typeOfLevel = "images";
@@ -58,27 +60,24 @@ public class GridReactionGame9ButtonsActivity extends AppCompatActivity {
 
         defaultColour = getDrawable(R.drawable.btn_rectangle_grey_gradient);
 
+        possibleButtons.add(btnGrid1Of9);
+        possibleButtons.add(btnGrid2Of9);
+        possibleButtons.add(btnGrid3Of9);
+        possibleButtons.add(btnGrid4Of9);
+        possibleButtons.add(btnGrid5Of9);
+        possibleButtons.add(btnGrid6Of9);
+        possibleButtons.add(btnGrid7Of9);
+        possibleButtons.add(btnGrid8Of9);
+        possibleButtons.add(btnGrid9Of9);
 
 
-        btnGrid1Of9.setEnabled(false);
-        btnGrid2Of9.setEnabled(false);
-        btnGrid3Of9.setEnabled(false);
-        btnGrid4Of9.setEnabled(false);
-        btnGrid5Of9.setEnabled(false);
-        btnGrid6Of9.setEnabled(false);
-        btnGrid7Of9.setEnabled(false);
-        btnGrid8Of9.setEnabled(false);
-        btnGrid9Of9.setEnabled(false);
-
-
-        setButtonClicks();
+        setButtons();
         newRound();
     }
 
 
 
     private void fillPossibleBackgrounds(String typeOfBackground) {
-
         if(typeOfBackground.equals("colours")){
             possibleBackgrounds.add(getDrawable(R.drawable.btn_rectangle_blue_gradient));
             possibleBackgrounds.add(getDrawable(R.drawable.btn_rectangle_green_gradient));
@@ -114,199 +113,32 @@ public class GridReactionGame9ButtonsActivity extends AppCompatActivity {
     }
 
 
-    private void setButtonClicks() {
+
+    private void setButtons() {
 
         //each button, stops the time and records it and resets the game for the next round
         //if there is no more rounds to go then stop and save the game
+        for(ImageButton button : possibleButtons){
+            button.setEnabled(false);
+            button.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    endTime = System.currentTimeMillis();
+                    reactionTime = endTime - startTime;
+                    pastScores.add(reactionTime);
+                    button.setBackground(defaultColour);
+                    btnGrid1Of9.setImageDrawable(null);
+                    button.setEnabled(false);
 
-        btnGrid1Of9.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                endTime = System.currentTimeMillis();
-                reactionTime = endTime - startTime;
-                pastScores.add(reactionTime);
-
-                btnGrid1Of9.setBackground(defaultColour);
-                btnGrid1Of9.setImageDrawable(null);
-                btnGrid1Of9.setEnabled(false);
-
-                if (roundNum <= 4) {
-                    newRound();
+                    if (roundNum <= 4) {
+                        newRound();
+                    }
+                    else {
+                        completeGame();
+                    }
                 }
-                else {
-                    completeGame();
-                }
-            }
-        });
-
-
-        btnGrid2Of9.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                endTime = System.currentTimeMillis();
-                reactionTime = endTime - startTime;
-                pastScores.add(reactionTime);
-
-                btnGrid2Of9.setBackground(defaultColour);
-                btnGrid2Of9.setImageDrawable(null);
-                btnGrid2Of9.setEnabled(false);
-
-                if (roundNum <= 4) {
-                    newRound();
-                }
-                else {
-                    completeGame();
-                }
-            }
-        });
-
-
-        btnGrid3Of9.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                endTime = System.currentTimeMillis();
-                reactionTime = endTime - startTime;
-                pastScores.add(reactionTime);
-
-
-                btnGrid3Of9.setBackground(defaultColour);
-                btnGrid3Of9.setImageDrawable(null);
-                btnGrid3Of9.setEnabled(false);
-
-                if (roundNum <= 4) {
-                    newRound();
-                }
-                else {
-                    completeGame();
-                }
-            }
-        });
-
-
-        btnGrid4Of9.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                endTime = System.currentTimeMillis();
-                reactionTime = endTime - startTime;
-                pastScores.add(reactionTime);
-
-                btnGrid4Of9.setBackground(defaultColour);
-                btnGrid4Of9.setImageDrawable(null);
-                btnGrid4Of9.setEnabled(false);
-
-                if (roundNum <= 4) {
-                    newRound();
-                }
-                else {
-                    completeGame();
-                }
-            }
-        });
-
-
-        btnGrid5Of9.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                endTime = System.currentTimeMillis();
-                reactionTime = endTime - startTime;
-                pastScores.add(reactionTime);
-
-                btnGrid5Of9.setBackground(defaultColour);
-                btnGrid5Of9.setImageDrawable(null);
-                btnGrid5Of9.setEnabled(false);
-
-                if (roundNum <= 4) {
-                    newRound();
-                }
-                else {
-                    completeGame();
-                }
-            }
-        });
-
-
-        btnGrid6Of9.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                endTime = System.currentTimeMillis();
-                reactionTime = endTime - startTime;
-                pastScores.add(reactionTime);
-
-                btnGrid6Of9.setBackground(defaultColour);
-                btnGrid6Of9.setImageDrawable(null);
-                btnGrid6Of9.setEnabled(false);
-
-                if (roundNum <= 4) {
-                    newRound();
-                }
-                else {
-                    completeGame();
-                }
-            }
-        });
-
-
-        btnGrid7Of9.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                endTime = System.currentTimeMillis();
-                reactionTime = endTime - startTime;
-                pastScores.add(reactionTime);
-
-                btnGrid7Of9.setBackground(defaultColour);
-                btnGrid7Of9.setImageDrawable(null);
-                btnGrid7Of9.setEnabled(false);
-
-                if (roundNum <= 4) {
-                    newRound();
-                }
-                else {
-                    completeGame();
-                }
-            }
-        });
-
-
-        btnGrid8Of9.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                endTime = System.currentTimeMillis();
-                reactionTime = endTime - startTime;
-                pastScores.add(reactionTime);
-
-                btnGrid8Of9.setBackground(defaultColour);
-                btnGrid8Of9.setImageDrawable(null);
-                btnGrid8Of9.setEnabled(false);
-
-                if (roundNum <= 4) {
-                    newRound();
-                }
-                else {
-                    completeGame();
-                }
-            }
-        });
-
-
-        btnGrid9Of9.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                endTime = System.currentTimeMillis();
-                reactionTime = endTime - startTime;
-                pastScores.add(reactionTime);
-
-                btnGrid9Of9.setBackground(defaultColour);
-                btnGrid9Of9.setImageDrawable(null);
-                btnGrid9Of9.setEnabled(false);
-
-                if (roundNum <= 4) {
-                    newRound();
-                }
-                else {
-                    completeGame();
-                }
-            }
-        });
+            });
+        }
     }
 
 

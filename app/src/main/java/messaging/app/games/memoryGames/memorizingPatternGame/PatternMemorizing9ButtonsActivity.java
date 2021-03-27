@@ -1,11 +1,13 @@
 package messaging.app.games.memoryGames.memorizingPatternGame;
 
+import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
+import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -27,11 +29,16 @@ public class PatternMemorizing9ButtonsActivity extends AppCompatActivity {
     ImageButton btnGrid7Of9;
     ImageButton btnGrid8Of9;
     ImageButton btnGrid9Of9;
+    TextView lblCurrentStatus;
 
+
+    int currentButtonNum = 0;
     int currentRound;
     int currentLevel = 3;
-    List<Integer> buttonPatternOrder = new ArrayList();
-    Integer[] possibleButtonIDs;
+    int numberOfRounds = currentLevel + 2;
+
+    List<ImageButton> buttonPatternOrder = new ArrayList();
+    ImageButton[] possibleButtons;
 
     Drawable defaultColour;
     List<Drawable> possibleBackgroundColours = new ArrayList<>();
@@ -40,7 +47,8 @@ public class PatternMemorizing9ButtonsActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_pattern_memorizing6_buttons);
+        setContentView(R.layout.activity_pattern_memorizing9_buttons);
+
 
         btnGrid1Of9 = findViewById(R.id.btnGrid1Of9);
         btnGrid2Of9 = findViewById(R.id.btnGrid2Of9);
@@ -51,7 +59,9 @@ public class PatternMemorizing9ButtonsActivity extends AppCompatActivity {
         btnGrid7Of9 = findViewById(R.id.btnGrid7Of9);
         btnGrid8Of9 = findViewById(R.id.btnGrid8Of9);
         btnGrid9Of9 = findViewById(R.id.btnGrid9Of9);
+        lblCurrentStatus = findViewById(R.id.lblCurrentStatus);
 
+        lblCurrentStatus.setVisibility(View.INVISIBLE);
 
         possibleBackgroundColours.add(getDrawable(R.drawable.btn_rectangle_blue_gradient));
         possibleBackgroundColours.add(getDrawable(R.drawable.btn_rectangle_green_gradient));
@@ -60,12 +70,11 @@ public class PatternMemorizing9ButtonsActivity extends AppCompatActivity {
         possibleBackgroundColours.add(getDrawable(R.drawable.btn_rectangle_red_gradient));
         defaultColour = getDrawable(R.drawable.btn_rectangle_grey_gradient);
 
-        possibleButtonIDs = new Integer[]{
-                btnGrid1Of9.getId(), btnGrid2Of9.getId(), btnGrid3Of9.getId(),
-                btnGrid4Of9.getId(), btnGrid5Of9.getId(), btnGrid6Of9.getId(),
-                btnGrid7Of9.getId(), btnGrid8Of9.getId(), btnGrid9Of9.getId(),
+        possibleButtons = new ImageButton[]{
+                btnGrid1Of9, btnGrid2Of9, btnGrid3Of9,
+                btnGrid4Of9, btnGrid5Of9, btnGrid6Of9,
+                btnGrid7Of9, btnGrid8Of9, btnGrid9Of9,
         };
-
 
         startLevel();
         setButtonClicks();
@@ -77,274 +86,77 @@ public class PatternMemorizing9ButtonsActivity extends AppCompatActivity {
     }
 
     private void setButtonClicks() {
-        btnGrid1Of9.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                btnGrid1Of9.setBackground(defaultColour);
+        for (ImageButton button : possibleButtons) {
+            button.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    button.setBackground(defaultColour);
 
-                int currentID = btnGrid1Of9.getId();
+                    if (buttonPatternOrder.get(currentRound) == button) {
+                        Log.d("test", "Correct");
+                        //correct
 
-                if (buttonPatternOrder.get(currentRound) == currentID) {
-                    Log.d("test", "Correct");
-                    //correct
+                        //display the button to the user, and change to default color after 1 seconds
+                        toggleButton(button, (0), (500), displayedColoursOrder.get(currentRound));
 
-                    //display the button to the user, and change to default color after 1 seconds
-                    toggleButton(btnGrid1Of9.getId(), (0), (500), displayedColoursOrder.get(currentRound));
+                        currentRound++;
+                        if (currentRound == numberOfRounds) {
+                            currentLevel++;
+                            lblCurrentStatus.setText("Complete");
+                            lblCurrentStatus.setVisibility(View.VISIBLE);
+                            new CountDownTimer(1500, 50) {
+                                @Override
+                                public void onTick(long arg0) {
+                                }
 
-                    currentRound++;
-                    if (currentRound == currentLevel + 2) {
-                        currentLevel++;
-                        startLevel();
+                                @Override
+                                public void onFinish() {
+                                    lblCurrentStatus.setVisibility(View.INVISIBLE);
+                                    startLevel();
+                                }
+                            }.start();
+                        }
+                    } else {
+                        Log.d("test", "Wrong");
+
+                        Intent intent = new Intent(PatternMemorizing9ButtonsActivity.this, StartMemorizingPatternActivity.class);
+                        intent.putExtra("level", "2x2");
+                        intent.putExtra("highScore", currentLevel);
+                        PatternMemorizing9ButtonsActivity.this.startActivity(intent);
                     }
-                } else {
-                    Log.d("test", "Wrong");
-                    //wrong
                 }
-            }
-        });
-
-
-
-        btnGrid2Of9.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                btnGrid2Of9.setBackground(defaultColour);
-
-                int currentID = btnGrid2Of9.getId();
-
-                if (buttonPatternOrder.get(currentRound) == currentID) {
-                    Log.d("test", "Correct");
-                    //correct
-
-                    //display the button to the user, and change to default color after 1 seconds
-                    toggleButton(btnGrid2Of9.getId(), (0), (500), displayedColoursOrder.get(currentRound));
-
-                    currentRound++;
-                    if (currentRound == currentLevel + 2) {
-                        currentLevel++;
-                        startLevel();
-                    }
-                } else {
-                    Log.d("test", "Wrong");
-                    //wrong
-                }
-            }
-        });
-
-
-
-        btnGrid3Of9.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                btnGrid3Of9.setBackground(defaultColour);
-
-                int currentID = btnGrid3Of9.getId();
-
-                if (buttonPatternOrder.get(currentRound) == currentID) {
-                    Log.d("test", "Correct");
-                    //correct
-
-                    //display the button to the user, and change to default color after 1 seconds
-                    toggleButton(btnGrid3Of9.getId(), (0), (500), displayedColoursOrder.get(currentRound));
-
-                    currentRound++;
-                    if (currentRound == currentLevel + 2) {
-                        currentLevel++;
-                        startLevel();
-                    }
-                } else {
-                    Log.d("test", "Wrong");
-                    //wrong
-                }
-            }
-        });
-
-
-
-        btnGrid4Of9.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                btnGrid4Of9.setBackground(defaultColour);
-
-                int currentID = btnGrid4Of9.getId();
-
-                if (buttonPatternOrder.get(currentRound) == currentID) {
-                    Log.d("test", "Correct");
-                    //correct
-
-                    //display the button to the user, and change to default color after 1 seconds
-                    toggleButton(btnGrid4Of9.getId(), (0), (500), displayedColoursOrder.get(currentRound));
-
-                    currentRound++;
-                    if (currentRound == currentLevel + 2) {
-                        currentLevel++;
-                        startLevel();
-                    }
-                } else {
-                    Log.d("test", "Wrong");
-                    //wrong
-                }
-            }
-        });
-
-
-
-        btnGrid5Of9.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                btnGrid5Of9.setBackground(defaultColour);
-
-                int currentID = btnGrid5Of9.getId();
-
-                if (buttonPatternOrder.get(currentRound) == currentID) {
-                    Log.d("test", "Correct");
-                    //correct
-
-                    //display the button to the user, and change to default color after 1 seconds
-                    toggleButton(btnGrid5Of9.getId(), (0), (500), displayedColoursOrder.get(currentRound));
-
-                    currentRound++;
-                    if (currentRound == currentLevel + 2) {
-                        currentLevel++;
-                        startLevel();
-                    }
-                } else {
-                    Log.d("test", "Wrong");
-                    //wrong
-                }
-            }
-        });
-
-
-
-        btnGrid6Of9.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                btnGrid6Of9.setBackground(defaultColour);
-
-                int currentID = btnGrid6Of9.getId();
-
-                if (buttonPatternOrder.get(currentRound) == currentID) {
-                    Log.d("test", "Correct");
-                    //correct
-
-                    //display the button to the user, and change to default color after 1 seconds
-                    toggleButton(btnGrid6Of9.getId(), (0), (500), displayedColoursOrder.get(currentRound));
-
-                    currentRound++;
-                    if (currentRound == currentLevel + 2) {
-                        currentLevel++;
-                        startLevel();
-                    }
-                } else {
-                    Log.d("test", "Wrong");
-                    //wrong
-                }
-            }
-        });
-
-
-
-        btnGrid7Of9.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                btnGrid7Of9.setBackground(defaultColour);
-
-                int currentID = btnGrid7Of9.getId();
-
-                if (buttonPatternOrder.get(currentRound) == currentID) {
-                    Log.d("test", "Correct");
-                    //correct
-
-                    //display the button to the user, and change to default color after 1 seconds
-                    toggleButton(btnGrid7Of9.getId(), (0), (500), displayedColoursOrder.get(currentRound));
-
-                    currentRound++;
-                    if (currentRound == currentLevel + 2) {
-                        currentLevel++;
-                        startLevel();
-                    }
-                } else {
-                    Log.d("test", "Wrong");
-                    //wrong
-                }
-            }
-        });
-
-
-
-        btnGrid8Of9.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                btnGrid8Of9.setBackground(defaultColour);
-
-                int currentID = btnGrid8Of9.getId();
-
-                if (buttonPatternOrder.get(currentRound) == currentID) {
-                    Log.d("test", "Correct");
-                    //correct
-
-                    //display the button to the user, and change to default color after 1 seconds
-                    toggleButton(btnGrid8Of9.getId(), (0), (500), displayedColoursOrder.get(currentRound));
-
-                    currentRound++;
-                    if (currentRound == currentLevel + 2) {
-                        currentLevel++;
-                        startLevel();
-                    }
-                } else {
-                    Log.d("test", "Wrong");
-                    //wrong
-                }
-            }
-        });
-
-
-
-        btnGrid9Of9.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                btnGrid9Of9.setBackground(defaultColour);
-
-                int currentID = btnGrid9Of9.getId();
-
-                if (buttonPatternOrder.get(currentRound) == currentID) {
-                    Log.d("test", "Correct");
-                    //correct
-
-                    //display the button to the user, and change to default color after 1 seconds
-                    toggleButton(btnGrid9Of9.getId(), (0), (500), displayedColoursOrder.get(currentRound));
-
-                    currentRound++;
-                    if (currentRound == currentLevel + 2) {
-                        currentLevel++;
-                        startLevel();
-                    }
-                } else {
-                    Log.d("test", "Wrong");
-                    //wrong
-                }
-            }
-        });
+            });
+        }
     }
 
 
     private void startLevel() {
-        int numberOfRounds = currentLevel + 2;
         buttonPatternOrder = new ArrayList();
+        displayedColoursOrder = new ArrayList();
         currentRound = 0;
+        currentButtonNum = 0;
+
+        btnGrid1Of9.setEnabled(false);
+        btnGrid2Of9.setEnabled(false);
+        btnGrid3Of9.setEnabled(false);
+        btnGrid4Of9.setEnabled(false);
+        btnGrid5Of9.setEnabled(false);
+        btnGrid6Of9.setEnabled(false);
+        btnGrid7Of9.setEnabled(false);
+        btnGrid8Of9.setEnabled(false);
+        btnGrid9Of9.setEnabled(false);
 
         //get a random button for each round;
         for (int i = 0; i < numberOfRounds; i++) {
 
 
-            //get a random position in the buttonID list
+            //get a random position in the button list
             Random rand = new Random();
-            int randomButtonNum = rand.nextInt(possibleButtonIDs.length - 1);
+            int randomButtonNum = rand.nextInt(possibleButtons.length - 1);
 
-            //add the random button ID to the pattern order
-            int buttonID = possibleButtonIDs[randomButtonNum];
-            buttonPatternOrder.add(buttonID);
+            //add the random button  to the pattern order
+            ImageButton button = possibleButtons[randomButtonNum];
+            buttonPatternOrder.add(button);
 
             //get a random position in the colours list
             int randomColourNum = rand.nextInt(possibleBackgroundColours.size());
@@ -355,224 +167,65 @@ public class PatternMemorizing9ButtonsActivity extends AppCompatActivity {
 
 
             //display the button to the user, and change to default color after 0.8 seconds
-            toggleButton(buttonID, (i * 1300), (i * 1300 + 800), currentBackgroundColour);
+            toggleButton(button, (i * 1300), (i * 1300 + 800), currentBackgroundColour);
         }
+
 
     }
 
 
-    private void toggleButton(int buttonID, int colourCountDownTimer, int defaultColourCountDownTimer, Drawable colour){
+    private void toggleButton(ImageButton button, int colourCountDownTimer, int defaultColourCountDownTimer, Drawable colour) {
 
-        if(buttonID == possibleButtonIDs[0]){
-            new CountDownTimer(colourCountDownTimer, 50) {
-                @Override
-                public void onTick(long arg0) {
-                }
+        new CountDownTimer(colourCountDownTimer, 50) {
+            @Override
+            public void onTick(long arg0) {
+            }
 
-                @Override
-                public void onFinish() {
-                    btnGrid1Of9.setBackground(colour);
-                }
-            }.start();
+            @Override
+            public void onFinish() {
+                button.setBackground(colour);
+            }
+        }.start();
 
-            new CountDownTimer(defaultColourCountDownTimer, 50) {
-                @Override
-                public void onTick(long arg0) {
-                }
+        new CountDownTimer(defaultColourCountDownTimer, 50) {
+            @Override
+            public void onTick(long arg0) {
+            }
 
-                @Override
-                public void onFinish() {
-                    btnGrid1Of9.setBackground(defaultColour);
-                }
-            }.start();
+            @Override
+            public void onFinish() {
+                button.setBackground(defaultColour);
+                currentButtonNum++;
 
+                if (currentButtonNum >= numberOfRounds) {
+                    currentButtonNum = -2000;
 
-        }
-        else if(buttonID == possibleButtonIDs[1]){
-            new CountDownTimer(colourCountDownTimer, 50) {
-                @Override
-                public void onTick(long arg0) {
-                }
+                    lblCurrentStatus.setText("GO");
+                    lblCurrentStatus.setVisibility(View.VISIBLE);
+                    new CountDownTimer(1200, 50) {
+                        @Override
+                        public void onTick(long arg0) {
+                        }
 
-                @Override
-                public void onFinish() {
-                    btnGrid2Of9.setBackground(colour);
-                }
-            }.start();
+                        @Override
+                        public void onFinish() {
+                            lblCurrentStatus.setVisibility(View.INVISIBLE);
+                        }
+                    }.start();
 
-            new CountDownTimer(defaultColourCountDownTimer, 50) {
-                @Override
-                public void onTick(long arg0) {
+                    btnGrid1Of9.setEnabled(true);
+                    btnGrid2Of9.setEnabled(true);
+                    btnGrid3Of9.setEnabled(true);
+                    btnGrid4Of9.setEnabled(true);
+                    btnGrid5Of9.setEnabled(true);
+                    btnGrid6Of9.setEnabled(true);
+                    btnGrid7Of9.setEnabled(true);
+                    btnGrid8Of9.setEnabled(true);
+                    btnGrid9Of9.setEnabled(true);
                 }
+            }
+        }.start();
 
-                @Override
-                public void onFinish() {
-                    btnGrid2Of9.setBackground(defaultColour);
-                }
-            }.start();
-
-        }
-        else if(buttonID == possibleButtonIDs[2]){
-            new CountDownTimer(colourCountDownTimer, 50) {
-                @Override
-                public void onTick(long arg0) {
-                }
-
-                @Override
-                public void onFinish() {
-                    btnGrid3Of9.setBackground(colour);
-                }
-            }.start();
-
-            new CountDownTimer(defaultColourCountDownTimer, 50) {
-                @Override
-                public void onTick(long arg0) {
-                }
-
-                @Override
-                public void onFinish() {
-                    btnGrid3Of9.setBackground(defaultColour);
-                }
-            }.start();
-
-        }
-        else if(buttonID == possibleButtonIDs[3]){
-            new CountDownTimer(colourCountDownTimer, 50) {
-                @Override
-                public void onTick(long arg0) {
-                }
-
-                @Override
-                public void onFinish() {
-                    btnGrid4Of9.setBackground(colour);
-                }
-            }.start();
-
-            new CountDownTimer(defaultColourCountDownTimer, 50) {
-                @Override
-                public void onTick(long arg0) {
-                }
-
-                @Override
-                public void onFinish() {
-                    btnGrid4Of9.setBackground(defaultColour);
-                }
-            }.start();
-        }
-        else if(buttonID == possibleButtonIDs[4]){
-            new CountDownTimer(colourCountDownTimer, 50) {
-                @Override
-                public void onTick(long arg0) {
-                }
-
-                @Override
-                public void onFinish() {
-                    btnGrid5Of9.setBackground(colour);
-                }
-            }.start();
-
-            new CountDownTimer(defaultColourCountDownTimer, 50) {
-                @Override
-                public void onTick(long arg0) {
-                }
-
-                @Override
-                public void onFinish() {
-                    btnGrid5Of9.setBackground(defaultColour);
-                }
-            }.start();
-        }
-        else if(buttonID == possibleButtonIDs[5]){
-            new CountDownTimer(colourCountDownTimer, 50) {
-                @Override
-                public void onTick(long arg0) {
-                }
-
-                @Override
-                public void onFinish() {
-                    btnGrid6Of9.setBackground(colour);
-                }
-            }.start();
-
-            new CountDownTimer(defaultColourCountDownTimer, 50) {
-                @Override
-                public void onTick(long arg0) {
-                }
-
-                @Override
-                public void onFinish() {
-                    btnGrid6Of9.setBackground(defaultColour);
-                }
-            }.start();
-        }
-        else if(buttonID == possibleButtonIDs[6]){
-            new CountDownTimer(colourCountDownTimer, 50) {
-                @Override
-                public void onTick(long arg0) {
-                }
-
-                @Override
-                public void onFinish() {
-                    btnGrid7Of9.setBackground(colour);
-                }
-            }.start();
-
-            new CountDownTimer(defaultColourCountDownTimer, 50) {
-                @Override
-                public void onTick(long arg0) {
-                }
-
-                @Override
-                public void onFinish() {
-                    btnGrid7Of9.setBackground(defaultColour);
-                }
-            }.start();
-        }
-        else if(buttonID == possibleButtonIDs[7]){
-            new CountDownTimer(colourCountDownTimer, 50) {
-                @Override
-                public void onTick(long arg0) {
-                }
-
-                @Override
-                public void onFinish() {
-                    btnGrid8Of9.setBackground(colour);
-                }
-            }.start();
-
-            new CountDownTimer(defaultColourCountDownTimer, 50) {
-                @Override
-                public void onTick(long arg0) {
-                }
-
-                @Override
-                public void onFinish() {
-                    btnGrid8Of9.setBackground(defaultColour);
-                }
-            }.start();
-        }
-        else if(buttonID == possibleButtonIDs[8]){
-            new CountDownTimer(colourCountDownTimer, 50) {
-                @Override
-                public void onTick(long arg0) {
-                }
-
-                @Override
-                public void onFinish() {
-                    btnGrid9Of9.setBackground(colour);
-                }
-            }.start();
-
-            new CountDownTimer(defaultColourCountDownTimer, 50) {
-                @Override
-                public void onTick(long arg0) {
-                }
-
-                @Override
-                public void onFinish() {
-                    btnGrid9Of9.setBackground(defaultColour);
-                }
-            }.start();
-        }
     }
 }
+
