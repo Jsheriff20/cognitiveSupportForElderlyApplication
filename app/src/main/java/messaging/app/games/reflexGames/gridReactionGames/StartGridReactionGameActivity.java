@@ -10,6 +10,7 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 
 import messaging.app.R;
+import messaging.app.contactingFirebase.ManagingGames;
 import messaging.app.games.reflexGames.ButtonChangeColourActivity;
 import messaging.app.games.reflexGames.SelectReactionGameActivity;
 
@@ -21,6 +22,8 @@ public class StartGridReactionGameActivity extends AppCompatActivity {
     Button btnStartGridReactionGame;
     TextView lblGridReactionGameTitle;
     TextView lblGridReactionGameDesc;
+
+    ManagingGames managingGames = new ManagingGames(this);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,6 +46,8 @@ public class StartGridReactionGameActivity extends AppCompatActivity {
 
             //store score in database
             //if high score set as their high score
+            managingGames.storeGameResult("gridReaction", reactionTime);
+
         }
 
 

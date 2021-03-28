@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.Random;
 
 import messaging.app.R;
+import messaging.app.contactingFirebase.ManagingGames;
 import messaging.app.games.memoryGames.SelectMemoryGameActivity;
 import messaging.app.games.memoryGames.memorizingPatternGame.StartMemorizingPatternActivity;
 
@@ -34,6 +35,8 @@ public class ButtonChangeColourActivity extends AppCompatActivity {
     int roundNum = 0;
     List <Long> pastScores = new ArrayList();
     long startTime, endTime, reactionTime;
+
+    ManagingGames managingGames = new ManagingGames(this);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -87,6 +90,10 @@ public class ButtonChangeColourActivity extends AppCompatActivity {
 
                         lblColourChangeTitle.setText("Your results:");
                         lblColourChangeDesc.setText("Your average reaction speed was " + getAverage(pastScores) +" ms");
+
+                        //store score in database
+                        //if high score set as their high score
+                        managingGames.storeGameResult("buttonChange", getAverage(pastScores));
 
                     }
                 }

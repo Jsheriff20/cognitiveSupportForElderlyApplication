@@ -87,6 +87,11 @@ public class PairGame6ButtonsActivity extends AppCompatActivity {
                         ImageButton firstButton = buttons.iterator().next();
                         Drawable firstImage = clickedButtonDetails.get(firstButton);
 
+                        //prevent user from double clicking the same button
+                        if(firstButton.equals(button)){
+                            return;
+                        }
+
                         if(buttonAndImageMap.get(button).equals(firstImage)){
                             button.setEnabled(false);
                             firstButton.setEnabled(false);
@@ -129,7 +134,7 @@ public class PairGame6ButtonsActivity extends AppCompatActivity {
                         }
                         else{
                             Intent intent = new Intent(PairGame6ButtonsActivity.this, StartPairsGameActivity.class);
-                            intent.putExtra("numberOfPairs", "3");
+                            intent.putExtra("numberOfPairs", "6");
                             intent.putExtra("streak", streak);
                             intent.putExtra("numberOfPairsFound", pairsFound);
                             PairGame6ButtonsActivity.this.startActivity(intent);

@@ -10,6 +10,7 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 
 import messaging.app.R;
+import messaging.app.contactingFirebase.ManagingGames;
 import messaging.app.games.reflexGames.SelectReactionGameActivity;
 import messaging.app.games.reflexGames.gridReactionGames.StartGridReactionGameActivity;
 
@@ -21,6 +22,8 @@ public class StartStroopTestActivity extends AppCompatActivity {
     Button btnStartStoopTest;
     TextView lblStoopTestTitle;
     TextView lblStoopTestDesc;
+
+    ManagingGames managingGames = new ManagingGames(this);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,6 +47,7 @@ public class StartStroopTestActivity extends AppCompatActivity {
 
             //store score in database
             //if high score set as their high score
+            managingGames.storeGameResult("stroopTest", reactionTime);
         }
 
 

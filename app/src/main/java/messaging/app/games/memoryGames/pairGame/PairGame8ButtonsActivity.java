@@ -25,7 +25,7 @@ public class PairGame8ButtonsActivity extends AppCompatActivity {
     Random rand = new Random();
 
     Drawable defaultImage;
-    int delayTime = 2500;
+    int delayTime = 4000;
     boolean secondClick = false;
     HashMap<ImageButton, Drawable> clickedButtonDetails = new HashMap<ImageButton, Drawable>();
     int pairsFound = 0;
@@ -86,6 +86,11 @@ public class PairGame8ButtonsActivity extends AppCompatActivity {
                         ImageButton firstButton = buttons.iterator().next();
                         Drawable firstImage = clickedButtonDetails.get(firstButton);
 
+                        //prevent user from double clicking the same button
+                        if(firstButton.equals(button)){
+                            return;
+                        }
+
                         if(buttonAndImageMap.get(button).equals(firstImage)){
                             button.setEnabled(false);
                             firstButton.setEnabled(false);
@@ -128,7 +133,7 @@ public class PairGame8ButtonsActivity extends AppCompatActivity {
                         }
                         else{
                             Intent intent = new Intent(PairGame8ButtonsActivity.this, StartPairsGameActivity.class);
-                            intent.putExtra("numberOfPairs", "4");
+                            intent.putExtra("numberOfPairs", "8");
                             intent.putExtra("streak", streak);
                             intent.putExtra("numberOfPairsFound", pairsFound);
                             PairGame8ButtonsActivity.this.startActivity(intent);

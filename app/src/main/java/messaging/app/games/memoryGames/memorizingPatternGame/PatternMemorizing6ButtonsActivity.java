@@ -108,7 +108,7 @@ public class PatternMemorizing6ButtonsActivity extends AppCompatActivity {
                         Log.d("test", "Wrong");
 
                         Intent intent = new Intent(PatternMemorizing6ButtonsActivity.this, StartMemorizingPatternActivity.class);
-                        intent.putExtra("level", "2x2");
+                        intent.putExtra("level", "2x3");
                         intent.putExtra("highScore", currentLevel);
                         PatternMemorizing6ButtonsActivity.this.startActivity(intent);
                     }
