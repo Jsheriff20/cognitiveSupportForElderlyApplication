@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".messages.ViewingMessages.ViewTextMessageActivity">
+    tools:context=".messages.viewingMessages.ViewTextMessageActivity">
 
     <TextView
         android:id="@+id/lblMessageFrom"

@@ -1,6 +1,8 @@
 package messaging.app.contactingFirebase;
 
+import android.accounts.Account;
 import android.content.Context;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 
@@ -14,17 +16,18 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
-import com.google.firebase.storage.FirebaseStorage;
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import messaging.app.AccountDetails;
 import messaging.app.MessageReceivedServiceNotification;
-import messaging.app.messages.ViewingMessages.MessageData;
+import messaging.app.games.AccountsHighScores;
+import messaging.app.messages.viewingMessages.MessageData;
 import messaging.app.messages.friendsList.FriendRequestHelper;
 
 public class QueryingDatabase {
@@ -45,7 +48,7 @@ public class QueryingDatabase {
         mDatabase.getReference("usernames").child(username).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                if(snapshot.getValue() != null){
+                if (snapshot.getValue() != null) {
                     listener.onSuccess(true);
                     return;
                 }
@@ -57,7 +60,6 @@ public class QueryingDatabase {
             }
         });
     }
-
 
 
     public interface OnCheckIfUserIsBlockedByListener {
@@ -156,7 +158,6 @@ public class QueryingDatabase {
     }
 
 
-
     int previousNumberOfMessage = 0;
     boolean initiationOfMessageListener = true;
 
@@ -167,7 +168,7 @@ public class QueryingDatabase {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 //check that there is a message
-                if(snapshot.getValue() == null){
+                if (snapshot.getValue() == null) {
                     return;
                 }
 
@@ -190,7 +191,6 @@ public class QueryingDatabase {
             }
         });
     }
-
 
 
     int previousNumberOfStoryMessages = 0;
@@ -329,7 +329,6 @@ public class QueryingDatabase {
     }
 
 
-
     public interface OnGetAccountDetailsListener {
         void onSuccess(AccountDetails accountDetails);
     }
@@ -347,7 +346,6 @@ public class QueryingDatabase {
             }
         });
     }
-
 
 
     private List receivedFriendRequests = new ArrayList<HashMap<String, String>>();
@@ -488,7 +486,6 @@ public class QueryingDatabase {
     }
 
 
-
     public interface OnGetStoryForUUIDListener {
         void onSuccess(ArrayList<MessageData> storyMessagesDataList);
     }
@@ -542,7 +539,6 @@ public class QueryingDatabase {
     }
 
 
-
     public interface OnGetUsernameListener {
         void onSuccess(String username);
     }
@@ -564,7 +560,6 @@ public class QueryingDatabase {
             }
         });
     }
-
 
 
     public interface OnGetUUIDsFullNameAndProfileImageListener {
@@ -606,7 +601,6 @@ public class QueryingDatabase {
     }
 
 
-
     public interface OnGetUUIDListener {
         void onSuccess(String UUID);
     }
@@ -616,7 +610,7 @@ public class QueryingDatabase {
         mDatabase.getReference("usernames").child(username).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                if(snapshot.getValue()!= null){
+                if (snapshot.getValue() != null) {
                     listener.onSuccess((snapshot.getValue().toString().trim()));
                 }
             }
@@ -711,8 +705,185 @@ public class QueryingDatabase {
             public void onCancelled(@NonNull DatabaseError error) {
             }
         });
+    }
 
-        //get friends messages
+
+    public interface OnGetFriendsGamingDataListener {
+        void onSuccess(AccountsHighScores friendsGamingData);
+    }
+
+
+    public void getFriendsGamingData(final String friendsUUID, HashMap<String, String> friendsMap, final OnGetFriendsGamingDataListener listener) {
+        DatabaseReference databaseRef = mDatabase.getReference("userDetails");
+
+        Query query = databaseRef.child(friendsUUID + "/highScore");
+
+        query.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                AccountsHighScores accountsHighScore = new AccountsHighScores();
+
+                for (DataSnapshot ds : snapshot.getChildren()) {
+                    //get friends high scores
+                    accountsHighScore.setUsersUUID(friendsUUID);
+                    switch (ds.getKey()) {
+                        case "buttonChange":
+                            accountsHighScore.setButtonChangeHighScore((Long) ds.getValue());
+                            break;
+                        case "gridReaction":
+                            accountsHighScore.setGridReactionHighScore((Long) ds.getValue());
+                            break;
+                        case "pairs":
+                            accountsHighScore.setPairsHighScore((Long) ds.getValue());
+                            break;
+                        case "pattern":
+                            accountsHighScore.setPatternHighScore((Long) ds.getValue());
+                            break;
+                        case "stroopTest":
+                            accountsHighScore.setStoopTestHighScore((Long) ds.getValue());
+                            break;
+                    }
+                }
+
+                String fullName = friendsMap.get("firstName") + friendsMap.get("surname");
+                String profileImageRotation = friendsMap.get("profileImageRotation");
+                String profileImageUrl = friendsMap.get("profileImageUrl");
+
+                accountsHighScore.setFullName(fullName);
+                accountsHighScore.setProfileImageRotation(profileImageRotation);
+                accountsHighScore.setProfileImageURL(profileImageUrl);
+
+                listener.onSuccess(accountsHighScore);
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+    }
+
+
+    public interface OnGetLeaderBoardDataListener {
+        void onSuccess(List<AccountsHighScores> accountsHighScores);
+
+    }
+
+    public void getLeaderBoardData(final OnGetLeaderBoardDataListener listener) {
+
+        mAuth = FirebaseAuth.getInstance();
+        String usersUUID = mAuth.getCurrentUser().getUid();
+
+        DatabaseReference databaseRef = mDatabase.getReference("userDetails");
+        Query getFriends = databaseRef.child(usersUUID);
+
+        getFriends.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                int numberOfFriends = 0;
+                HashMap<String, HashMap<String, String>> friendsDetails = new HashMap<>();
+
+                AccountsHighScores currentAccountHighScore = new AccountsHighScores();
+
+                //get UUIDs for each friend
+                for (DataSnapshot ds : snapshot.getChildren()) {
+                    if (ds.getKey().equals("friends")) {
+                        for (DataSnapshot subDS : ds.getChildren()) {
+                            numberOfFriends++;
+                            HashMap<String, String> friendsDetail = new HashMap<String, String>();
+
+                            boolean profileImageFound = false;
+                            //get friends data
+                            for(DataSnapshot friendsData : subDS.getChildren()){
+                                switch (friendsData.getKey()){
+                                    case "firstName":
+                                        friendsDetail.put("firstName", (String) friendsData.getValue());
+                                        break;
+                                    case "surname":
+                                        friendsDetail.put("surname", (String) friendsData.getValue());
+                                        break;
+                                    case "profileImageUrl":
+                                        profileImageFound = true;
+                                        friendsDetail.put("profileImageUrl", (String) friendsData.getValue());
+                                        break;
+                                    case "profileImageRotation":
+                                        friendsDetail.put("profileImageRotation", Long.toString((Long) friendsData.getValue()));
+                                        break;
+                                }
+                            }
+
+                            if(!profileImageFound){
+                                friendsDetail.put("profileImageUrl", "");
+                            }
+
+                            //store friends data with a key of the users UUId
+                            friendsDetails.put(subDS.getKey(), friendsDetail);
+                        }
+                    } else if (ds.getKey().equals("highScores")) {
+                        for (DataSnapshot subDS : ds.getChildren()) {
+                            //get the current users high scores
+                            currentAccountHighScore.setUsersUUID(usersUUID);
+                            switch (subDS.getKey()) {
+                                case "buttonChange":
+                                    currentAccountHighScore.setButtonChangeHighScore((Long) subDS.getValue());
+                                    break;
+                                case "gridReaction":
+                                    currentAccountHighScore.setGridReactionHighScore((Long) subDS.getValue());
+                                    break;
+                                case "pairs":
+                                    currentAccountHighScore.setPairsHighScore((Long) subDS.getValue());
+                                    break;
+                                case "pattern":
+                                    currentAccountHighScore.setPatternHighScore((Long) subDS.getValue());
+                                    break;
+                                case "stroopTest":
+                                    currentAccountHighScore.setStoopTestHighScore((Long) subDS.getValue());
+                                    break;
+                            }
+                        }
+
+                        currentAccountHighScore.setFullName("My Scores");
+
+                    }
+                    else if (ds.getKey().equals("profileImageUrl")) {
+                        currentAccountHighScore.setProfileImageURL((String) ds.getValue());
+                    }
+                }
+
+
+                List<AccountsHighScores> accountsHighScores = new ArrayList<>();
+                accountsHighScores.add(currentAccountHighScore);
+
+
+                int finalNumberOfFriends = numberOfFriends;
+                //get each friends high score
+                for (HashMap<String, String> friendsMap : friendsDetails.values()) {
+
+                    Set friendsUUIDSet = friendsMap.keySet();
+                    String friendsUUID = (String) friendsUUIDSet.iterator().next();
+
+                    //get friends
+                    getFriendsGamingData(friendsUUID, friendsMap, new OnGetFriendsGamingDataListener() {
+                        @Override
+                        public void onSuccess(AccountsHighScores friendsGamingData) {
+                            accountsHighScores.add(friendsGamingData);
+
+                            //if all data has been found and stored (friends + current users)
+                            if(accountsHighScores.size() == (finalNumberOfFriends + 1)){
+                                listener.onSuccess(accountsHighScores);
+                            }
+                        }
+                    });
+                }
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
     }
 
 

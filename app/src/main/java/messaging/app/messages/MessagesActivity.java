@@ -10,8 +10,7 @@ import android.view.View;
 import messaging.app.ManagingActivityPreview;
 import messaging.app.R;
 import messaging.app.SelectAreaOfApplicationActivity;
-import messaging.app.messages.ViewingMessages.ListOfReceivedMediaActivity;
-import messaging.app.messages.ViewingMessages.ViewTextMessageActivity;
+import messaging.app.messages.viewingMessages.ListOfReceivedMediaActivity;
 import messaging.app.messages.capturingMedia.CaptureActivity;
 import messaging.app.messages.friendsList.ViewFriendsListActivity;
 

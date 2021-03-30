@@ -9,6 +9,7 @@ import android.view.View;
 import android.widget.ImageButton;
 
 import messaging.app.R;
+import messaging.app.games.LeaderBoardActivity;
 import messaging.app.games.SelectGameActivity;
 import messaging.app.games.memoryGames.memorizingPatternGame.StartMemorizingPatternActivity;
 import messaging.app.games.memoryGames.pairGame.StartPairsGameActivity;
@@ -18,6 +19,7 @@ public class SelectMemoryGameActivity extends AppCompatActivity {
 
     LinearLayoutCompat llayPairGame;
     LinearLayoutCompat llayPatternGame;
+    LinearLayoutCompat llayLeaderBoard;
     ImageButton btnBackToSelectGames;
 
     @Override
@@ -28,9 +30,11 @@ public class SelectMemoryGameActivity extends AppCompatActivity {
         llayPatternGame = findViewById(R.id.llayPattern);
         llayPairGame = findViewById(R.id.llayPair);
         btnBackToSelectGames = findViewById(R.id.btnBackToSelectGames);
+        llayLeaderBoard = findViewById(R.id.llayMemoryLeaderBoard);
 
         setLlayPairGames();
         setLlayPatternGames();
+        setLlayLeaderBoardOnClick();
         setBtnBackToSelectGamesOnClick();
     }
 
@@ -59,6 +63,17 @@ public class SelectMemoryGameActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(SelectMemoryGameActivity.this, SelectGameActivity.class);
+                SelectMemoryGameActivity.this.startActivity(intent);
+            }
+        });
+    }
+
+    private void setLlayLeaderBoardOnClick() {
+        llayLeaderBoard.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(SelectMemoryGameActivity.this, LeaderBoardActivity.class);
+                intent.putExtra("gameType", "memory");
                 SelectMemoryGameActivity.this.startActivity(intent);
             }
         });

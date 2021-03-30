@@ -9,6 +9,7 @@ import android.view.View;
 import android.widget.ImageButton;
 
 import messaging.app.R;
+import messaging.app.games.LeaderBoardActivity;
 import messaging.app.games.SelectGameActivity;
 import messaging.app.games.memoryGames.SelectMemoryGameActivity;
 import messaging.app.games.reflexGames.gridReactionGames.StartGridReactionGameActivity;
@@ -20,6 +21,7 @@ public class SelectReactionGameActivity extends AppCompatActivity {
     LinearLayoutCompat llayColourChange;
     LinearLayoutCompat llayGrid;
     LinearLayoutCompat llayStoop;
+    LinearLayoutCompat llayLeaderBoard;
     ImageButton btnBackToSelectGames;
 
     @Override
@@ -30,11 +32,13 @@ public class SelectReactionGameActivity extends AppCompatActivity {
         llayColourChange = findViewById(R.id.llayColourChange);
         llayGrid = findViewById(R.id.llayGrid);
         llayStoop = findViewById(R.id.llayStoop);
+        llayLeaderBoard = findViewById(R.id.llayReactionLeaderBoard);
         btnBackToSelectGames = findViewById(R.id.btnBackToSelectGames);
 
         setLlayColourChange();
         setLlayGrid();
         setLlayStoop();
+        setLlayLeaderBoardOnClick();
         setBtnBackToSelectGamesOnClick();
     }
 
@@ -77,6 +81,19 @@ public class SelectReactionGameActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(SelectReactionGameActivity.this, SelectGameActivity.class);
+                SelectReactionGameActivity.this.startActivity(intent);
+            }
+        });
+    }
+
+
+
+    private void setLlayLeaderBoardOnClick() {
+        llayLeaderBoard.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(SelectReactionGameActivity.this, LeaderBoardActivity.class);
+                intent.putExtra("gameType", "reaction");
                 SelectReactionGameActivity.this.startActivity(intent);
             }
         });

@@ -1,4 +1,4 @@
-package messaging.app.messages.ViewingMessages;
+package messaging.app.messages.viewingMessages;
 
 import androidx.appcompat.app.AppCompatActivity;
 

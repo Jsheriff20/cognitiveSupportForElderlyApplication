@@ -22,7 +22,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme.NoActionBar">
-        <activity android:name=".games.reflexGames.stroopTest.StartStroopTestActivity"></activity>
+        <activity android:name=".games.LeaderBoardActivity"></activity>
+        <activity android:name=".games.reflexGames.stroopTest.StartStroopTestActivity" />
         <activity android:name=".games.memoryGames.SelectMemoryGameActivity" />
         <activity android:name=".games.memoryGames.pairGame.PairGame8ButtonsActivity" />
         <activity android:name=".games.memoryGames.pairGame.PairGame12ButtonsActivity" />
@@ -41,9 +42,9 @@
         <activity android:name=".games.reflexGames.gridReactionGames.GridReactionGame6ButtonsActivity" />
         <activity android:name=".games.reflexGames.gridReactionGames.GridReactionGame4ButtonsActivity" />
         <activity android:name=".games.reflexGames.ButtonChangeColourActivity" />
-        <activity android:name=".messages.ViewingMessages.ViewMediaMessageActivity" />
-        <activity android:name=".messages.ViewingMessages.ViewTextMessageActivity" />
-        <activity android:name=".messages.ViewingMessages.ListOfReceivedMediaActivity" />
+        <activity android:name=".messages.viewingMessages.ViewMediaMessageActivity" />
+        <activity android:name=".messages.viewingMessages.ViewTextMessageActivity" />
+        <activity android:name=".messages.viewingMessages.ListOfReceivedMediaActivity" />
         <activity android:name=".messages.sendingMedia.AddMessageToMediaActivity" />
         <activity
             android:name=".messages.sendingMedia.SendMediaTabsActivity"

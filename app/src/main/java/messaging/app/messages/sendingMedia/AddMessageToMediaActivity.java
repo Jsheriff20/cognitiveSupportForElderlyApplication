@@ -32,7 +32,7 @@ import messaging.app.ManagingActivityPreview;
 import messaging.app.MediaManagement;
 import messaging.app.R;
 import messaging.app.contactingFirebase.ManagingMessages;
-import messaging.app.messages.ViewingMessages.ListOfReceivedMediaActivity;
+import messaging.app.messages.viewingMessages.ListOfReceivedMediaActivity;
 
 import static android.widget.Toast.LENGTH_SHORT;
 

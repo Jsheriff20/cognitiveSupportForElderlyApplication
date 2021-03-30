@@ -1,4 +1,4 @@
-package messaging.app.messages.ViewingMessages;
+package messaging.app.messages.viewingMessages;
 
 import android.os.Parcel;
 import android.os.Parcelable;
