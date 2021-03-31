@@ -3,14 +3,18 @@ package messaging.app.games.reflexGames;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.media.MediaPlayer;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.MediaController;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.VideoView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,15 +24,18 @@ import messaging.app.R;
 import messaging.app.contactingFirebase.ManagingGames;
 import messaging.app.games.memoryGames.SelectMemoryGameActivity;
 import messaging.app.games.memoryGames.memorizingPatternGame.StartMemorizingPatternActivity;
+import messaging.app.games.reflexGames.stroopTest.StartStroopTestActivity;
 
 public class ButtonChangeColourActivity extends AppCompatActivity {
 
     Button btnStartButtonChangeColour;
+    ImageButton btnCancel;
     Button btnColourChangingButton;
     ImageButton btnBackToReactionGames;
     Button btnWatchColourChangeGameVid;
     TextView lblColourChangeDesc;
     TextView lblColourChangeTitle;
+    VideoView vidColourChangeExample;
 
     boolean greenColourActive = false;
 
@@ -49,13 +56,18 @@ public class ButtonChangeColourActivity extends AppCompatActivity {
         btnWatchColourChangeGameVid = findViewById(R.id.btnWatchColourChangeGameVid);
         lblColourChangeDesc = findViewById(R.id.lblColourChangeDesc);
         lblColourChangeTitle = findViewById(R.id.lblColourChangeTitle);
+        btnCancel = findViewById(R.id.btnCancel);
+        vidColourChangeExample = findViewById(R.id.vidColourChangeExample);
 
         btnColourChangingButton.setVisibility(View.INVISIBLE);
-
+        vidColourChangeExample.setVisibility(View.INVISIBLE);
+        btnCancel.setVisibility(View.INVISIBLE);
 
         setBtnColourChangingButton();
         setBtnStartButtonChangeColour();
         setBtnBackToReactionGames();
+        setBtnWatchColourChangeVidOnClick();
+        setBtnCancelOnClick();
     }
 
 
@@ -159,4 +171,57 @@ public class ButtonChangeColourActivity extends AppCompatActivity {
 
         return (total / 5);
     }
+
+
+    private void setBtnWatchColourChangeVidOnClick(){
+        btnWatchColourChangeGameVid.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                vidColourChangeExample.setVisibility(View.VISIBLE);
+                btnCancel.setVisibility(View.VISIBLE);
+
+
+                btnStartButtonChangeColour.setVisibility(View.INVISIBLE);
+                btnBackToReactionGames.setVisibility(View.INVISIBLE);
+                btnWatchColourChangeGameVid.setVisibility(View.INVISIBLE);
+                lblColourChangeDesc.setVisibility(View.INVISIBLE);
+                lblColourChangeTitle.setVisibility(View.INVISIBLE);
+
+                MediaController mediaController = new MediaController(ButtonChangeColourActivity.this);
+                mediaController.setAnchorView(vidColourChangeExample);
+                vidColourChangeExample.setMediaController(mediaController);
+                vidColourChangeExample.setVideoURI(Uri.parse("android.resource://" + getPackageName() + "/" +
+                        R.raw.button_change_example));
+                vidColourChangeExample.start();
+
+                vidColourChangeExample.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+                    @Override
+                    public void onPrepared(MediaPlayer mp) {
+                        mp.setLooping(true);
+                    }
+                });
+            }
+        });
+    }
+
+
+    private void setBtnCancelOnClick(){
+        btnCancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                vidColourChangeExample.setVisibility(View.INVISIBLE);
+                btnCancel.setVisibility(View.INVISIBLE);
+
+                btnStartButtonChangeColour.setVisibility(View.VISIBLE);
+                btnBackToReactionGames.setVisibility(View.VISIBLE);
+                btnWatchColourChangeGameVid.setVisibility(View.VISIBLE);
+                lblColourChangeDesc.setVisibility(View.VISIBLE);
+                lblColourChangeTitle.setVisibility(View.VISIBLE);
+
+                vidColourChangeExample.stopPlayback();
+            }
+        });
+    }
+
+
 }

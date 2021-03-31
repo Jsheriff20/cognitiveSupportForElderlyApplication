@@ -8,8 +8,12 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageButton;
 
+import java.util.HashMap;
+import java.util.List;
+
 import messaging.app.R;
 import messaging.app.SelectAreaOfApplicationActivity;
+import messaging.app.contactingFirebase.QueryingDatabase;
 import messaging.app.games.memoryGames.SelectMemoryGameActivity;
 import messaging.app.games.reflexGames.SelectReactionGameActivity;
 import messaging.app.games.reflexGames.stroopTest.StartStroopTestActivity;
@@ -19,6 +23,8 @@ public class SelectGameActivity extends AppCompatActivity {
     LinearLayoutCompat llayReactionGames;
     LinearLayoutCompat llayMemoryGames;
     ImageButton btnBackToOptions;
+
+    QueryingDatabase queryingDatabase = new QueryingDatabase();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,7 +40,7 @@ public class SelectGameActivity extends AppCompatActivity {
         setBtnBackToOptionsOnClick();
     }
 
-    private void setLlayReactionGames(){
+    private void setLlayReactionGames() {
         llayReactionGames.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -45,7 +51,7 @@ public class SelectGameActivity extends AppCompatActivity {
     }
 
 
-    private void setLlayMemoryGames(){
+    private void setLlayMemoryGames() {
         llayMemoryGames.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

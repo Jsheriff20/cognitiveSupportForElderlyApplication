@@ -887,4 +887,61 @@ public class QueryingDatabase {
     }
 
 
-}
+
+
+    public interface OnGetHighScoresListener {
+        void onSuccess(HashMap<String, List<Long>> highScores);
+
+    }
+
+    public void getHighScores(final OnGetHighScoresListener listener) {
+
+        mAuth = FirebaseAuth.getInstance();
+        String usersUUID = mAuth.getCurrentUser().getUid();
+
+        DatabaseReference databaseRef = mDatabase.getReference("userGamesDetails");
+        Query getHighScores = databaseRef.child(usersUUID);
+
+        getHighScores.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+
+                HashMap<String, List<Long>>  highScores = new HashMap<>();
+
+                for(DataSnapshot ds : snapshot.getChildren()) {
+                    List<Long> past5GameScores = new ArrayList<>();
+
+                    for (DataSnapshot subDS : ds.getChildren()) {
+                        past5GameScores.add((Long) subDS.getValue());
+                    }
+
+                    switch (ds.getKey()) {
+                        case "buttonChange":
+                            highScores.put("buttonChange", past5GameScores);
+                            break;
+                        case "gridReaction":
+                            highScores.put("gridReaction", past5GameScores);
+                            break;
+                        case "pairs":
+                            highScores.put("pairs", past5GameScores);
+                            break;
+                        case "pattern":
+                            highScores.put("pattern", past5GameScores);
+                            break;
+                        case "stroopTest":
+                            highScores.put("stroopTest", past5GameScores);
+                            break;
+                    }
+                }
+
+                listener.onSuccess(highScores);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+    }
+
+    }

@@ -72,18 +72,6 @@ public class LeaderBoardActivity extends AppCompatActivity {
             queryingDatabase.getLeaderBoardData(new QueryingDatabase.OnGetLeaderBoardDataListener() {
                 @Override
                 public void onSuccess(List<AccountsHighScores> accountsHighScores) {
-                    Log.d("test", "onSuccess: " + accountsHighScores);
-                    Log.d("test", "onSuccess: " + accountsHighScores.get(0).getPairsHighScore());
-                    Log.d("test", "onSuccess: " + accountsHighScores.get(0).getPatternHighScore());
-                    Log.d("test", "onSuccess: " + accountsHighScores.get(0).getGridReactionHighScore());
-                    Log.d("test", "onSuccess: " + accountsHighScores.get(0).getButtonChangeHighScore());
-                    Log.d("test", "onSuccess: " + accountsHighScores.get(0).getStoopTestHighScore());
-
-                    Log.d("test", "onSuccess: " + accountsHighScores.get(0).getUsersUUID());
-                    Log.d("test", "onSuccess: " + accountsHighScores.get(0).getFullName());
-                    Log.d("test", "onSuccess: " + accountsHighScores.get(0).getProfileImageRotation());
-                    Log.d("test", "onSuccess: " + accountsHighScores.get(0).getProfileImageURL());
-
 
                     //display to user
                     mLayoutManager = new LinearLayoutManager(getApplicationContext());

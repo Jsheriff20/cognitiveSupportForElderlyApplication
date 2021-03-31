@@ -112,4 +112,26 @@ public class Formatting {
 
         return sortedList;
     }
+
+
+    public double getPercentageChange(long startNumber, long finalNumber ){
+        double percentageChange = 100 * ((finalNumber - startNumber) / (double)startNumber);
+        return percentageChange;
+    }
+
+
+    public double getPercentageChangeOfHighScores(HashMap<String, List<Long>> highScores, String gameMode){
+
+        List<Long> gridPast5HighScores = highScores.get(gameMode);
+        long startHighScore = gridPast5HighScores.get(0);
+        long totalScores = 0;
+        for(long highScore : gridPast5HighScores){
+            totalScores += highScore;
+        }
+
+        long averageHighScore = totalScores / gridPast5HighScores.size();
+
+        Log.d("test", "highScorePercentageChange: " + getPercentageChange(startHighScore, averageHighScore));
+        return getPercentageChange(startHighScore, averageHighScore);
+    }
 }

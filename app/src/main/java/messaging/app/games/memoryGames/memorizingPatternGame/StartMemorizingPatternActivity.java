@@ -3,15 +3,24 @@ package messaging.app.games.memoryGames.memorizingPatternGame;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.media.MediaPlayer;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.MediaController;
 import android.widget.TextView;
+import android.widget.VideoView;
 
+import java.util.HashMap;
+import java.util.List;
+
+import messaging.app.Formatting;
 import messaging.app.R;
 import messaging.app.contactingFirebase.ManagingGames;
+import messaging.app.contactingFirebase.QueryingDatabase;
 import messaging.app.games.memoryGames.SelectMemoryGameActivity;
 import messaging.app.games.reflexGames.SelectReactionGameActivity;
 import messaging.app.games.reflexGames.stroopTest.StartStroopTestActivity;
@@ -20,12 +29,18 @@ public class StartMemorizingPatternActivity extends AppCompatActivity {
 
 
     ImageButton btnBackToMemoryGames;
+    ImageButton btnCancel;
     Button btnWatchPatternGameVid;
     Button btnStartPatternGame;
     TextView lblPatternGameTitle;
     TextView lblPatternGameDesc;
+    VideoView vidPatternExample;
 
     ManagingGames managingGames = new ManagingGames(this);
+    QueryingDatabase queryingDatabase = new QueryingDatabase();
+    Formatting formatting = new Formatting();
+    HashMap<String, List<Long>> mHighScores = new HashMap<>();
+    double highScorePercentageChange = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,6 +52,19 @@ public class StartMemorizingPatternActivity extends AppCompatActivity {
         btnStartPatternGame = findViewById(R.id.btnStartPatternGame);
         lblPatternGameTitle = findViewById(R.id.lblPatternGameTitle);
         lblPatternGameDesc = findViewById(R.id.lblPatternGameDesc);
+        vidPatternExample = findViewById(R.id.vidPatternExample);
+        btnCancel = findViewById(R.id.btnCancel);
+
+        vidPatternExample.setVisibility(View.INVISIBLE);
+        btnCancel.setVisibility(View.INVISIBLE);
+
+        queryingDatabase.getHighScores(new QueryingDatabase.OnGetHighScoresListener() {
+            @Override
+            public void onSuccess(HashMap<String, List<Long>> highScores) {
+                mHighScores = highScores;
+            }
+        });
+
 
         if(getIntent().getStringExtra("level")  != null){
             //display scores to user
@@ -80,6 +108,8 @@ public class StartMemorizingPatternActivity extends AppCompatActivity {
 
         setBtnBackToMemoryGamesOnClick();
         setBtnStartPatternGameOnClick();
+        setBtnWatchPatternVidOnClick();
+        setBtnCancelOnClick();
     }
 
 
@@ -100,8 +130,101 @@ public class StartMemorizingPatternActivity extends AppCompatActivity {
         btnStartPatternGame.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(StartMemorizingPatternActivity.this, PatternMemorizing4ButtonsActivity.class);
+
+
+                int previousLevel = 1;
+                int newLevel = previousLevel;
+
+                if(mHighScores.containsKey("pattern")) {
+                    if (mHighScores.get("pattern").size() >= 5) {
+                        //get the current users progression over the past 5 games
+                        highScorePercentageChange = formatting.getPercentageChangeOfHighScores(mHighScores, "pattern");
+
+                        //get the users previous grid size
+                        if (mHighScores.get("pattern").get(0) > 44 && mHighScores.get("pattern").get(0) <= 66) {
+                            previousLevel = 2;
+                        } else if (mHighScores.get("pattern").get(0) > 66) {
+                            previousLevel = 3;
+                        }
+                    }
+
+                    newLevel = previousLevel;
+
+                    //find a level that is best for the user
+                    if (highScorePercentageChange < -20 && previousLevel != 1) {
+                        //user has been struggling, make the game easier for them
+                        newLevel = previousLevel - 1;
+                    } else if (highScorePercentageChange > 30 && previousLevel != 3) {
+                        //user has improved so make the game harder
+                        newLevel = previousLevel + 1;
+                    }
+                }
+
+
+                //load the level that is best fit for the user
+                Intent intent;
+                switch (newLevel){
+                    case 2:
+                        intent = new Intent(StartMemorizingPatternActivity.this, PatternMemorizing6ButtonsActivity.class);
+                        break;
+                    case 3:
+                        intent = new Intent(StartMemorizingPatternActivity.this, PatternMemorizing9ButtonsActivity.class);
+                        break;
+                    default:
+                        intent = new Intent(StartMemorizingPatternActivity.this, PatternMemorizing4ButtonsActivity.class);
+                }
+
                 StartMemorizingPatternActivity.this.startActivity(intent);
+            }
+        });
+    }
+
+
+    private void setBtnWatchPatternVidOnClick(){
+        btnWatchPatternGameVid.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                vidPatternExample.setVisibility(View.VISIBLE);
+                btnCancel.setVisibility(View.VISIBLE);
+
+                btnBackToMemoryGames.setVisibility(View.INVISIBLE);
+                btnWatchPatternGameVid.setVisibility(View.INVISIBLE);
+                btnStartPatternGame.setVisibility(View.INVISIBLE);
+                lblPatternGameTitle.setVisibility(View.INVISIBLE);
+                lblPatternGameDesc.setVisibility(View.INVISIBLE);
+
+                MediaController mediaController = new MediaController(StartMemorizingPatternActivity.this);
+                mediaController.setAnchorView(vidPatternExample);
+                vidPatternExample.setMediaController(mediaController);
+                vidPatternExample.setVideoURI(Uri.parse("android.resource://" + getPackageName() + "/" +
+                        R.raw.pairs_example));
+                vidPatternExample.start();
+
+                vidPatternExample.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+                    @Override
+                    public void onPrepared(MediaPlayer mp) {
+                        mp.setLooping(true);
+                    }
+                });
+            }
+        });
+    }
+
+
+    private void setBtnCancelOnClick(){
+        btnCancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                vidPatternExample.setVisibility(View.INVISIBLE);
+                btnCancel.setVisibility(View.INVISIBLE);
+
+                btnBackToMemoryGames.setVisibility(View.VISIBLE);
+                btnWatchPatternGameVid.setVisibility(View.VISIBLE);
+                btnStartPatternGame.setVisibility(View.VISIBLE);
+                lblPatternGameTitle.setVisibility(View.VISIBLE);
+                lblPatternGameDesc.setVisibility(View.VISIBLE);
+
+                vidPatternExample.stopPlayback();
             }
         });
     }
