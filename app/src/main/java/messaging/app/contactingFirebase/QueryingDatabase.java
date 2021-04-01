@@ -887,8 +887,6 @@ public class QueryingDatabase {
     }
 
 
-
-
     public interface OnGetHighScoresListener {
         void onSuccess(HashMap<String, List<Long>> highScores);
 
@@ -944,4 +942,62 @@ public class QueryingDatabase {
         });
     }
 
+    public interface OnGetFriendsNamesListener {
+        void onSuccess(HashMap<String, String> friends, HashMap<String, String> adminFriends);
+
     }
+
+    public void getFriendsAndAdminFriendsNames(final OnGetFriendsNamesListener listener) {
+
+        mAuth = FirebaseAuth.getInstance();
+        String usersUUID = mAuth.getCurrentUser().getUid();
+
+        DatabaseReference databaseRef = mDatabase.getReference("userDetails");
+        Query getFriends = databaseRef.child(usersUUID + "/friends");
+
+        getFriends.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+
+                HashMap<String, String> friends = new HashMap<>();
+                HashMap<String, String> adminFriends = new HashMap<>();
+
+                //get all friends
+                for(DataSnapshot friend : snapshot.getChildren()) {
+                    String firstName = null;
+                    String surname = null;
+                    boolean admin = false;
+                    for(DataSnapshot friendDetails : friend.getChildren()){
+                        switch (friendDetails.getKey()){
+                            case "firstName":
+                                firstName = (String) friendDetails.getValue();
+                                break;
+                            case "surname":
+                                surname = (String) friendDetails.getValue();
+                                break;
+                            case "admin":
+                                admin = true;
+                            default:
+                                break;
+                        }
+                    }
+
+                    if(admin){
+                        adminFriends.put(friend.getKey(), firstName + " " + surname);
+                    }
+                    else{
+                        friends.put(friend.getKey(), firstName + " " + surname);
+                    }
+                }
+
+                listener.onSuccess(friends, adminFriends);
+            }
+
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+    }
+}

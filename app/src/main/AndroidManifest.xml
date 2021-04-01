@@ -22,7 +22,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme.NoActionBar">
-        <activity android:name=".games.LeaderBoardActivity"></activity>
+        <activity android:name=".settings.ManageAdminActivity"></activity>
+        <activity android:name=".games.LeaderBoardActivity" />
         <activity android:name=".games.reflexGames.stroopTest.StartStroopTestActivity" />
         <activity android:name=".games.memoryGames.SelectMemoryGameActivity" />
         <activity android:name=".games.memoryGames.pairGame.PairGame8ButtonsActivity" />

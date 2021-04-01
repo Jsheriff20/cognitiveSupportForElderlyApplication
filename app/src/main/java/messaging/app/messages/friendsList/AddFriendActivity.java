@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.Toast;
 
 import java.util.List;
 
@@ -118,9 +119,18 @@ public class AddFriendActivity extends AppCompatActivity {
                 String relationship = txtRelationship.getText().toString();
 
                 if(checkInputsValidity.isUsernameValid(username) && checkInputsValidity.isRelationshipValid(relationship)){
-                    managingFriends.addFriend(username, relationship);
-                    finish();
-                    startActivity(getIntent());
+                    managingFriends.addFriend(username, relationship, new ManagingFriends.OnAddFriendListener() {
+                        @Override
+                        public void onSuccess(boolean requestSentSuccessfully) {
+                            if(requestSentSuccessfully){
+                                finish();
+                                startActivity(getIntent());
+                            }
+                            else{
+                                Toast.makeText(AddFriendActivity.this, "Failed to send Friend Request", Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                    });
                 }
             }
         });

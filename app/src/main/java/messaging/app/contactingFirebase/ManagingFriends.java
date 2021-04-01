@@ -36,7 +36,6 @@ public class ManagingFriends {
     }
 
 
-
     public void cancelSentFriendRequest(String friendsUUID) {
         DatabaseReference databaseRef = mDatabase.getReference("userDetails");
         Query getSentFriendRequest = databaseRef.child(queryingDatabase.getCurrentUsersUUID() + "/sentFriendRequests/" + friendsUUID);
@@ -109,7 +108,6 @@ public class ManagingFriends {
 
         Toast.makeText(context, "User has been blocked", Toast.LENGTH_SHORT).show();
     }
-
 
 
     public void removeFriend(String friendsUUID) {
@@ -254,7 +252,12 @@ public class ManagingFriends {
     }
 
 
-    public void addFriend(final String friendsUsername, final String relationship) {
+
+    public interface OnAddFriendListener {
+        void onSuccess(boolean requestSentSuccessfully);
+    }
+
+    public void addFriend(final String friendsUsername, final String relationship, OnAddFriendListener listener) {
 
         mAuth = FirebaseAuth.getInstance();
 
@@ -265,7 +268,7 @@ public class ManagingFriends {
         } else {
 
             //check username exists
-            queryingDatabase.doesUsernameExist(friendsUsername, new QueryingDatabase.OnCheckIfUsernameExistsListener(){
+            queryingDatabase.doesUsernameExist(friendsUsername, new QueryingDatabase.OnCheckIfUsernameExistsListener() {
                 @Override
                 public void onSuccess(boolean exists) {
                     if (exists) {
@@ -308,8 +311,10 @@ public class ManagingFriends {
                                                             public void onSuccess(boolean requestSentSuccessfully) {
                                                                 if (requestSentSuccessfully) {
                                                                     Toast.makeText(context, "Friend request to " + friendsUsername + " was sent successfully", Toast.LENGTH_SHORT).show();
+                                                                    listener.onSuccess(true);
                                                                 } else {
                                                                     Toast.makeText(context, "Friend request to " + friendsUsername + " failed", Toast.LENGTH_SHORT).show();
+                                                                    listener.onSuccess(false);
                                                                 }
                                                             }
                                                         });
@@ -329,4 +334,25 @@ public class ManagingFriends {
         }
     }
 
+
+    public interface OnAdminFriendAddedListener {
+        void onSuccess(boolean adminFriendAdded);
+    }
+
+    public void addFriendAsAdmin(final String friendsUUID, OnAdminFriendAddedListener listener) {
+        String UUID = queryingDatabase.getCurrentUsersUUID();
+
+        DatabaseReference databaseRef = mDatabase.getReference("userDetails");
+        databaseRef.child(UUID + "/friends/" + friendsUUID + "/admin").setValue(true);
+
+        listener.onSuccess(true);
+    }
+
+
+    public void removeFriendAsAdmin(final String friendsUUID) {
+        String UUID = queryingDatabase.getCurrentUsersUUID();
+
+        DatabaseReference databaseRef = mDatabase.getReference("userDetails");
+        databaseRef.child(UUID + "/friends/" + friendsUUID + "/admin").removeValue();
+    }
 }
