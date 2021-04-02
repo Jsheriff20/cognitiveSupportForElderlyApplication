@@ -96,25 +96,34 @@ public class PatternMemorizing4ButtonsActivity extends AppCompatActivity {
                         currentRound++;
                         if (currentRound == numberOfRounds) {
                             currentLevel++;
-                            lblCurrentStatus.setText("Complete");
-                            lblCurrentStatus.setVisibility(View.VISIBLE);
+                            if(currentLevel < 8) {
+                                lblCurrentStatus.setText("Complete");
+                                lblCurrentStatus.setVisibility(View.VISIBLE);
 
-                            btnGrid1Of4.setEnabled(false);
-                            btnGrid2Of4.setEnabled(false);
-                            btnGrid3Of4.setEnabled(false);
-                            btnGrid4Of4.setEnabled(false);
+                                btnGrid1Of4.setEnabled(false);
+                                btnGrid2Of4.setEnabled(false);
+                                btnGrid3Of4.setEnabled(false);
+                                btnGrid4Of4.setEnabled(false);
 
-                            new CountDownTimer(1500, 50) {
-                                @Override
-                                public void onTick(long arg0) {
-                                }
+                                new CountDownTimer(1500, 50) {
+                                    @Override
+                                    public void onTick(long arg0) {
+                                    }
 
-                                @Override
-                                public void onFinish() {
-                                    lblCurrentStatus.setVisibility(View.INVISIBLE);
-                                    startLevel();
-                                }
-                            }.start();
+                                    @Override
+                                    public void onFinish() {
+                                        lblCurrentStatus.setVisibility(View.INVISIBLE);
+                                        startLevel();
+                                    }
+                                }.start();
+                            }
+                            else{
+                                //user has hit the target number
+                                Intent intent = new Intent(PatternMemorizing4ButtonsActivity.this, StartMemorizingPatternActivity.class);
+                                intent.putExtra("level", "2x2");
+                                intent.putExtra("highScore", currentLevel);
+                                PatternMemorizing4ButtonsActivity.this.startActivity(intent);
+                            }
                         }
                     } else {
                         Log.d("test", "Wrong");

@@ -11,7 +11,7 @@ import messaging.app.contactingFirebase.QueryingDatabase;
 
 public class NotifyMessageReceivedService extends Service {
 
-    QueryingDatabase queryingDatabase = new QueryingDatabase();
+    QueryingDatabase queryingDatabase = new QueryingDatabase(null);
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {

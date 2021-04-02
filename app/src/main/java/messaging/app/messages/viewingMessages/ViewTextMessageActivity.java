@@ -17,6 +17,7 @@ import java.util.Locale;
 import messaging.app.Formatting;
 import messaging.app.ManagingActivityPreview;
 import messaging.app.R;
+import messaging.app.messages.friendsList.ViewFriendsListActivity;
 
 public class ViewTextMessageActivity extends AppCompatActivity {
     Intent intent;
@@ -87,7 +88,7 @@ public class ViewTextMessageActivity extends AppCompatActivity {
 
 
     private void setupTextToSpeech(){
-        textToSpeech = new TextToSpeech(getApplicationContext(), new TextToSpeech.OnInitListener() {
+        textToSpeech = new TextToSpeech(ViewTextMessageActivity.this, new TextToSpeech.OnInitListener() {
             @Override
             public void onInit(int i) {
                 if(i == TextToSpeech.SUCCESS){

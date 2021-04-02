@@ -7,13 +7,11 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Build;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.Spinner;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -26,7 +24,7 @@ import java.util.stream.Collectors;
 import messaging.app.R;
 import messaging.app.contactingFirebase.ManagingFriends;
 import messaging.app.contactingFirebase.QueryingDatabase;
-import messaging.app.messages.friendsList.AddFriendsAdapter;
+import messaging.app.register.RegisterProfileImageActivity;
 
 public class ManageAdminActivity extends AppCompatActivity {
 
@@ -34,8 +32,8 @@ public class ManageAdminActivity extends AppCompatActivity {
     private RecyclerView lstCurrentAdminFriends;
     Button btnAddAdminFriend;
 
-    QueryingDatabase queryingDatabase = new QueryingDatabase();
-    ManagingFriends managingFriends = new ManagingFriends(this);
+    QueryingDatabase queryingDatabase = new QueryingDatabase(null);
+    ManagingFriends managingFriends = new ManagingFriends(this, null);
 
     HashMap<String, String> mFriends;
     HashMap<String, String> mAdminFriends;
@@ -51,6 +49,7 @@ public class ManageAdminActivity extends AppCompatActivity {
         lstCurrentAdminFriends = findViewById(R.id.lstCurrentAdminFriends);
         spnPossibleAdminFriends = findViewById(R.id.spnPossibleAdminFriends);
         btnAddAdminFriend = findViewById(R.id.btnAddAdminFriend);
+
 
         setupSpinner();
         setupRecyclerView();
@@ -73,14 +72,13 @@ public class ManageAdminActivity extends AppCompatActivity {
                 }
 
 
-                ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(getApplicationContext(), R.layout.admin_friend_spinner_item, friendsNames);
+                ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(ManageAdminActivity.this, R.layout.admin_friend_spinner_item, friendsNames);
                 arrayAdapter.setDropDownViewResource(R.layout.admin_friend_spinner_item);
                 spnPossibleAdminFriends.setAdapter(arrayAdapter);
                 spnPossibleAdminFriends.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                     @Override
                     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                         friendsName = parent.getItemAtPosition(position).toString();
-                        Toast.makeText(parent.getContext(), "Selected: " + friendsName, Toast.LENGTH_LONG).show();
                     }
                     @Override
                     public void onNothingSelected(AdapterView <?> parent) {
@@ -98,8 +96,8 @@ public class ManageAdminActivity extends AppCompatActivity {
             @Override
             public void onSuccess(HashMap<String, String> friends, HashMap<String, String> adminFriends) {
 
-                mLayoutManager = new LinearLayoutManager(getApplicationContext());
-                mAdapter = new AdminFriendsAdapter(adminFriends, getApplicationContext());
+                mLayoutManager = new LinearLayoutManager(ManageAdminActivity.this);
+                mAdapter = new AdminFriendsAdapter(adminFriends, ManageAdminActivity.this);
 
                 lstCurrentAdminFriends.setLayoutManager(mLayoutManager);
                 lstCurrentAdminFriends.setHasFixedSize(true);

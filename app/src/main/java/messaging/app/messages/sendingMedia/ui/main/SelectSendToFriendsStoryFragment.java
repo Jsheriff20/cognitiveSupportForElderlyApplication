@@ -28,7 +28,7 @@ public class SelectSendToFriendsStoryFragment extends Fragment implements SendMe
 
     Context mContext;
     onSelectedRowListener listener;
-    QueryingDatabase queryingDatabase = new QueryingDatabase();
+    QueryingDatabase queryingDatabase = new QueryingDatabase(null);
 
     public interface onSelectedRowListener{
         void onSelectedStoryFragmentRowListener(String UUID, String messageType);

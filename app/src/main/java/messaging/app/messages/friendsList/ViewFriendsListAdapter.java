@@ -1,5 +1,6 @@
 package messaging.app.messages.friendsList;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -112,9 +113,6 @@ public class ViewFriendsListAdapter extends RecyclerView.Adapter<ViewFriendsList
             }
         }
 
-        //TODO:
-        //display profile image
-        //setup image button
 
         holder.btnEditFriend.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -126,6 +124,10 @@ public class ViewFriendsListAdapter extends RecyclerView.Adapter<ViewFriendsList
                 intent.putExtra("username", holder.username);
                 intent.putExtra("profileImageUrl", holder.profileImageUrl);
                 intent.putExtra("profileImageRotation", holder.profileImageRotation);
+
+                if(((Activity) context).getIntent().getStringExtra("adminUUID") != null){
+                    intent.putExtra("adminUUID", ((Activity) context).getIntent().getStringExtra("adminUUID"));
+                }
                 holder.itemViewContext.startActivity(intent);
                 return;
             }

@@ -10,8 +10,6 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -26,14 +24,10 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 
 import messaging.app.Formatting;
 import messaging.app.MediaManagement;
-import messaging.app.MessageReceivedServiceNotification;
 
 public class ManagingMessages {
 
@@ -41,7 +35,7 @@ public class ManagingMessages {
     FirebaseDatabase mDatabase;
     FirebaseStorage mStorage;
     Formatting formatting = new Formatting();
-    QueryingDatabase queryingDatabase = new QueryingDatabase();
+    QueryingDatabase queryingDatabase = new QueryingDatabase(null);
 
     public ManagingMessages(Context context) {
         this.context = context;

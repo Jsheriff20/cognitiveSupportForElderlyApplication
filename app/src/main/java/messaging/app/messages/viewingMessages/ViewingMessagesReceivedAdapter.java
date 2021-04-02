@@ -39,7 +39,7 @@ public class ViewingMessagesReceivedAdapter extends RecyclerView.Adapter {
     private File mImageFolder;
     private String mImageFilePath;
     MediaManagement mediaManagement;
-    QueryingDatabase queryingDatabase = new QueryingDatabase();
+    QueryingDatabase queryingDatabase = new QueryingDatabase(null);
 
 
     public ViewingMessagesReceivedAdapter(List<HashMap<String, String>> receivedMediaDetails, int numberOfStories, Context context) {

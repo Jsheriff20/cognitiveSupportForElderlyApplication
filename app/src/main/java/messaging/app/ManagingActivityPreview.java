@@ -4,6 +4,9 @@ import android.view.View;
 
 public class ManagingActivityPreview {
 
+    public ManagingActivityPreview() {
+    }
+
     public void hideSystemUI(View decorView) {
         // Enables regular immersive mode.
         // For "lean back" mode, remove SYSTEM_UI_FLAG_IMMERSIVE.

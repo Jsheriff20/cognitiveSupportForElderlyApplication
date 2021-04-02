@@ -4,19 +4,15 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
 
-import java.util.HashMap;
 import java.util.List;
 
 import messaging.app.R;
 import messaging.app.contactingFirebase.QueryingDatabase;
-import messaging.app.messages.viewingMessages.ViewingMessagesReceivedAdapter;
 
 public class LeaderBoardActivity extends AppCompatActivity {
 
@@ -27,7 +23,7 @@ public class LeaderBoardActivity extends AppCompatActivity {
     private LeaderBoardAdapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
 
-    QueryingDatabase queryingDatabase = new QueryingDatabase();
+    QueryingDatabase queryingDatabase = new QueryingDatabase(null);
     String gameType = "";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,8 +70,8 @@ public class LeaderBoardActivity extends AppCompatActivity {
                 public void onSuccess(List<AccountsHighScores> accountsHighScores) {
 
                     //display to user
-                    mLayoutManager = new LinearLayoutManager(getApplicationContext());
-                    mAdapter = new LeaderBoardAdapter(accountsHighScores, gameType, getApplicationContext());
+                    mLayoutManager = new LinearLayoutManager(LeaderBoardActivity.this);
+                    mAdapter = new LeaderBoardAdapter(accountsHighScores, gameType, LeaderBoardActivity.this);
 
                     recyclerView.setLayoutManager(mLayoutManager);
                     recyclerView.setHasFixedSize(true);

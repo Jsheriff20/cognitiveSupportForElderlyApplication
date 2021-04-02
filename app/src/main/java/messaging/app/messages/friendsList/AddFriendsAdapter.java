@@ -1,5 +1,6 @@
 package messaging.app.messages.friendsList;
 
+import android.app.Activity;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -22,13 +23,19 @@ public class AddFriendsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
     List<HashMap<String, String>> mReceivedFriendRequests;
     Context context;
 
-    ManagingFriends managingFriends = new ManagingFriends(context);
-
+    ManagingFriends managingFriends;
 
     public AddFriendsAdapter(List<HashMap<String, FriendRequestHelper>> mSentFriendRequests, List<HashMap<String, String>> mReceivedFriendRequests, Context context) {
         this.mSentFriendRequests = mSentFriendRequests;
         this.mReceivedFriendRequests = mReceivedFriendRequests;
         this.context = context;
+
+        if(((Activity) context).getIntent().getStringExtra("adminUUID") != null){
+            managingFriends = new ManagingFriends(context, ((Activity) context).getIntent().getStringExtra("adminUUID"));
+        }
+        else{
+            managingFriends = new ManagingFriends(context, null);
+        }
 
     }
 
@@ -76,9 +83,6 @@ public class AddFriendsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         switch (viewType){
-            case 0:
-                View sentView = LayoutInflater.from(parent.getContext()).inflate(R.layout.sent_friend_request, parent, false);
-                return new SentFriendRequestsViewHolder(sentView);
             case 1:
                 View receivedView = LayoutInflater.from(parent.getContext()).inflate(R.layout.received_friend_request, parent, false);
                 return new ReceivedFriendRequestsViewHolder(receivedView);

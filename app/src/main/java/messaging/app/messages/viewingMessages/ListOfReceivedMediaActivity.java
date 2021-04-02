@@ -17,6 +17,7 @@ import messaging.app.ManagingActivityPreview;
 import messaging.app.R;
 import messaging.app.contactingFirebase.QueryingDatabase;
 import messaging.app.messages.MessagesActivity;
+import messaging.app.messages.sendingMedia.AddMessageToMediaActivity;
 
 public class ListOfReceivedMediaActivity extends AppCompatActivity {
 
@@ -29,7 +30,7 @@ public class ListOfReceivedMediaActivity extends AppCompatActivity {
 
     Formatting formatting = new Formatting();
     ManagingActivityPreview managingActivityPreview = new ManagingActivityPreview();
-    QueryingDatabase queryingDatabase = new QueryingDatabase();
+    QueryingDatabase queryingDatabase = new QueryingDatabase(null);
 
 
     @Override
@@ -93,8 +94,8 @@ public class ListOfReceivedMediaActivity extends AppCompatActivity {
                 receivedMediaDetails = formatting.orderReceivedMediaDetails(receivedMediaDetails);
 
                 //display to user
-                mLayoutManager = new LinearLayoutManager(getApplicationContext());
-                mAdapter = new ViewingMessagesReceivedAdapter(receivedMediaDetails, numberOfStories, getApplicationContext());
+                mLayoutManager = new LinearLayoutManager(ListOfReceivedMediaActivity.this);
+                mAdapter = new ViewingMessagesReceivedAdapter(receivedMediaDetails, numberOfStories, ListOfReceivedMediaActivity.this);
 
                 recyclerView.setLayoutManager(mLayoutManager);
                 recyclerView.setHasFixedSize(true);

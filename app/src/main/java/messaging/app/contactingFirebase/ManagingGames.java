@@ -6,7 +6,6 @@ import android.util.Log;
 import androidx.annotation.NonNull;
 
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -16,10 +15,6 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 
 import java.sql.Timestamp;
-import java.util.HashMap;
-import java.util.Map;
-
-import messaging.app.messages.friendsList.FriendRequestHelper;
 
 public class ManagingGames {
 
@@ -27,7 +22,7 @@ public class ManagingGames {
     FirebaseAuth mAuth;
     FirebaseDatabase mDatabase;
     FirebaseStorage mStorage;
-    QueryingDatabase queryingDatabase = new QueryingDatabase();
+    QueryingDatabase queryingDatabase = new QueryingDatabase(null);
 
     public ManagingGames(Context context) {
         this.context = context;

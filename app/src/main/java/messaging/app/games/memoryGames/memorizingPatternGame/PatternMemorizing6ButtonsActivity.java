@@ -90,19 +90,27 @@ public class PatternMemorizing6ButtonsActivity extends AppCompatActivity {
                         currentRound++;
                         if (currentRound == numberOfRounds) {
                             currentLevel++;
-                            lblCurrentStatus.setText("Complete");
-                            lblCurrentStatus.setVisibility(View.VISIBLE);
-                            new CountDownTimer(1500, 50) {
-                                @Override
-                                public void onTick(long arg0) {
-                                }
+                            if (currentLevel < 6) {
+                                lblCurrentStatus.setText("Complete");
+                                lblCurrentStatus.setVisibility(View.VISIBLE);
+                                new CountDownTimer(1500, 50) {
+                                    @Override
+                                    public void onTick(long arg0) {
+                                    }
 
-                                @Override
-                                public void onFinish() {
-                                    lblCurrentStatus.setVisibility(View.INVISIBLE);
-                                    startLevel();
-                                }
-                            }.start();
+                                    @Override
+                                    public void onFinish() {
+                                        lblCurrentStatus.setVisibility(View.INVISIBLE);
+                                        startLevel();
+                                    }
+                                }.start();
+                            } else {
+                                //user has hit the target number
+                                Intent intent = new Intent(PatternMemorizing6ButtonsActivity.this, StartMemorizingPatternActivity.class);
+                                intent.putExtra("level", "2x3");
+                                intent.putExtra("highScore", currentLevel);
+                                PatternMemorizing6ButtonsActivity.this.startActivity(intent);
+                            }
                         }
                     } else {
                         Log.d("test", "Wrong");
@@ -187,7 +195,7 @@ public class PatternMemorizing6ButtonsActivity extends AppCompatActivity {
                 button.setBackground(defaultColour);
                 currentButtonNum++;
 
-                if(currentButtonNum >= numberOfRounds){
+                if (currentButtonNum >= numberOfRounds) {
                     currentButtonNum = -2000;
 
                     lblCurrentStatus.setText("GO");

@@ -18,6 +18,7 @@ import messaging.app.ManagingActivityPreview;
 import messaging.app.R;
 import messaging.app.contactingFirebase.ManagingFriends;
 import messaging.app.contactingFirebase.QueryingDatabase;
+import messaging.app.messages.capturingMedia.CaptureActivity;
 
 public class AddFriendActivity extends AppCompatActivity {
 
@@ -30,8 +31,8 @@ public class AddFriendActivity extends AppCompatActivity {
 
     CheckInputsValidity checkInputsValidity = new CheckInputsValidity(this);
     ManagingActivityPreview managingActivityPreview = new ManagingActivityPreview();
-    QueryingDatabase queryingDatabase = new QueryingDatabase();
-    ManagingFriends managingFriends = new ManagingFriends(this);
+    QueryingDatabase queryingDatabase;
+    ManagingFriends managingFriends;
 
     private RecyclerView.Adapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
@@ -48,6 +49,17 @@ public class AddFriendActivity extends AppCompatActivity {
         btnBackToFriendsList = findViewById(R.id.btnBackToFriendsList);
         btnRefreshFriendRequests = findViewById(R.id.btnRefreshFriendRequests);
 
+        if(getIntent().getStringExtra("adminUUID") != null){
+            String friendsUUID = getIntent().getStringExtra("adminUUID");
+
+            managingFriends = new ManagingFriends(this, friendsUUID);
+            queryingDatabase = new QueryingDatabase(friendsUUID);
+        }
+        else{
+            managingFriends = new ManagingFriends(this, null);
+            queryingDatabase = new QueryingDatabase(null);
+        }
+
         setBtnSearchFriendOnClick();
         displayFriendRequests();
         setBtnBackToFriendsList();
@@ -57,6 +69,9 @@ public class AddFriendActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         Intent intent = new Intent(AddFriendActivity.this, ViewFriendsListActivity.class);
+        if(getIntent().getStringExtra("adminUUID") != null){
+            intent.putExtra("adminUUID", getIntent().getStringExtra("adminUUID"));
+        }
         AddFriendActivity.this.startActivity(intent);
     }
 
@@ -85,6 +100,9 @@ public class AddFriendActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(AddFriendActivity.this, ViewFriendsListActivity.class);
+                if(getIntent().getStringExtra("adminUUID") != null){
+                    intent.putExtra("adminUUID", getIntent().getStringExtra("adminUUID"));
+                }
                 AddFriendActivity.this.startActivity(intent);
             }
         });
@@ -99,8 +117,8 @@ public class AddFriendActivity extends AppCompatActivity {
                     public void onSuccess(List sentFriendRequests) {
 
                         //display to user
-                        mLayoutManager = new LinearLayoutManager(getApplicationContext());
-                        mAdapter = new AddFriendsAdapter(sentFriendRequests, receivedFriendRequests, getApplicationContext());
+                        mLayoutManager = new LinearLayoutManager(AddFriendActivity.this);
+                        mAdapter = new AddFriendsAdapter(sentFriendRequests, receivedFriendRequests, AddFriendActivity.this);
 
                         recyclerView.setLayoutManager(mLayoutManager);
                         recyclerView.setHasFixedSize(true);

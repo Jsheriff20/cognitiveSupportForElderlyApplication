@@ -27,12 +27,13 @@ public class ManagingFriends {
     FirebaseStorage mStorage;
     FirebaseAuth mAuth;
 
-    QueryingDatabase queryingDatabase = new QueryingDatabase();
+    QueryingDatabase queryingDatabase;
 
-    public ManagingFriends(Context context) {
+    public ManagingFriends(Context context, String friendsUUID) {
         this.context = context;
         mDatabase = FirebaseDatabase.getInstance();
         mStorage = FirebaseStorage.getInstance();
+        queryingDatabase = new QueryingDatabase(friendsUUID);
     }
 
 
@@ -104,9 +105,15 @@ public class ManagingFriends {
         //block the friend
         DatabaseReference databaseRef = mDatabase.getReference("userDetails");
         databaseRef.child(queryingDatabase.getCurrentUsersUUID() + "/blocked/" + friendsUUID).setValue(friendsUsername);
-        databaseRef.child(friendsUUID + "/blockedBy/" + queryingDatabase.getCurrentUsersUUID()).setValue(queryingDatabase.getCurrentUsersUsername());
+        queryingDatabase.getCurrentUsersUsername(new QueryingDatabase.OnGetCurrentUsersUsernameListener() {
+            @Override
+            public void onSuccess(String username) {
 
-        Toast.makeText(context, "User has been blocked", Toast.LENGTH_SHORT).show();
+                databaseRef.child(friendsUUID + "/blockedBy/" + queryingDatabase.getCurrentUsersUUID()).setValue(username);
+
+                Toast.makeText(context, "User has been blocked", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
 
@@ -223,7 +230,7 @@ public class ManagingFriends {
         queryingDatabase.getUsernamesUUID(friendsUsername, new QueryingDatabase.OnGetUUIDListener() {
             @Override
             public void onSuccess(final String friendsUUID) {
-                final String usersUUID = mAuth.getCurrentUser().getUid();
+                final String usersUUID = queryingDatabase.getCurrentUsersUUID();
 
                 try {
                     //build friend request
@@ -238,10 +245,16 @@ public class ManagingFriends {
                     //add friend request to database
                     DatabaseReference databaseRef = mDatabase.getReference("userDetails");
                     databaseRef.child(usersUUID + "/sentFriendRequests/" + friendsUUID).setValue(friendRequest);
-                    databaseRef.child(friendsUUID + "/friendRequests/" + usersUUID).setValue(queryingDatabase.getCurrentUsersUsername());
+                    queryingDatabase.getCurrentUsersUsername(new QueryingDatabase.OnGetCurrentUsersUsernameListener() {
+                        @Override
+                        public void onSuccess(String username) {
+                            databaseRef.child(friendsUUID + "/friendRequests/" + usersUUID).setValue(username);
 
 
-                    listener.onSuccess(true);
+                            listener.onSuccess(true);
+                        }
+                    });
+
                 } catch (Exception exception) {
 
                     listener.onSuccess(false);
@@ -250,7 +263,6 @@ public class ManagingFriends {
             }
         });
     }
-
 
 
     public interface OnAddFriendListener {
@@ -262,60 +274,65 @@ public class ManagingFriends {
         mAuth = FirebaseAuth.getInstance();
 
         //check user is not adding themselves
-        if (friendsUsername.equals(queryingDatabase.getCurrentUsersUsername())) {
-            Toast.makeText(context, "You can not add yourself", Toast.LENGTH_SHORT).show();
-            return;
-        } else {
+        queryingDatabase.getCurrentUsersUsername(new QueryingDatabase.OnGetCurrentUsersUsernameListener() {
+            @Override
+            public void onSuccess(String username) {
+                if (friendsUsername.equals(username)) {
+                    Toast.makeText(context, "You can not add yourself", Toast.LENGTH_SHORT).show();
+                    return;
+                } else {
 
-            //check username exists
-            queryingDatabase.doesUsernameExist(friendsUsername, new QueryingDatabase.OnCheckIfUsernameExistsListener() {
-                @Override
-                public void onSuccess(boolean exists) {
-                    if (exists) {
+                    //check username exists
+                    queryingDatabase.doesUsernameExist(friendsUsername, new QueryingDatabase.OnCheckIfUsernameExistsListener() {
+                        @Override
+                        public void onSuccess(boolean exists) {
+                            if (exists) {
 
-                        //check to see if user is already friends with the user
-                        queryingDatabase.isUserAlreadyFriendsWith(friendsUsername, new QueryingDatabase.OnCheckIfUserIsAlreadyFriendsWithListener() {
-                            @Override
-                            public void onSuccess(boolean alreadyFriends) {
-
-                                if (alreadyFriends) {
-                                    Toast.makeText(context, "You and " + friendsUsername + " are already friends", Toast.LENGTH_SHORT).show();
-                                    return;
-                                }
-                                //check adding user is not blocked by the recipient user
-                                queryingDatabase.isUserBlockedBy(friendsUsername, new QueryingDatabase.OnCheckIfUserIsBlockedByListener() {
+                                //check to see if user is already friends with the user
+                                queryingDatabase.isUserAlreadyFriendsWith(friendsUsername, new QueryingDatabase.OnCheckIfUserIsAlreadyFriendsWithListener() {
                                     @Override
-                                    public void onSuccess(boolean blocked) {
+                                    public void onSuccess(boolean alreadyFriends) {
 
-                                        if (blocked) {
-                                            Toast.makeText(context, "You have been blocked by this user", Toast.LENGTH_SHORT).show();
+                                        if (alreadyFriends) {
+                                            Toast.makeText(context, "You and " + friendsUsername + " are already friends", Toast.LENGTH_SHORT).show();
                                             return;
                                         }
-
-                                        //check if friend has already sent a friend request to the user. If so auto accept
-                                        queryingDatabase.getUsernamesUUID(friendsUsername, new QueryingDatabase.OnGetUUIDListener() {
+                                        //check adding user is not blocked by the recipient user
+                                        queryingDatabase.isUserBlockedBy(friendsUsername, new QueryingDatabase.OnCheckIfUserIsBlockedByListener() {
                                             @Override
-                                            public void onSuccess(final String friendsUUID) {
-                                                checkReceivedFriendRequestFrom(friendsUUID, new OnCheckReceivedFriendRequestFromListener() {
-                                                    @Override
-                                                    public void onSuccess(boolean haveExistingFriendRequest) {
+                                            public void onSuccess(boolean blocked) {
 
-                                                        if (haveExistingFriendRequest) {
-                                                            Toast.makeText(context, "Friend request to " + friendsUsername + " was automatically accepted", Toast.LENGTH_SHORT).show();
-                                                            acceptFriendRequest(friendsUUID, friendsUsername);
-                                                            return;
-                                                        }
-                                                        //if all is good add the user as a friend
-                                                        sendFriendRequest(friendsUsername, relationship, new OnCheckIfFriendRequestSentListener() {
+                                                if (blocked) {
+                                                    Toast.makeText(context, "You have been blocked by this user", Toast.LENGTH_SHORT).show();
+                                                    return;
+                                                }
+
+                                                //check if friend has already sent a friend request to the user. If so auto accept
+                                                queryingDatabase.getUsernamesUUID(friendsUsername, new QueryingDatabase.OnGetUUIDListener() {
+                                                    @Override
+                                                    public void onSuccess(final String friendsUUID) {
+                                                        checkReceivedFriendRequestFrom(friendsUUID, new OnCheckReceivedFriendRequestFromListener() {
                                                             @Override
-                                                            public void onSuccess(boolean requestSentSuccessfully) {
-                                                                if (requestSentSuccessfully) {
-                                                                    Toast.makeText(context, "Friend request to " + friendsUsername + " was sent successfully", Toast.LENGTH_SHORT).show();
-                                                                    listener.onSuccess(true);
-                                                                } else {
-                                                                    Toast.makeText(context, "Friend request to " + friendsUsername + " failed", Toast.LENGTH_SHORT).show();
-                                                                    listener.onSuccess(false);
+                                                            public void onSuccess(boolean haveExistingFriendRequest) {
+
+                                                                if (haveExistingFriendRequest) {
+                                                                    Toast.makeText(context, "Friend request to " + friendsUsername + " was automatically accepted", Toast.LENGTH_SHORT).show();
+                                                                    acceptFriendRequest(friendsUUID, friendsUsername);
+                                                                    return;
                                                                 }
+                                                                //if all is good add the user as a friend
+                                                                sendFriendRequest(friendsUsername, relationship, new OnCheckIfFriendRequestSentListener() {
+                                                                    @Override
+                                                                    public void onSuccess(boolean requestSentSuccessfully) {
+                                                                        if (requestSentSuccessfully) {
+                                                                            Toast.makeText(context, "Friend request to " + friendsUsername + " was sent successfully", Toast.LENGTH_SHORT).show();
+                                                                            listener.onSuccess(true);
+                                                                        } else {
+                                                                            Toast.makeText(context, "Friend request to " + friendsUsername + " failed", Toast.LENGTH_SHORT).show();
+                                                                            listener.onSuccess(false);
+                                                                        }
+                                                                    }
+                                                                });
                                                             }
                                                         });
                                                     }
@@ -324,14 +341,15 @@ public class ManagingFriends {
                                         });
                                     }
                                 });
+                            } else {
+                                Toast.makeText(context, "Username cannot be found", Toast.LENGTH_SHORT).show();
                             }
-                        });
-                    } else {
-                        Toast.makeText(context, "Username cannot be found", Toast.LENGTH_SHORT).show();
-                    }
+                        }
+                    });
                 }
-            });
-        }
+            }
+        });
+
     }
 
 
@@ -344,8 +362,16 @@ public class ManagingFriends {
 
         DatabaseReference databaseRef = mDatabase.getReference("userDetails");
         databaseRef.child(UUID + "/friends/" + friendsUUID + "/admin").setValue(true);
+        queryingDatabase.getCurrentUsersFullName(new QueryingDatabase.OnGetCurrentUsersFullNameListener() {
+            @Override
+            public void onSuccess(String fullName) {
+                databaseRef.child(friendsUUID + "/administering/" + UUID).setValue(fullName);
 
-        listener.onSuccess(true);
+                listener.onSuccess(true);
+
+            }
+        });
+
     }
 
 

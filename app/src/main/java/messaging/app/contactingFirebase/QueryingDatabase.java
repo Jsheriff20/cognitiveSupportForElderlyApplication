@@ -1,8 +1,6 @@
 package messaging.app.contactingFirebase;
 
-import android.accounts.Account;
 import android.content.Context;
-import android.util.Log;
 
 import androidx.annotation.NonNull;
 
@@ -34,9 +32,13 @@ public class QueryingDatabase {
 
     FirebaseDatabase mDatabase;
     FirebaseAuth mAuth;
+    String friendsUUID = null;
 
-    public QueryingDatabase() {
+    public QueryingDatabase(String friendsUUID) {
         mDatabase = FirebaseDatabase.getInstance();
+        if (friendsUUID != null) {
+            this.friendsUUID = friendsUUID;
+        }
     }
 
     public interface OnCheckIfUsernameExistsListener {
@@ -73,7 +75,7 @@ public class QueryingDatabase {
             public void onSuccess(String blockedByUUID) {
 
                 mAuth = FirebaseAuth.getInstance();
-                String usersUUID = mAuth.getCurrentUser().getUid();
+                String usersUUID = getCurrentUsersUUID();
 
                 mDatabase.getReference("userDetails").child(usersUUID + "/blockedBy/" + blockedByUUID).addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
@@ -205,23 +207,6 @@ public class QueryingDatabase {
                 int numberOfStoryMessages = (int) snapshot.getChildrenCount();
 
                 String sendersName = "New message";
-//                int loopNum = 0;
-//                for (DataSnapshot ds : snapshot.getChildren()) {
-//                    loopNum++;
-//                    if (loopNum == numberOfStoryMessages) {
-//                        for (DataSnapshot subDS : ds.getChildren()) {
-//                            {
-//                                if (subDS.getKey().equals("fullName")) {
-//                                    sendersName = (String) subDS.getValue();
-//                                    break;
-//
-//                                }
-//                            }
-//                        }
-//                        break;
-//                    }
-//                }
-//
 
                 //check that a new message has been added and that it is not the first loop
                 if (previousNumberOfStoryMessages < numberOfStoryMessages && !initiationOfStoryMessageListener) {
@@ -243,14 +228,34 @@ public class QueryingDatabase {
 
 
     public String getCurrentUsersUUID() {
-        mAuth = FirebaseAuth.getInstance();
-        return mAuth.getCurrentUser().getUid();
+        if (friendsUUID != null) {
+            return friendsUUID;
+        } else {
+            mAuth = FirebaseAuth.getInstance();
+            return mAuth.getCurrentUser().getUid();
+        }
+
     }
 
 
-    public String getCurrentUsersUsername() {
-        mAuth = FirebaseAuth.getInstance();
-        return mAuth.getCurrentUser().getDisplayName();
+    public interface OnGetCurrentUsersUsernameListener {
+        void onSuccess(String username);
+    }
+
+    public void getCurrentUsersUsername(OnGetCurrentUsersUsernameListener listener) {
+
+        if (friendsUUID != null) {
+            getCurrentUsersUUIDUsername(new OnGetFriendsUsernameFromUUIDListener() {
+                @Override
+                public void onSuccess(String friendsUsername) {
+                    listener.onSuccess(friendsUsername);
+                }
+            });
+
+        } else {
+            mAuth = FirebaseAuth.getInstance();
+            listener.onSuccess(mAuth.getCurrentUser().getDisplayName());
+        }
     }
 
 
@@ -274,6 +279,28 @@ public class QueryingDatabase {
                     friendsDetailsList.add(friendsDetails);
                 }
                 listener.onSuccess(friendsDetailsList);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+            }
+        });
+    }
+
+
+    public interface OnGetFriendsUsernameFromUUIDListener {
+        void onSuccess(String friendsUsername);
+    }
+
+
+    public void getCurrentUsersUUIDUsername(final OnGetFriendsUsernameFromUUIDListener listener) {
+
+        mDatabase.getReference("userDetails").child(getCurrentUsersUUID() + "/username").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+
+                //get value
+                listener.onSuccess((String) snapshot.getValue());
             }
 
             @Override
@@ -773,7 +800,7 @@ public class QueryingDatabase {
     public void getLeaderBoardData(final OnGetLeaderBoardDataListener listener) {
 
         mAuth = FirebaseAuth.getInstance();
-        String usersUUID = mAuth.getCurrentUser().getUid();
+        String usersUUID = getCurrentUsersUUID();
 
         DatabaseReference databaseRef = mDatabase.getReference("userDetails");
         Query getFriends = databaseRef.child(usersUUID);
@@ -795,8 +822,8 @@ public class QueryingDatabase {
 
                             boolean profileImageFound = false;
                             //get friends data
-                            for(DataSnapshot friendsData : subDS.getChildren()){
-                                switch (friendsData.getKey()){
+                            for (DataSnapshot friendsData : subDS.getChildren()) {
+                                switch (friendsData.getKey()) {
                                     case "firstName":
                                         friendsDetail.put("firstName", (String) friendsData.getValue());
                                         break;
@@ -813,7 +840,7 @@ public class QueryingDatabase {
                                 }
                             }
 
-                            if(!profileImageFound){
+                            if (!profileImageFound) {
                                 friendsDetail.put("profileImageUrl", "");
                             }
 
@@ -845,8 +872,7 @@ public class QueryingDatabase {
 
                         currentAccountHighScore.setFullName("My Scores");
 
-                    }
-                    else if (ds.getKey().equals("profileImageUrl")) {
+                    } else if (ds.getKey().equals("profileImageUrl")) {
                         currentAccountHighScore.setProfileImageURL((String) ds.getValue());
                     }
                 }
@@ -870,7 +896,7 @@ public class QueryingDatabase {
                             accountsHighScores.add(friendsGamingData);
 
                             //if all data has been found and stored (friends + current users)
-                            if(accountsHighScores.size() == (finalNumberOfFriends + 1)){
+                            if (accountsHighScores.size() == (finalNumberOfFriends + 1)) {
                                 listener.onSuccess(accountsHighScores);
                             }
                         }
@@ -895,7 +921,7 @@ public class QueryingDatabase {
     public void getHighScores(final OnGetHighScoresListener listener) {
 
         mAuth = FirebaseAuth.getInstance();
-        String usersUUID = mAuth.getCurrentUser().getUid();
+        String usersUUID = getCurrentUsersUUID();
 
         DatabaseReference databaseRef = mDatabase.getReference("userGamesDetails");
         Query getHighScores = databaseRef.child(usersUUID);
@@ -904,9 +930,9 @@ public class QueryingDatabase {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
 
-                HashMap<String, List<Long>>  highScores = new HashMap<>();
+                HashMap<String, List<Long>> highScores = new HashMap<>();
 
-                for(DataSnapshot ds : snapshot.getChildren()) {
+                for (DataSnapshot ds : snapshot.getChildren()) {
                     List<Long> past5GameScores = new ArrayList<>();
 
                     for (DataSnapshot subDS : ds.getChildren()) {
@@ -942,6 +968,49 @@ public class QueryingDatabase {
         });
     }
 
+
+    public interface OnGetCurrentUsersFullNameListener {
+        void onSuccess(String fullName);
+
+    }
+
+    public void getCurrentUsersFullName(final OnGetCurrentUsersFullNameListener listener) {
+
+        mAuth = FirebaseAuth.getInstance();
+        String usersUUID = getCurrentUsersUUID();
+
+        DatabaseReference databaseRef = mDatabase.getReference("userDetails");
+        Query getFriendsFirstName = databaseRef.child(usersUUID + "/firstName");
+        Query getFriendsSurname = databaseRef.child(usersUUID + "/surname");
+
+        getFriendsFirstName.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                String firstName = (String) snapshot.getValue();
+                getFriendsSurname.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+
+                        String surname = (String) snapshot.getValue();
+
+                        listener.onSuccess(firstName + " " + surname);
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+
+                    }
+                });
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+    }
+
+
     public interface OnGetFriendsNamesListener {
         void onSuccess(HashMap<String, String> friends, HashMap<String, String> adminFriends);
 
@@ -950,7 +1019,7 @@ public class QueryingDatabase {
     public void getFriendsAndAdminFriendsNames(final OnGetFriendsNamesListener listener) {
 
         mAuth = FirebaseAuth.getInstance();
-        String usersUUID = mAuth.getCurrentUser().getUid();
+        String usersUUID = getCurrentUsersUUID();
 
         DatabaseReference databaseRef = mDatabase.getReference("userDetails");
         Query getFriends = databaseRef.child(usersUUID + "/friends");
@@ -963,12 +1032,12 @@ public class QueryingDatabase {
                 HashMap<String, String> adminFriends = new HashMap<>();
 
                 //get all friends
-                for(DataSnapshot friend : snapshot.getChildren()) {
+                for (DataSnapshot friend : snapshot.getChildren()) {
                     String firstName = null;
                     String surname = null;
                     boolean admin = false;
-                    for(DataSnapshot friendDetails : friend.getChildren()){
-                        switch (friendDetails.getKey()){
+                    for (DataSnapshot friendDetails : friend.getChildren()) {
+                        switch (friendDetails.getKey()) {
                             case "firstName":
                                 firstName = (String) friendDetails.getValue();
                                 break;
@@ -982,15 +1051,54 @@ public class QueryingDatabase {
                         }
                     }
 
-                    if(admin){
+                    if (admin) {
                         adminFriends.put(friend.getKey(), firstName + " " + surname);
-                    }
-                    else{
+                    } else {
                         friends.put(friend.getKey(), firstName + " " + surname);
                     }
                 }
 
                 listener.onSuccess(friends, adminFriends);
+            }
+
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+    }
+
+
+    public interface OnGetAdministeringAccountsListener {
+        void onSuccess(HashMap<String, String> administeringFriends);
+
+    }
+
+    public void getAdministeringAccounts(final OnGetAdministeringAccountsListener listener) {
+
+        mAuth = FirebaseAuth.getInstance();
+        String usersUUID = getCurrentUsersUUID();
+
+        DatabaseReference databaseRef = mDatabase.getReference("userDetails");
+        Query getFriends = databaseRef.child(usersUUID + "/administering");
+
+        getFriends.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+
+                HashMap<String, String> administeringFriends = new HashMap<>();
+
+                //get all friends
+                for (DataSnapshot administeringFriend : snapshot.getChildren()) {
+                    String friendsUUID = administeringFriend.getKey();
+                    String friendsFullName = (String) administeringFriend.getValue();
+
+                    administeringFriends.put(friendsFullName, friendsUUID);
+
+                }
+
+                listener.onSuccess(administeringFriends);
             }
 
 

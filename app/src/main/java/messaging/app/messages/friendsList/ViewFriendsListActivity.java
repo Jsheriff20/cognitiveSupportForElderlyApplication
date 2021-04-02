@@ -6,6 +6,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
@@ -16,6 +17,8 @@ import messaging.app.ManagingActivityPreview;
 import messaging.app.R;
 import messaging.app.contactingFirebase.QueryingDatabase;
 import messaging.app.messages.MessagesActivity;
+import messaging.app.messages.capturingMedia.CaptureActivity;
+import messaging.app.settings.SettingsActivity;
 
 public class ViewFriendsListActivity extends AppCompatActivity {
 
@@ -26,7 +29,7 @@ public class ViewFriendsListActivity extends AppCompatActivity {
     private RecyclerView.Adapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
     ManagingActivityPreview managingActivityPreview = new ManagingActivityPreview();
-    QueryingDatabase queryingDatabase = new QueryingDatabase();
+    QueryingDatabase queryingDatabase;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,6 +39,14 @@ public class ViewFriendsListActivity extends AppCompatActivity {
         btnLoadAddFriendActivity = findViewById(R.id.btnAddFriend);
         btnBackToMessagesActivity = findViewById(R.id.btnBackToMessagesActivity);
         recyclerView = findViewById(R.id.lstFriendsList);
+
+        if(getIntent().getStringExtra("adminUUID") != null){
+            String friendsUUID = getIntent().getStringExtra("adminUUID");
+            queryingDatabase = new QueryingDatabase(friendsUUID);
+        }
+        else{
+            queryingDatabase = new QueryingDatabase(null);
+        }
 
         setBtnLoadAddFriendActivityOnClick();
         displayFriends();
@@ -56,8 +67,19 @@ public class ViewFriendsListActivity extends AppCompatActivity {
         btnBackToMessagesActivity.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(ViewFriendsListActivity.this, MessagesActivity.class);
-                ViewFriendsListActivity.this.startActivity(intent);
+
+                if(getIntent().getStringExtra("adminUUID") != null){
+                    Intent intent = new Intent(ViewFriendsListActivity.this, SettingsActivity.class);
+                    if(getIntent().getStringExtra("adminUUID") != null){
+                        intent.putExtra("adminUUID", getIntent().getStringExtra("adminUUID"));
+                    }
+                    ViewFriendsListActivity.this.startActivity(intent);
+                }
+                else{
+                    Intent intent = new Intent(ViewFriendsListActivity.this, MessagesActivity.class);
+                    intent.putExtra("adminUUID", getIntent().getStringExtra("adminUUID"));
+                    ViewFriendsListActivity.this.startActivity(intent);
+                }
             }
         });
     }
@@ -68,8 +90,8 @@ public class ViewFriendsListActivity extends AppCompatActivity {
             @Override
             public void onSuccess(List friendsDetails) {
                 //display to user
-                mLayoutManager = new LinearLayoutManager(getApplicationContext());
-                mAdapter = new ViewFriendsListAdapter(friendsDetails, getApplicationContext());
+                mLayoutManager = new LinearLayoutManager(ViewFriendsListActivity.this);
+                mAdapter = new ViewFriendsListAdapter(friendsDetails, ViewFriendsListActivity.this);
 
                 recyclerView.setLayoutManager(mLayoutManager);
                 recyclerView.setHasFixedSize(true);
@@ -83,6 +105,9 @@ public class ViewFriendsListActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(ViewFriendsListActivity.this, AddFriendActivity.class);
+                if(getIntent().getStringExtra("adminUUID") != null){
+                    intent.putExtra("adminUUID", getIntent().getStringExtra("adminUUID"));
+                }
                 ViewFriendsListActivity.this.startActivity(intent);
             }
         });

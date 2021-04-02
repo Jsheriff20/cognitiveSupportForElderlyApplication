@@ -1,35 +1,22 @@
 package messaging.app.settings;
 
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.media.ExifInterface;
-import android.os.StrictMode;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
 
-import java.io.BufferedInputStream;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import messaging.app.MediaManagement;
 import messaging.app.R;
 import messaging.app.contactingFirebase.ManagingFriends;
-import messaging.app.games.AccountsHighScores;
 
 public class AdminFriendsAdapter extends RecyclerView.Adapter<AdminFriendsAdapter.ViewHolder> {
 
@@ -41,7 +28,7 @@ public class AdminFriendsAdapter extends RecyclerView.Adapter<AdminFriendsAdapte
     public AdminFriendsAdapter(HashMap<String, String> mAdminFriends, Context context) {
         this.context = context;
         this.mAdminFriends = mAdminFriends;
-        managingFriends = new ManagingFriends(context);
+        managingFriends = new ManagingFriends(context, null);
         this.keys = new ArrayList(mAdminFriends.keySet());
     }
 

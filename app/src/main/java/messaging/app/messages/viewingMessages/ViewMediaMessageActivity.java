@@ -162,7 +162,7 @@ public class ViewMediaMessageActivity extends AppCompatActivity {
                 imgViewMediaMessage.setImageBitmap(adjustedBitmapImage);
 
 
-                mediaManagement.deleteMediaFile(mImageFilePath, getApplicationContext());
+                mediaManagement.deleteMediaFile(mImageFilePath, ViewMediaMessageActivity.this);
             } catch (IOException e) {
                 e.printStackTrace();
             }

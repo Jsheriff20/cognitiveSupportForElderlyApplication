@@ -10,7 +10,6 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import messaging.app.CheckInputsValidity;
-import messaging.app.Formatting;
 import messaging.app.ManagingActivityPreview;
 import messaging.app.contactingFirebase.QueryingDatabase;
 import messaging.app.login.LoginActivity;
@@ -31,7 +30,7 @@ public class RegisterUsernameActivity extends AppCompatActivity {
 
     CheckInputsValidity checkInputsValidity = new CheckInputsValidity(this);
     ManagingActivityPreview managingActivityPreview = new ManagingActivityPreview();
-    QueryingDatabase queryingDatabase = new QueryingDatabase();
+    QueryingDatabase queryingDatabase = new QueryingDatabase(null);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

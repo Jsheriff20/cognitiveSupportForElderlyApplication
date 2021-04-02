@@ -246,15 +246,15 @@ public class CaptureActivity extends AppCompatActivity {
                 if (!mButtonPressProcessing) {
                     mButtonPressProcessing = true;
                     if (!mImageFilePath.equals("")) {
-                        mediaManagement.deleteMediaFile(mImageFilePath, getApplicationContext());
+                        mediaManagement.deleteMediaFile(mImageFilePath, CaptureActivity.this);
                     } else {
-                        mediaManagement.deleteMediaFile(mVideoFilePath, getApplicationContext());
+                        mediaManagement.deleteMediaFile(mVideoFilePath,CaptureActivity.this);
                     }
 
 
                     Intent intent;
                     if (mCaptureForProfileImage) {
-                        intent = new Intent(getApplicationContext(), RegisterProfileImageActivity.class);
+                        intent = new Intent(CaptureActivity.this, RegisterProfileImageActivity.class);
                         intent.putExtras(getIntent().getExtras());
 
                     } else {
@@ -326,7 +326,7 @@ public class CaptureActivity extends AppCompatActivity {
                             startRecording();
 
                         } else {
-                            Toast.makeText(getApplicationContext(), "An error has occurred", LENGTH_SHORT).show();
+                            Toast.makeText(CaptureActivity.this, "An error has occurred", LENGTH_SHORT).show();
                         }
                     } else {
                         Toast.makeText(CaptureActivity.this, "Cannot send a front facing camera video", LENGTH_SHORT).show();
@@ -355,7 +355,7 @@ public class CaptureActivity extends AppCompatActivity {
                     previewCapturedMedia("Video");
 
                 } else {
-                    Toast.makeText(getApplicationContext(), "An error has occurred", LENGTH_SHORT).show();
+                    Toast.makeText(CaptureActivity.this, "An error has occurred", LENGTH_SHORT).show();
                 }
 
             }
@@ -435,10 +435,10 @@ public class CaptureActivity extends AppCompatActivity {
 
                     switch (mTypeOfMediaCaptured) {
                         case "Image":
-                            mediaManagement.deleteMediaFile(mImageFilePath, getApplicationContext());
+                            mediaManagement.deleteMediaFile(mImageFilePath, CaptureActivity.this);
                             break;
                         case "Video":
-                            mediaManagement.deleteMediaFile(mVideoFilePath, getApplicationContext());
+                            mediaManagement.deleteMediaFile(mVideoFilePath, CaptureActivity.this);
                             break;
                     }
                     mTypeOfMediaCaptured = null;
@@ -456,7 +456,7 @@ public class CaptureActivity extends AppCompatActivity {
 
                 if (!mButtonPressProcessing) {
                     mButtonPressProcessing = true;
-                    Intent intent = new Intent(getApplicationContext(), RegisterProfileImageActivity.class);
+                    Intent intent = new Intent(CaptureActivity.this, RegisterProfileImageActivity.class);
                     intent.putExtras(getIntent().getExtras());
                     intent.putExtra("profileImage", mImageFilePath);
                     intent.putExtra("typeOfMediaCaptured", mTypeOfMediaCaptured);
@@ -477,7 +477,7 @@ public class CaptureActivity extends AppCompatActivity {
 
                 if (!mButtonPressProcessing) {
                     mButtonPressProcessing = true;
-                    Intent intent = new Intent(getApplicationContext(), AddMessageToMediaActivity.class);
+                    Intent intent = new Intent(CaptureActivity.this, AddMessageToMediaActivity.class);
                     intent.putExtra("typeOfMediaCaptured", mTypeOfMediaCaptured);
 
                     if (mReplyingToUUID != null) {
@@ -665,7 +665,7 @@ public class CaptureActivity extends AppCompatActivity {
 
 
                 } else {
-                    Toast.makeText(getApplicationContext(), "Could not find image", LENGTH_SHORT).show();
+                    Toast.makeText(CaptureActivity.this, "Could not find image", LENGTH_SHORT).show();
                 }
 
                 //display image
@@ -684,7 +684,7 @@ public class CaptureActivity extends AppCompatActivity {
 
 
                 } else {
-                    Toast.makeText(getApplicationContext(), "Could not find video", LENGTH_SHORT).show();
+                    Toast.makeText(CaptureActivity.this, "Could not find video", LENGTH_SHORT).show();
                 }
 
                 //display image
@@ -966,7 +966,7 @@ public class CaptureActivity extends AppCompatActivity {
 
                         @Override
                         public void onConfigureFailed(@NonNull CameraCaptureSession session) {
-                            Toast.makeText(getApplicationContext(), "Camera preview failed", LENGTH_SHORT).show();
+                            Toast.makeText(CaptureActivity.this, "Camera preview failed", LENGTH_SHORT).show();
                         }
                     }, null);
 

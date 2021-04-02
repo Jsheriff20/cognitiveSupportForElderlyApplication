@@ -32,6 +32,8 @@ import messaging.app.ManagingActivityPreview;
 import messaging.app.MediaManagement;
 import messaging.app.R;
 import messaging.app.contactingFirebase.ManagingMessages;
+import messaging.app.messages.capturingMedia.CaptureActivity;
+import messaging.app.messages.friendsList.AddFriendActivity;
 import messaging.app.messages.viewingMessages.ListOfReceivedMediaActivity;
 
 import static android.widget.Toast.LENGTH_SHORT;
@@ -140,7 +142,7 @@ public class AddMessageToMediaActivity extends AppCompatActivity {
                 mMessage = txtMessage.getText().toString();
 
                 if(mReplyingToUUID == null) {
-                    Intent intent = new Intent(getApplicationContext(), SendMediaTabsActivity.class);
+                    Intent intent = new Intent(AddMessageToMediaActivity.this, SendMediaTabsActivity.class);
                     intent.putExtra("typeOfMediaCaptured", mTypeOfMediaCaptured);
                     intent.putExtra("mediaPath", mMediaPath);
                     intent.putExtra("message", mMessage);
@@ -215,7 +217,7 @@ public class AddMessageToMediaActivity extends AppCompatActivity {
         speechRecognizer.setRecognitionListener(new RecognitionListener() {
             @Override
             public void onReadyForSpeech(Bundle params) {
-                Toast.makeText(getApplicationContext(), "Listening", LENGTH_SHORT).show();
+                Toast.makeText(AddMessageToMediaActivity.this, "Listening", LENGTH_SHORT).show();
 
                 btnVoiceToText.setVisibility(View.INVISIBLE);
                 btnStopVoiceToText.setVisibility(View.VISIBLE);
@@ -247,7 +249,7 @@ public class AddMessageToMediaActivity extends AppCompatActivity {
 
             @Override
             public void onResults(Bundle results) {
-                Toast.makeText(getApplicationContext(), "Stopped listening", LENGTH_SHORT).show();
+                Toast.makeText(AddMessageToMediaActivity.this, "Stopped listening", LENGTH_SHORT).show();
 
                 btnVoiceToText.setVisibility(View.VISIBLE);
                 btnStopVoiceToText.setVisibility(View.INVISIBLE);
@@ -308,7 +310,7 @@ public class AddMessageToMediaActivity extends AppCompatActivity {
                     }
 
                 }else{
-                    Toast.makeText(getApplicationContext(), "Could not find image", LENGTH_SHORT).show();
+                    Toast.makeText(AddMessageToMediaActivity.this, "Could not find image", LENGTH_SHORT).show();
                 }
 
                 //display image
@@ -328,7 +330,7 @@ public class AddMessageToMediaActivity extends AppCompatActivity {
 
 
                 }else{
-                    Toast.makeText(getApplicationContext(), "Could not find video", LENGTH_SHORT).show();
+                    Toast.makeText(AddMessageToMediaActivity.this, "Could not find video", LENGTH_SHORT).show();
                 }
 
                 //display image

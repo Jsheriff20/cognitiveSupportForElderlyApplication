@@ -10,7 +10,6 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import messaging.app.CheckInputsValidity;
-import messaging.app.Formatting;
 import messaging.app.ManagingActivityPreview;
 import messaging.app.contactingFirebase.QueryingDatabase;
 import messaging.app.login.LoginActivity;
@@ -23,7 +22,7 @@ public class RegisterEmailActivity extends AppCompatActivity {
     Button btnLoadLogin;
     CheckInputsValidity checkInputsValidity = new CheckInputsValidity(this);
     ManagingActivityPreview managingActivityPreview = new ManagingActivityPreview();
-    QueryingDatabase queryingDatabase = new QueryingDatabase();
+    QueryingDatabase queryingDatabase = new QueryingDatabase(null);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

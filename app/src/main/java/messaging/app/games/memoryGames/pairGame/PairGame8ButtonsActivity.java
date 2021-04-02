@@ -105,30 +105,38 @@ public class PairGame8ButtonsActivity extends AppCompatActivity {
 
                                 streak++;
 
-                                //restart the game
-                                //have to repeat code to allow button for loops to have the correct target variable
-                                images = new ArrayList<>();
-                                images.addAll(Arrays.asList(
-                                        getDrawable(R.drawable.ant), getDrawable(R.drawable.basketball), getDrawable(R.drawable.carrot),
-                                        getDrawable(R.drawable.cat), getDrawable(R.drawable.cow), getDrawable(R.drawable.dog),
-                                        getDrawable(R.drawable.football), getDrawable(R.drawable.horse), getDrawable(R.drawable.monkey),
-                                        getDrawable(R.drawable.pie), getDrawable(R.drawable.soup)
-                                ));
-                                imageButtonsList = new ArrayList<>();
-                                imageButtonsList.addAll(Arrays.asList(
-                                        btnGrid1Of8, btnGrid2Of8, btnGrid3Of8, btnGrid4Of8, btnGrid5Of8, btnGrid6Of8, btnGrid7Of8, btnGrid8Of8
-                                ));
+                                if(streak < 4) {
+                                    //restart the game
+                                    //have to repeat code to allow button for loops to have the correct target variable
+                                    images = new ArrayList<>();
+                                    images.addAll(Arrays.asList(
+                                            getDrawable(R.drawable.ant), getDrawable(R.drawable.basketball), getDrawable(R.drawable.carrot),
+                                            getDrawable(R.drawable.cat), getDrawable(R.drawable.cow), getDrawable(R.drawable.dog),
+                                            getDrawable(R.drawable.football), getDrawable(R.drawable.horse), getDrawable(R.drawable.monkey),
+                                            getDrawable(R.drawable.pie), getDrawable(R.drawable.soup)
+                                    ));
+                                    imageButtonsList = new ArrayList<>();
+                                    imageButtonsList.addAll(Arrays.asList(
+                                            btnGrid1Of8, btnGrid2Of8, btnGrid3Of8, btnGrid4Of8, btnGrid5Of8, btnGrid6Of8, btnGrid7Of8, btnGrid8Of8
+                                    ));
 
 
+                                    for (ImageButton button : imageButtonsList) {
+                                        Log.d("test", "VISIBLE: ");
+                                        button.setEnabled(false);
+                                        button.setVisibility(View.VISIBLE);
+                                    }
 
-                                for(ImageButton button : imageButtonsList){
-                                    Log.d("test", "VISIBLE: ");
-                                    button.setEnabled(false);
-                                    button.setVisibility(View.VISIBLE);
+                                    startGame();
                                 }
-
-                                startGame();
-
+                                else{
+                                    //hit the target number of rounds
+                                    Intent intent = new Intent(PairGame8ButtonsActivity.this, StartPairsGameActivity.class);
+                                    intent.putExtra("numberOfPairs", "8");
+                                    intent.putExtra("streak", streak);
+                                    intent.putExtra("numberOfPairsFound", pairsFound);
+                                    PairGame8ButtonsActivity.this.startActivity(intent);
+                                }
                             }
                         }
                         else{

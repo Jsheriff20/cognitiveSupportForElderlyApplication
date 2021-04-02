@@ -25,7 +25,7 @@ public class SelectSendToFriendsFragment extends Fragment implements SendMediaTo
     private RecyclerView recyclerView;
     private SendMediaToFriendsListAdapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
-    QueryingDatabase queryingDatabase = new QueryingDatabase();
+    QueryingDatabase queryingDatabase = new QueryingDatabase(null);
 
     Context mContext;
     onSelectedRowListener listener;

@@ -28,6 +28,7 @@ import messaging.app.contactingFirebase.ManagingAccounts;
 import messaging.app.login.LoginActivity;
 import messaging.app.R;
 import messaging.app.messages.capturingMedia.CaptureActivity;
+import messaging.app.messages.viewingMessages.ListOfReceivedMediaActivity;
 
 import static android.widget.Toast.LENGTH_SHORT;
 
@@ -143,7 +144,7 @@ public class RegisterProfileImageActivity extends AppCompatActivity {
                     mButtonPressProcessing = true;
 
                     if (mProfileImagePath != null) {
-                        mediaManagement.deleteMediaFile(mProfileImagePath, getApplicationContext());
+                        mediaManagement.deleteMediaFile(mProfileImagePath, RegisterProfileImageActivity.this);
                     }
 
                     Intent intent = new Intent(RegisterProfileImageActivity.this, RegisterPersonalInfoActivity.class);
@@ -170,13 +171,13 @@ public class RegisterProfileImageActivity extends AppCompatActivity {
                     mButtonPressProcessing = true;
 
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                        if (ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
+                        if (ContextCompat.checkSelfPermission(RegisterProfileImageActivity.this, Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
                             //open the storage if permissions are granted
                             openFileSelector();
                         } else {
                             if (shouldShowRequestPermissionRationale(Manifest.permission.READ_EXTERNAL_STORAGE)) {
                                 //if permissions are denied say why permission is needed
-                                Toast.makeText(getApplicationContext(), "Please enable Storage Access", LENGTH_SHORT).show();
+                                Toast.makeText(RegisterProfileImageActivity.this, "Please enable Storage Access", LENGTH_SHORT).show();
                             }
                             requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, REQUEST_EXTERNAL_STORAGE_PERMISSION_RESULT);
                         }
