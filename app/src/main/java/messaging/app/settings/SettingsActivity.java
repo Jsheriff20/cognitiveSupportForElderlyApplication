@@ -23,12 +23,14 @@ import messaging.app.contactingFirebase.ManagingAccounts;
 import messaging.app.contactingFirebase.QueryingDatabase;
 import messaging.app.login.LoginActivity;
 import messaging.app.messages.friendsList.ViewFriendsListActivity;
+import messaging.app.settings.alarms.ManageRemindersActivity;
 
 public class SettingsActivity extends AppCompatActivity {
 
     Button btnLogout;
     Button btnManageAdmins;
     Button btnManageAccount;
+    Button btnManageMedicationReminders;
     TextView lblManageAnAccount;
     Spinner spnSelectAdminAccount;
 
@@ -46,6 +48,7 @@ public class SettingsActivity extends AppCompatActivity {
         btnLogout = findViewById(R.id.btnLogout);
         btnManageAdmins = findViewById(R.id.btnManageAdmins);
         btnManageAccount = findViewById(R.id.btnManageAccount);
+        btnManageMedicationReminders = findViewById(R.id.btnManageMedicationReminders);
         spnSelectAdminAccount = findViewById(R.id.spnSelectAdminAccount);
         lblManageAnAccount = findViewById(R.id.lblManageAnAccount);
 
@@ -64,6 +67,7 @@ public class SettingsActivity extends AppCompatActivity {
         setBtnLogoutOnClick();
         setBtnAddAdminFriendOnClick();
         setBtnManageAccountOnClick();
+        setBtnManageMedicationRemindersOnClick();
         setupSpinner();
     }
 
@@ -77,11 +81,21 @@ public class SettingsActivity extends AppCompatActivity {
             Intent intent = new Intent(SettingsActivity.this, ViewFriendsListActivity.class);
             intent.putExtra("adminUUID", friendsUUID);
             SettingsActivity.this.startActivity(intent);
-        }
-        else{
+        } else {
             Intent intent = new Intent(SettingsActivity.this, SelectAreaOfApplicationActivity.class);
             SettingsActivity.this.startActivity(intent);
         }
+    }
+
+
+    public void setBtnManageMedicationRemindersOnClick() {
+        btnManageMedicationReminders.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(SettingsActivity.this, ManageRemindersActivity.class);
+                SettingsActivity.this.startActivity(intent);
+            }
+        });
     }
 
 
@@ -153,8 +167,8 @@ public class SettingsActivity extends AppCompatActivity {
 
                 mAdministeringFriends = administeringFriends;
 
-                ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(SettingsActivity.this, R.layout.admin_friend_spinner_item, friendsNames);
-                arrayAdapter.setDropDownViewResource(R.layout.admin_friend_spinner_item);
+                ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(SettingsActivity.this, R.layout.spinner_item, friendsNames);
+                arrayAdapter.setDropDownViewResource(R.layout.spinner_item);
                 spnSelectAdminAccount.setAdapter(arrayAdapter);
                 spnSelectAdminAccount.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                     @Override

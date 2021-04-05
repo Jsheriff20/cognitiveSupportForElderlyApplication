@@ -1,6 +1,7 @@
 package messaging.app.contactingFirebase;
 
 import android.content.Context;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 
@@ -27,6 +28,7 @@ import messaging.app.MessageReceivedServiceNotification;
 import messaging.app.games.AccountsHighScores;
 import messaging.app.messages.viewingMessages.MessageData;
 import messaging.app.messages.friendsList.FriendRequestHelper;
+import messaging.app.settings.alarms.ReminderDetails;
 
 public class QueryingDatabase {
 
@@ -743,7 +745,7 @@ public class QueryingDatabase {
     public void getFriendsGamingData(final String friendsUUID, HashMap<String, String> friendsMap, final OnGetFriendsGamingDataListener listener) {
         DatabaseReference databaseRef = mDatabase.getReference("userDetails");
 
-        Query query = databaseRef.child(friendsUUID + "/highScore");
+        Query query = databaseRef.child(friendsUUID + "/highScores");
 
         query.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -772,7 +774,7 @@ public class QueryingDatabase {
                     }
                 }
 
-                String fullName = friendsMap.get("firstName") + friendsMap.get("surname");
+                String fullName = friendsMap.get("firstName")  + " " + friendsMap.get("surname");
                 String profileImageRotation = friendsMap.get("profileImageRotation");
                 String profileImageUrl = friendsMap.get("profileImageUrl");
 
@@ -884,13 +886,12 @@ public class QueryingDatabase {
 
                 int finalNumberOfFriends = numberOfFriends;
                 //get each friends high score
-                for (HashMap<String, String> friendsMap : friendsDetails.values()) {
+                for (Map.Entry<String, HashMap<String, String>> friendsMap : friendsDetails.entrySet()) {
 
-                    Set friendsUUIDSet = friendsMap.keySet();
-                    String friendsUUID = (String) friendsUUIDSet.iterator().next();
+                    String friendsUUID = friendsMap.getKey();
 
                     //get friends
-                    getFriendsGamingData(friendsUUID, friendsMap, new OnGetFriendsGamingDataListener() {
+                    getFriendsGamingData(friendsUUID, friendsMap.getValue(), new OnGetFriendsGamingDataListener() {
                         @Override
                         public void onSuccess(AccountsHighScores friendsGamingData) {
                             accountsHighScores.add(friendsGamingData);
@@ -1108,4 +1109,64 @@ public class QueryingDatabase {
             }
         });
     }
+
+
+    public interface OnGetAllRemindersListener {
+        void onSuccess(List<ReminderDetails> reminderDetailsList);
+
+    }
+
+
+    public void getAllReminders(OnGetAllRemindersListener listener){
+
+        String usersUUID = getCurrentUsersUUID();
+
+        DatabaseReference databaseRef = mDatabase.getReference("reminders");
+        Query getReminders = databaseRef.child(usersUUID);
+
+        getReminders.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+
+                List<ReminderDetails> reminderDetailsList = new ArrayList<>();
+                ReminderDetails reminderDetails;
+
+                for(DataSnapshot reminder : snapshot.getChildren()){
+                    reminderDetails = new ReminderDetails();
+
+                    reminderDetails.setReminderID((String) snapshot.getKey());
+                    for(DataSnapshot details : reminder.getChildren()){
+                        Log.d("test", "details: " + details);
+                        switch (details.getKey()){
+                            case "medicationName":
+                                reminderDetails.setMedicationName((String) details.getValue());
+                                break;
+                            case "frequency":
+                                reminderDetails.setFrequency((String) details.getValue());
+                                break;
+                            case "time":
+                                reminderDetails.setTime((String) details.getValue());
+                                break;
+                            case "intentID":
+                                long longIntentID = (long) details.getValue();
+                                reminderDetails.setIntentID((int) longIntentID);
+                                break;
+                        }
+                    }
+
+                    Log.d("test", "reminderDetails: " + reminderDetails);
+                    reminderDetailsList.add(reminderDetails);
+                }
+
+                listener.onSuccess(reminderDetailsList);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+
+    }
 }
+

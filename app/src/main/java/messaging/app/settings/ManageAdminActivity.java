@@ -24,7 +24,6 @@ import java.util.stream.Collectors;
 import messaging.app.R;
 import messaging.app.contactingFirebase.ManagingFriends;
 import messaging.app.contactingFirebase.QueryingDatabase;
-import messaging.app.register.RegisterProfileImageActivity;
 
 public class ManageAdminActivity extends AppCompatActivity {
 
@@ -72,8 +71,8 @@ public class ManageAdminActivity extends AppCompatActivity {
                 }
 
 
-                ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(ManageAdminActivity.this, R.layout.admin_friend_spinner_item, friendsNames);
-                arrayAdapter.setDropDownViewResource(R.layout.admin_friend_spinner_item);
+                ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(ManageAdminActivity.this, R.layout.spinner_item, friendsNames);
+                arrayAdapter.setDropDownViewResource(R.layout.spinner_item);
                 spnPossibleAdminFriends.setAdapter(arrayAdapter);
                 spnPossibleAdminFriends.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                     @Override

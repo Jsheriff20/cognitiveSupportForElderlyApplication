@@ -22,7 +22,9 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme.NoActionBar">
-        <activity android:name=".settings.ManageAdminActivity"></activity>
+        <activity android:name=".settings.alarms.CreateNewReminder"></activity>
+        <activity android:name=".settings.alarms.ManageRemindersActivity" />
+        <activity android:name=".settings.ManageAdminActivity" />
         <activity android:name=".games.LeaderBoardActivity" />
         <activity android:name=".games.reflexGames.stroopTest.StartStroopTestActivity" />
         <activity android:name=".games.memoryGames.SelectMemoryGameActivity" />
