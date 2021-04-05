@@ -1136,7 +1136,6 @@ public class QueryingDatabase {
 
                     reminderDetails.setReminderID((String) snapshot.getKey());
                     for(DataSnapshot details : reminder.getChildren()){
-                        Log.d("test", "details: " + details);
                         switch (details.getKey()){
                             case "medicationName":
                                 reminderDetails.setMedicationName((String) details.getValue());
@@ -1154,7 +1153,6 @@ public class QueryingDatabase {
                         }
                     }
 
-                    Log.d("test", "reminderDetails: " + reminderDetails);
                     reminderDetailsList.add(reminderDetails);
                 }
 

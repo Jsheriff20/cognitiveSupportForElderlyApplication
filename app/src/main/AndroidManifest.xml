@@ -3,16 +3,14 @@
     package="messaging.app">
 
     <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
 
     <uses-feature android:name="android.hardware.camera2.full" />
 
-    <permission
-        android:name="android.permission.FLASHLIGHT"
-        android:permissionGroup="android.permission-group.HARDWARE_CONTROLS"
-        android:protectionLevel="normal" />
 
     <application
         android:allowBackup="true"
@@ -75,6 +73,9 @@
         <activity android:name=".SelectAreaOfApplicationActivity" />
 
         <service android:name=".NotifyMessageReceivedService" />
+        <service android:name=".settings.alarms.AlarmRingtoneService"
+            android:enabled="true"/>
+        <receiver android:name=".settings.alarms.AlarmReceiver"/>
     </application>
 
 </manifest>

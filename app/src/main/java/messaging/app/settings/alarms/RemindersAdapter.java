@@ -1,5 +1,7 @@
 package messaging.app.settings.alarms;
 
+import android.app.AlarmManager;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -73,6 +75,17 @@ public class RemindersAdapter extends RecyclerView.Adapter<RemindersAdapter.View
                 reminderDetailsList.remove(position);
                 notifyItemRemoved(position);
                 notifyItemRangeChanged(position, reminderDetailsList.size());
+
+
+                AlarmManager manager = (AlarmManager) context.getSystemService(context.ALARM_SERVICE);
+                Intent alarmIntent = new Intent(context, AlarmReceiver.class);
+
+                //overwriting the alarm
+                PendingIntent pendingIntent = PendingIntent.getBroadcast(context, holder.intentID, alarmIntent, 0);
+
+                //cancelling the new set alarm alarm
+                manager.cancel(pendingIntent);
+
             }
         });
 

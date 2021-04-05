@@ -32,8 +32,9 @@
         android:textColor="#000000"
         android:textSize="29dp"
         app:layout_constraintEnd_toStartOf="@+id/btnRemoveReminder"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/lblMedicationName" />
+        app:layout_constraintTop_toBottomOf="@+id/lblFrequency" />
 
     <TextView
         android:id="@+id/lblFrequency"
@@ -46,8 +47,9 @@
         android:textColor="#000000"
         android:textSize="29dp"
         app:layout_constraintEnd_toStartOf="@+id/btnRemoveReminder"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/lblReminderTime" />
+        app:layout_constraintTop_toBottomOf="@+id/lblMedicationName" />
 
     <ImageButton
         android:id="@+id/btnRemoveReminder"

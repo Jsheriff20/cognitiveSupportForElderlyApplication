@@ -2,6 +2,8 @@ package messaging.app.settings.alarms;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.AlarmManager;
+import android.app.PendingIntent;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
@@ -17,6 +19,7 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.List;
 
 import messaging.app.Formatting;
@@ -33,9 +36,11 @@ public class CreateNewReminder extends AppCompatActivity {
 
     String mFrequency;
     String mTime;
+    int mIntentID = 0;
+
+    AlarmManager alarmManager;
 
     ManagingReminders managingReminders = new ManagingReminders();
-    Formatting formatting = new Formatting();
 
 
     @Override
@@ -49,6 +54,8 @@ public class CreateNewReminder extends AppCompatActivity {
         tpkTime = findViewById(R.id.tpkTime);
         spnFrequency = findViewById(R.id.spnFrequency);
 
+        alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
+
         setBtnCreateReminderOnClick();
         setBtnCancelSettingReminderOnClick();
         setupFrequencySpinner();
@@ -59,7 +66,7 @@ public class CreateNewReminder extends AppCompatActivity {
     private void setupFrequencySpinner() {
         List<String> frequencyOptions = new ArrayList<>(
                 Arrays.asList(
-                        "Daily", "Weekly", "Monday",
+                        "Daily", "Monday",
                         "Tuesday", "Wednesday", "Thursday",
                         "Friday", "Saturday", "Sunday"
                 ));
@@ -132,22 +139,67 @@ public class CreateNewReminder extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 String medicationName = txtMedication.getText().toString();
-                //TODO:
-                //to set
-                int intentID = 0;
 
                 int hour, minute;
                 hour = tpkTime.getHour();
                 minute = tpkTime.getMinute();
 
-                mTime = hour + ":" + minute;
+                String strHour = Integer.toString(hour);
+                String strMin = Integer.toString(minute);
+
+                if(hour < 10){
+                    strHour = "0" + Integer.toString(hour);
+                }
+                if(minute < 10){
+                    strMin = "0" + Integer.toString(minute);
+                }
+
+                mTime = strHour + ":" + strMin;
 
                 if (medicationName.length() < 1) {
                     Toast.makeText(CreateNewReminder.this, "Please enter a name for your medication", Toast.LENGTH_SHORT).show();
                 } else {
-                    ReminderDetails reminderDetails = new ReminderDetails(medicationName, mFrequency, mTime, null, intentID);
+                    //create a reminder service
+                    createReminderService(hour, minute, medicationName, mFrequency);
+                }
+            }
+        });
+    }
+
+    private void createReminderService(int hour, int minute, String medicationName, String frequency){
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(Calendar.HOUR_OF_DAY, hour);
+        calendar.set(Calendar.MINUTE, minute);
+
+        Intent intent = new Intent(CreateNewReminder.this, AlarmReceiver.class);
+        intent.putExtra("medication", medicationName);
+        intent.putExtra("frequency", frequency);
+
+        //get a unique id for the pending intent broadcast
+
+        managingReminders.getNewIntentID(new ManagingReminders.OnGetNewIntentIDListener() {
+            @Override
+            public void onSuccess(int newIntentID) {
+
+                if(newIntentID == -1){
+                    Toast.makeText(CreateNewReminder.this, "Failed to set reminder", Toast.LENGTH_SHORT).show();
+                }
+                else{
+                    mIntentID = newIntentID;
+
+                    //create pending intent to delay the intent until the reminder time is reached
+                    PendingIntent pendingIntent = PendingIntent.getBroadcast(CreateNewReminder.this,
+                            newIntentID, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+                    //86,400,000 = 1 day. every day it will repeat and check if it needs to remind the user
+                    alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), 86400000, pendingIntent);
+
+                    //store details about the reminder
+                    ReminderDetails reminderDetails = new ReminderDetails(medicationName,
+                            mFrequency, mTime, null, mIntentID);
                     managingReminders.storeNewReminder(reminderDetails);
 
+                    //go to the list of reminders
                     Intent intent = new Intent(CreateNewReminder.this, ManageRemindersActivity.class);
                     CreateNewReminder.this.startActivity(intent);
                 }
