@@ -18,26 +18,28 @@ import messaging.app.R;
 import messaging.app.contactingFirebase.QueryingDatabase;
 import messaging.app.messages.sendingMedia.SendMediaToFriendsStoryListAdapter;
 
-public class SelectSendToFriendsStoryFragment extends Fragment implements SendMediaToFriendsStoryListAdapter.onFriendsStorySelectRecyclerViewClickedUUIDListener{
+public class SelectSendToFriendsStoryFragment extends Fragment implements
+        SendMediaToFriendsStoryListAdapter.onFriendsStorySelectRecyclerViewClickedUUIDListener {
 
-    View view;
+    View mView;
 
-    private RecyclerView recyclerView;
+    private RecyclerView mRecyclerView;
     private SendMediaToFriendsStoryListAdapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
 
     Context mContext;
-    onSelectedRowListener listener;
-    QueryingDatabase queryingDatabase = new QueryingDatabase(null);
+    onSelectedRowListener mListener;
 
-    public interface onSelectedRowListener{
+    QueryingDatabase mQueryingDatabase = new QueryingDatabase(null);
+
+    public interface onSelectedRowListener {
         void onSelectedStoryFragmentRowListener(String UUID, String messageType);
     }
 
 
     public SelectSendToFriendsStoryFragment(Context context, onSelectedRowListener listener) {
         this.mContext = context;
-        this.listener = listener;
+        this.mListener = listener;
     }
 
     @Override
@@ -48,34 +50,37 @@ public class SelectSendToFriendsStoryFragment extends Fragment implements SendMe
 
     @Nullable
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        view = inflater.inflate(R.layout.fragment_select_friends_story, container, false);
+    public View onCreateView(@NonNull LayoutInflater inflater,
+                             @Nullable ViewGroup container,
+                             @Nullable Bundle savedInstanceState) {
+        mView = inflater.inflate(R.layout.fragment_select_friends_story, container, false);
 
 
-        recyclerView = view.findViewById(R.id.lstFriendsList);
+        mRecyclerView = mView.findViewById(R.id.lstFriendsList);
 
         mLayoutManager = new LinearLayoutManager(mContext);
 
-        recyclerView.setLayoutManager(mLayoutManager);
-        recyclerView.setHasFixedSize(true);
-        recyclerView.setAdapter(mAdapter);
+        mRecyclerView.setLayoutManager(mLayoutManager);
+        mRecyclerView.setHasFixedSize(true);
+        mRecyclerView.setAdapter(mAdapter);
 
         displayFriendsDetailsList(this);
 
-        return view;
+        return mView;
     }
 
 
     private void displayFriendsDetailsList(final SelectSendToFriendsStoryFragment selectSendToFriendsStoryFragment) {
-        queryingDatabase.getFriendsDetails(new QueryingDatabase.OnGetFriendsDetailsListener() {
+        mQueryingDatabase.getFriendsDetails(new QueryingDatabase.OnGetFriendsDetailsListener() {
             @Override
             public void onSuccess(List friendsDetailsList) {
                 //display to user
-                mAdapter = new SendMediaToFriendsStoryListAdapter(friendsDetailsList, mContext, selectSendToFriendsStoryFragment);
+                mAdapter = new SendMediaToFriendsStoryListAdapter(friendsDetailsList,
+                        mContext, selectSendToFriendsStoryFragment);
 
-                recyclerView.setLayoutManager(mLayoutManager);
-                recyclerView.setHasFixedSize(true);
-                recyclerView.setAdapter(mAdapter);
+                mRecyclerView.setLayoutManager(mLayoutManager);
+                mRecyclerView.setHasFixedSize(true);
+                mRecyclerView.setAdapter(mAdapter);
             }
         });
     }
@@ -83,6 +88,6 @@ public class SelectSendToFriendsStoryFragment extends Fragment implements SendMe
 
     @Override
     public void onSelected(String UUID, String messageType) {
-        listener.onSelectedStoryFragmentRowListener(UUID, messageType);
+        mListener.onSelectedStoryFragmentRowListener(UUID, messageType);
     }
 }

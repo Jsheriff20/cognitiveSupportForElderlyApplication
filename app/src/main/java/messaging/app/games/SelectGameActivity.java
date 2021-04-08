@@ -20,7 +20,6 @@ public class SelectGameActivity extends AppCompatActivity {
     LinearLayoutCompat llayMemoryGames;
     ImageButton btnBackToOptions;
 
-    QueryingDatabase queryingDatabase = new QueryingDatabase(null);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,7 +39,8 @@ public class SelectGameActivity extends AppCompatActivity {
         llayReactionGames.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(SelectGameActivity.this, SelectReactionGameActivity.class);
+                Intent intent = new Intent(SelectGameActivity.this,
+                        SelectReactionGameActivity.class);
                 SelectGameActivity.this.startActivity(intent);
             }
         });
@@ -51,7 +51,8 @@ public class SelectGameActivity extends AppCompatActivity {
         llayMemoryGames.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(SelectGameActivity.this, SelectMemoryGameActivity.class);
+                Intent intent = new Intent(SelectGameActivity.this,
+                        SelectMemoryGameActivity.class);
                 SelectGameActivity.this.startActivity(intent);
             }
         });
@@ -62,7 +63,8 @@ public class SelectGameActivity extends AppCompatActivity {
         btnBackToOptions.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(SelectGameActivity.this, SelectAreaOfApplicationActivity.class);
+                Intent intent = new Intent(SelectGameActivity.this,
+                        SelectAreaOfApplicationActivity.class);
                 SelectGameActivity.this.startActivity(intent);
             }
         });

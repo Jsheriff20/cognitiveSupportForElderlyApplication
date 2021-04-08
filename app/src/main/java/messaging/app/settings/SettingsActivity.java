@@ -34,11 +34,11 @@ public class SettingsActivity extends AppCompatActivity {
     TextView lblManageAnAccount;
     Spinner spnSelectAdminAccount;
 
-    String friendsName = "";
+    String mFriendsName = "";
     HashMap<String, String> mAdministeringFriends;
 
-    ManagingAccounts managingAccounts = new ManagingAccounts(this);
-    QueryingDatabase queryingDatabase = new QueryingDatabase(null);
+    ManagingAccounts mManagingAccounts = new ManagingAccounts(this);
+    QueryingDatabase mQueryingDatabase = new QueryingDatabase(null);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -103,7 +103,7 @@ public class SettingsActivity extends AppCompatActivity {
         btnLogout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                managingAccounts.logoutUser();
+                mManagingAccounts.logoutUser();
                 Intent intent = new Intent(SettingsActivity.this, LoginActivity.class);
                 SettingsActivity.this.startActivity(intent);
 
@@ -143,7 +143,7 @@ public class SettingsActivity extends AppCompatActivity {
             public void onClick(View v) {
 
                 //get the UUID of the users name
-                String friendsUUID = mAdministeringFriends.get(friendsName);
+                String friendsUUID = mAdministeringFriends.get(mFriendsName);
 
                 //load the friends activity (the only place an admin can currently moderate)
                 Intent intent = new Intent(SettingsActivity.this, ViewFriendsListActivity.class);
@@ -157,7 +157,7 @@ public class SettingsActivity extends AppCompatActivity {
 
     private void setupSpinner() {
 
-        queryingDatabase.getAdministeringAccounts(new QueryingDatabase.OnGetAdministeringAccountsListener() {
+        mQueryingDatabase.getAdministeringAccounts(new QueryingDatabase.OnGetAdministeringAccountsListener() {
             @Override
             public void onSuccess(HashMap<String, String> administeringFriends) {
                 List<String> friendsNames = new ArrayList<>();
@@ -174,7 +174,7 @@ public class SettingsActivity extends AppCompatActivity {
                     @Override
                     public void onItemSelected(AdapterView<?> parent, View view, int position,
                                                long id) {
-                        friendsName = parent.getItemAtPosition(position).toString();
+                        mFriendsName = parent.getItemAtPosition(position).toString();
                     }
 
                     @Override

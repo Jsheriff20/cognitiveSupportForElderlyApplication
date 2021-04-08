@@ -1,6 +1,5 @@
 package messaging.app.messages.friendsList;
 
-import androidx.activity.OnBackPressedCallback;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
@@ -19,8 +18,6 @@ import messaging.app.CheckInputsValidity;
 import messaging.app.ManagingActivityPreview;
 import messaging.app.R;
 import messaging.app.contactingFirebase.ManagingFriends;
-import messaging.app.contactingFirebase.QueryingDatabase;
-import messaging.app.messages.capturingMedia.CaptureActivity;
 
 public class EditFriendActivity extends AppCompatActivity {
 
@@ -40,9 +37,10 @@ public class EditFriendActivity extends AppCompatActivity {
     Button btnBlock;
     ImageButton btnBackToFriendsList;
 
-    CheckInputsValidity checkInputsValidity = new CheckInputsValidity(this);
-    ManagingActivityPreview managingActivityPreview = new ManagingActivityPreview();;
-    ManagingFriends managingFriends;
+    CheckInputsValidity mCheckInputsValidity = new CheckInputsValidity(this);
+    ManagingActivityPreview mManagingActivityPreview = new ManagingActivityPreview();
+    ;
+    ManagingFriends mManagingFriends;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,12 +55,11 @@ public class EditFriendActivity extends AppCompatActivity {
         mFriendsProfileImageRotation = getIntent().getIntExtra("profileImageRotation", 0);
 
 
-        if(getIntent().getStringExtra("adminUUID") != null){
+        if (getIntent().getStringExtra("adminUUID") != null) {
             String friendsUUID = getIntent().getStringExtra("adminUUID");
-            managingFriends = new ManagingFriends(this, friendsUUID);
-        }
-        else{
-            managingFriends = new ManagingFriends(this, null);
+            mManagingFriends = new ManagingFriends(this, friendsUUID);
+        } else {
+            mManagingFriends = new ManagingFriends(this, null);
         }
 
         imgProfileImage = findViewById(R.id.imgEditFriendsProfileImage);
@@ -77,7 +74,8 @@ public class EditFriendActivity extends AppCompatActivity {
         lblFullName.setText(mFriendsName);
         lblUsername.setText(mFriendsUsername);
         txtRelationship.setText(mFriendsRelationship);
-        Picasso.with(this).load(mFriendsProfileImageUrl).rotate(mFriendsProfileImageRotation).into(imgProfileImage);
+        Picasso.with(this).load(mFriendsProfileImageUrl)
+                .rotate(mFriendsProfileImageRotation).into(imgProfileImage);
 
         setBtnRemoveOnClick();
         setBtnUpdateOnClick();
@@ -97,12 +95,12 @@ public class EditFriendActivity extends AppCompatActivity {
     public void onWindowFocusChanged(boolean hasFocus) {
         super.onWindowFocusChanged(hasFocus);
         if (hasFocus) {
-            managingActivityPreview.hideSystemUI(getWindow().getDecorView());
+            mManagingActivityPreview.hideSystemUI(getWindow().getDecorView());
         }
     }
 
 
-    private void setBtnBackToFriendsList(){
+    private void setBtnBackToFriendsList() {
         btnBackToFriendsList.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -118,7 +116,7 @@ public class EditFriendActivity extends AppCompatActivity {
         btnRemove.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                managingFriends.removeFriend(mFriendsUUID);
+                mManagingFriends.removeFriend(mFriendsUUID);
                 //take user back
                 btnBackToFriendsList.callOnClick();
             }
@@ -132,30 +130,34 @@ public class EditFriendActivity extends AppCompatActivity {
             public void onClick(View v) {
                 String updatedRelationship = txtRelationship.getText().toString();
                 if (updatedRelationship.equals(mFriendsRelationship)) {
-                    Toast.makeText(EditFriendActivity.this, "You have not updated the relationship", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(EditFriendActivity.this,
+                            "You have not updated the relationship", Toast.LENGTH_SHORT).show();
                     return;
-                } else if (!checkInputsValidity.isRelationshipValid(mFriendsRelationship)) {
+                } else if (!mCheckInputsValidity.isRelationshipValid(mFriendsRelationship)) {
                     return;
                 }
-                managingFriends.updateFriendRelationship(mFriendsUUID, updatedRelationship, new ManagingFriends.OnUpdateFriendRelationshipListener() {
-                    @Override
-                    public void onSuccess(boolean success) {
-                        if (success) {
-                            Toast.makeText(EditFriendActivity.this, "The relationship has been updated", Toast.LENGTH_SHORT).show();
-                            return;
-                        }
-                        Toast.makeText(EditFriendActivity.this, "The relationship failed to update", Toast.LENGTH_SHORT).show();
-                    }
-                });
+                mManagingFriends.updateFriendRelationship(mFriendsUUID,
+                        updatedRelationship, new ManagingFriends.OnUpdateFriendRelationshipListener() {
+                            @Override
+                            public void onSuccess(boolean success) {
+                                if (success) {
+                                    Toast.makeText(EditFriendActivity.this,
+                                            "The relationship has been updated", Toast.LENGTH_SHORT).show();
+                                    return;
+                                }
+                                Toast.makeText(EditFriendActivity.this,
+                                        "The relationship failed to update", Toast.LENGTH_SHORT).show();
+                            }
+                        });
             }
         });
     }
 
-    private void setBtnBlockOnClick(){
+    private void setBtnBlockOnClick() {
         btnBlock.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                managingFriends.blockFriend(mFriendsUUID, mFriendsUsername);
+                mManagingFriends.blockFriend(mFriendsUUID, mFriendsUsername);
                 //take user back
                 btnBackToFriendsList.callOnClick();
             }

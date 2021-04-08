@@ -33,18 +33,20 @@ public class StartGridReactionGameActivity extends AppCompatActivity {
     TextView lblGridReactionGameDesc;
     VideoView vidGridReactionExample;
 
-    ManagingGames managingGames = new ManagingGames(this);
-    QueryingDatabase queryingDatabase = new QueryingDatabase(null);
-    Formatting formatting = new Formatting();
     HashMap<String, List<Long>> mHighScores = new HashMap<>();
-    double highScorePercentageChange = 0;
+    double mHighScorePercentageChange = 0;
+
+
+    ManagingGames mManagingGames = new ManagingGames(this);
+    QueryingDatabase mQueryingDatabase = new QueryingDatabase(null);
+    Formatting mFormatting = new Formatting();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_start_grid_reaction_game);
 
-        queryingDatabase.getHighScores(new QueryingDatabase.OnGetHighScoresListener() {
+        mQueryingDatabase.getHighScores(new QueryingDatabase.OnGetHighScoresListener() {
             @Override
             public void onSuccess(HashMap<String, List<Long>> highScores) {
                 mHighScores = highScores;
@@ -63,24 +65,24 @@ public class StartGridReactionGameActivity extends AppCompatActivity {
         btnCancel.setVisibility(View.INVISIBLE);
 
 
-
-        if(mHighScores.containsKey("gridReaction")) {
+        if (mHighScores.containsKey("gridReaction")) {
             if (mHighScores.get("gridReaction").size() >= 5) {
-                highScorePercentageChange = formatting.getPercentageChangeOfHighScores(mHighScores, "gridReaction");
+                mHighScorePercentageChange = mFormatting.getPercentageChangeOfHighScores(mHighScores,
+                        "gridReaction");
             }
         }
 
 
-        if(getIntent().getLongExtra("reactionTime", 999999999)  != 999999999){
+        if (getIntent().getLongExtra("reactionTime", 999999999) != 999999999) {
 
             //display to user
             long reactionTime = getIntent().getLongExtra("reactionTime", 999999999);
             lblGridReactionGameTitle.setText("Your results:");
-            lblGridReactionGameDesc.setText("Your average reaction speed was " + reactionTime +" ms");
+            lblGridReactionGameDesc.setText("Your average reaction speed was " + reactionTime + " ms");
 
             //store score in database
             //if high score set as their high score
-            managingGames.storeGameResult("gridReaction", reactionTime);
+            mManagingGames.storeGameResult("gridReaction", reactionTime);
 
         }
 
@@ -92,7 +94,7 @@ public class StartGridReactionGameActivity extends AppCompatActivity {
     }
 
 
-    private void setStartGridReactionGameOnClick(){
+    private void setStartGridReactionGameOnClick() {
         btnStartGridReactionGame.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -101,13 +103,15 @@ public class StartGridReactionGameActivity extends AppCompatActivity {
                 int previousLevel = 1;
                 int newLevel = previousLevel;
 
-                if(mHighScores.containsKey("gridReaction")) {
+                if (mHighScores.containsKey("gridReaction")) {
                     if (mHighScores.get("gridReaction").size() >= 5) {
                         //get the current users progression over the past 5 games
-                        highScorePercentageChange = formatting.getPercentageChangeOfHighScores(mHighScores, "gridReaction");
+                        mHighScorePercentageChange = mFormatting
+                                .getPercentageChangeOfHighScores(mHighScores, "gridReaction");
 
                         //get the users previous grid size
-                        if (mHighScores.get("gridReaction").get(0) < 1000 && mHighScores.get("pattern").get(0) >= 600) {
+                        if (mHighScores.get("gridReaction").get(0) < 1000 &&
+                                mHighScores.get("pattern").get(0) >= 600) {
                             previousLevel = 2;
                         } else if (mHighScores.get("gridReaction").get(0) < 600) {
                             previousLevel = 3;
@@ -116,11 +120,10 @@ public class StartGridReactionGameActivity extends AppCompatActivity {
 
                         newLevel = previousLevel;
                         //find a level that is best for the user
-                        if(highScorePercentageChange > -20 && previousLevel != 1){
+                        if (mHighScorePercentageChange > -20 && previousLevel != 1) {
                             //user has been struggling, make the game easier for them
-                            newLevel = previousLevel -1;
-                        }
-                        else if(highScorePercentageChange < 30 && previousLevel != 3){
+                            newLevel = previousLevel - 1;
+                        } else if (mHighScorePercentageChange < 30 && previousLevel != 3) {
                             //user has improved so make the game harder
                             newLevel = previousLevel + 1;
                         }
@@ -131,15 +134,18 @@ public class StartGridReactionGameActivity extends AppCompatActivity {
 
                 //load the level that is best fit for the user
                 Intent intent;
-                switch (newLevel){
+                switch (newLevel) {
                     case 2:
-                        intent = new Intent(StartGridReactionGameActivity.this, GridReactionGame6ButtonsActivity.class);
+                        intent = new Intent(StartGridReactionGameActivity.this,
+                                GridReactionGame6ButtonsActivity.class);
                         break;
                     case 3:
-                        intent = new Intent(StartGridReactionGameActivity.this, GridReactionGame9ButtonsActivity.class);
+                        intent = new Intent(StartGridReactionGameActivity.this,
+                                GridReactionGame9ButtonsActivity.class);
                         break;
                     default:
-                        intent = new Intent(StartGridReactionGameActivity.this, GridReactionGame4ButtonsActivity.class);
+                        intent = new Intent(StartGridReactionGameActivity.this,
+                                GridReactionGame4ButtonsActivity.class);
                 }
 
                 StartGridReactionGameActivity.this.startActivity(intent);
@@ -148,19 +154,19 @@ public class StartGridReactionGameActivity extends AppCompatActivity {
     }
 
 
-    private void setBtnBackToReactionGamesOnClick(){
+    private void setBtnBackToReactionGamesOnClick() {
         btnBackToReactionGames.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(StartGridReactionGameActivity.this, SelectReactionGameActivity.class);
+                Intent intent = new Intent(StartGridReactionGameActivity.this,
+                        SelectReactionGameActivity.class);
                 StartGridReactionGameActivity.this.startActivity(intent);
             }
         });
     }
 
 
-
-    private void setBtnWatchGridReactionVidOnClick(){
+    private void setBtnWatchGridReactionVidOnClick() {
         btnWatchGridReactionGameVid.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -173,10 +179,12 @@ public class StartGridReactionGameActivity extends AppCompatActivity {
                 lblGridReactionGameTitle.setVisibility(View.INVISIBLE);
                 lblGridReactionGameDesc.setVisibility(View.INVISIBLE);
 
-                MediaController mediaController = new MediaController(StartGridReactionGameActivity.this);
+                MediaController mediaController =
+                        new MediaController(StartGridReactionGameActivity.this);
                 mediaController.setAnchorView(vidGridReactionExample);
                 vidGridReactionExample.setMediaController(mediaController);
-                vidGridReactionExample.setVideoURI(Uri.parse("android.resource://" + getPackageName() + "/" +
+                vidGridReactionExample.setVideoURI(Uri.parse("android.resource://" +
+                        getPackageName() + "/" +
                         R.raw.grid_example));
                 vidGridReactionExample.start();
 
@@ -191,7 +199,7 @@ public class StartGridReactionGameActivity extends AppCompatActivity {
     }
 
 
-    private void setBtnCancelOnClick(){
+    private void setBtnCancelOnClick() {
         btnCancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

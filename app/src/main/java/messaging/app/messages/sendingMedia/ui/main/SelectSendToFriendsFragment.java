@@ -18,27 +18,27 @@ import messaging.app.R;
 import messaging.app.contactingFirebase.QueryingDatabase;
 import messaging.app.messages.sendingMedia.SendMediaToFriendsListAdapter;
 
-public class SelectSendToFriendsFragment extends Fragment implements SendMediaToFriendsListAdapter.onFriendsSelectRecyclerViewClickedUUIDListener {
+public class SelectSendToFriendsFragment extends Fragment implements
+        SendMediaToFriendsListAdapter.onFriendsSelectRecyclerViewClickedUUIDListener {
 
-    View view;
-
-    private RecyclerView recyclerView;
+    View mView;
+    private RecyclerView mRecyclerView;
     private SendMediaToFriendsListAdapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
-    QueryingDatabase queryingDatabase = new QueryingDatabase(null);
 
     Context mContext;
-    onSelectedRowListener listener;
+    onSelectedRowListener mListener;
+
+    QueryingDatabase mQueryingDatabase = new QueryingDatabase(null);
 
     public SelectSendToFriendsFragment(Context context, onSelectedRowListener listener) {
         this.mContext = context;
-        this.listener = listener;
+        this.mListener = listener;
     }
 
-    public interface onSelectedRowListener{
+    public interface onSelectedRowListener {
         void onSelectedFriendsFragmentRowListener(String UUID, String messageType);
     }
-
 
 
     @Override
@@ -49,34 +49,37 @@ public class SelectSendToFriendsFragment extends Fragment implements SendMediaTo
 
     @Nullable
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        view = inflater.inflate(R.layout.fragment_select_friends, container, false);
+    public View onCreateView(@NonNull LayoutInflater inflater,
+                             @Nullable ViewGroup container,
+                             @Nullable Bundle savedInstanceState) {
+        mView = inflater.inflate(R.layout.fragment_select_friends, container, false);
 
 
-        recyclerView = view.findViewById(R.id.lstFriendsList);
+        mRecyclerView = mView.findViewById(R.id.lstFriendsList);
 
         mLayoutManager = new LinearLayoutManager(mContext);
 
-        recyclerView.setLayoutManager(mLayoutManager);
-        recyclerView.setHasFixedSize(true);
-        recyclerView.setAdapter(mAdapter);
+        mRecyclerView.setLayoutManager(mLayoutManager);
+        mRecyclerView.setHasFixedSize(true);
+        mRecyclerView.setAdapter(mAdapter);
 
         displayFriendsDetailsList(this);
 
-        return view;
+        return mView;
     }
 
 
     private void displayFriendsDetailsList(final SelectSendToFriendsFragment selectSendToFriendsFragment) {
-        queryingDatabase.getFriendsDetails(new QueryingDatabase.OnGetFriendsDetailsListener() {
+        mQueryingDatabase.getFriendsDetails(new QueryingDatabase.OnGetFriendsDetailsListener() {
             @Override
             public void onSuccess(List friendsDetailsList) {
                 //display to user
-                mAdapter = new SendMediaToFriendsListAdapter(friendsDetailsList, mContext, selectSendToFriendsFragment);
+                mAdapter = new SendMediaToFriendsListAdapter(friendsDetailsList,
+                        mContext, selectSendToFriendsFragment);
 
-                recyclerView.setLayoutManager(mLayoutManager);
-                recyclerView.setHasFixedSize(true);
-                recyclerView.setAdapter(mAdapter);
+                mRecyclerView.setLayoutManager(mLayoutManager);
+                mRecyclerView.setHasFixedSize(true);
+                mRecyclerView.setAdapter(mAdapter);
             }
         });
     }
@@ -85,6 +88,6 @@ public class SelectSendToFriendsFragment extends Fragment implements SendMediaTo
     @Override
     public void onSelected(String UUID, String messageType) {
 
-        listener.onSelectedFriendsFragmentRowListener(UUID, messageType);
+        mListener.onSelectedFriendsFragmentRowListener(UUID, messageType);
     }
 }

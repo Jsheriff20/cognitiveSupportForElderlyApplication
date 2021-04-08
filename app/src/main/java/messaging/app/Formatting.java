@@ -22,7 +22,7 @@ import java.util.regex.Pattern;
 public class Formatting {
 
 
-    public String howLongAgo(String messageSentUNIXTime){
+    public String howLongAgo(String messageSentUNIXTime) {
         Date now = new Date();
         long currentUnixTime = now.getTime() / 1000L;
 
@@ -32,40 +32,34 @@ public class Formatting {
         String formattedTimeAgo;
 
         //if time is less than 1 minute
-        if(unixTimeAgo < 60)
-        {
+        if (unixTimeAgo < 60) {
             formattedTimeAgo = unixTimeAgo + " Seconds";
         }
         //if time is more than 1 minute and less than 1 hour
-        else if(unixTimeAgo >= 60 && unixTimeAgo < 3600)
-        {
+        else if (unixTimeAgo >= 60 && unixTimeAgo < 3600) {
             formattedTimeAgo = Math.round(unixTimeAgo / 60) + " Minutes";
         }
         //if time is more than 1 hour and less than 1 day
-        else if(unixTimeAgo >= 3600 && unixTimeAgo < 86400)
-        {
+        else if (unixTimeAgo >= 3600 && unixTimeAgo < 86400) {
             formattedTimeAgo = Math.round(unixTimeAgo / 3600) + " Hours";
         }
         //if time is more than 1 day and less than 1 week
-        else if(unixTimeAgo >= 86400 && unixTimeAgo < 604800)
-        {
+        else if (unixTimeAgo >= 86400 && unixTimeAgo < 604800) {
             formattedTimeAgo = Math.round(unixTimeAgo / 86400) + " Days";
         }
         //if time is more than 1 week and less than 1 Month
-        else if(unixTimeAgo >= 604800 && unixTimeAgo < 2629743)
-        {
+        else if (unixTimeAgo >= 604800 && unixTimeAgo < 2629743) {
             formattedTimeAgo = Math.round(unixTimeAgo / 604800) + " Weeks";
         }
         //if time is more than 1 Month
-        else
-        {
+        else {
             formattedTimeAgo = Math.round(unixTimeAgo / 604800) + " Months";
         }
 
         return formattedTimeAgo;
     }
 
-    public String getFileNameFromUrl(String Url){
+    public String getFileNameFromUrl(String Url) {
 
         String editedUrl;
 
@@ -76,22 +70,27 @@ public class Formatting {
         return editedUrl;
     }
 
-    public String removeProfanity(String checkingString){
+    public String removeProfanity(String checkingString) {
         //a select few have been chosen
         //TODO
         //Add more profanity words before release
-        List<String> profanityWords = Arrays.asList("fuck", "shit", "bastard", "bitch", "fucker", "fucking", "shitting"); // suppose these words are offensive
+        List<String> profanityWords = Arrays.asList(
+                "fuck", "shit", "bastard", "bitch",
+                "fucker", "fucking", "shitting"); // suppose these words are offensive
 
         for (String word : profanityWords) {
             Pattern rx = Pattern.compile("\\b" + word + "\\b", Pattern.CASE_INSENSITIVE);
-            checkingString = rx.matcher(checkingString).replaceAll(new String(new char[word.length()]).replace('\0', '*'));
+            checkingString = rx.matcher(checkingString)
+                    .replaceAll(new String(new char[word.length()])
+                            .replace('\0', '*'));
         }
 
         return checkingString;
     }
 
 
-    public List<HashMap<String, String>> orderReceivedMediaDetails(List<HashMap<String, String>> receivedMediaDetails) {
+    public List<HashMap<String, String>> orderReceivedMediaDetails(
+            List<HashMap<String, String>> receivedMediaDetails) {
 
         HashMap<Long, HashMap<String, String>> unorderedMap = new HashMap<>();
         List<HashMap<String, String>> sortedList = new ArrayList<>();
@@ -116,24 +115,26 @@ public class Formatting {
     }
 
 
-    public double getPercentageChange(long startNumber, long finalNumber ){
-        double percentageChange = 100 * ((finalNumber - startNumber) / (double)startNumber);
+    public double getPercentageChange(long startNumber, long finalNumber) {
+        double percentageChange = 100 * ((finalNumber - startNumber) / (double) startNumber);
         return percentageChange;
     }
 
 
-    public double getPercentageChangeOfHighScores(HashMap<String, List<Long>> highScores, String gameMode){
+    public double getPercentageChangeOfHighScores(
+            HashMap<String, List<Long>> highScores, String gameMode) {
 
         List<Long> gridPast5HighScores = highScores.get(gameMode);
         long startHighScore = gridPast5HighScores.get(0);
         long totalScores = 0;
-        for(long highScore : gridPast5HighScores){
+        for (long highScore : gridPast5HighScores) {
             totalScores += highScore;
         }
 
         long averageHighScore = totalScores / gridPast5HighScores.size();
 
-        Log.d("test", "highScorePercentageChange: " + getPercentageChange(startHighScore, averageHighScore));
+        Log.d("test", "highScorePercentageChange: " +
+                getPercentageChange(startHighScore, averageHighScore));
         return getPercentageChange(startHighScore, averageHighScore);
     }
 

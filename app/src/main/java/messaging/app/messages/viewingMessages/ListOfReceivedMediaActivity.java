@@ -17,7 +17,6 @@ import messaging.app.ManagingActivityPreview;
 import messaging.app.R;
 import messaging.app.contactingFirebase.QueryingDatabase;
 import messaging.app.messages.MessagesActivity;
-import messaging.app.messages.sendingMedia.AddMessageToMediaActivity;
 
 public class ListOfReceivedMediaActivity extends AppCompatActivity {
 
@@ -28,9 +27,9 @@ public class ListOfReceivedMediaActivity extends AppCompatActivity {
     private ViewingMessagesReceivedAdapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
 
-    Formatting formatting = new Formatting();
-    ManagingActivityPreview managingActivityPreview = new ManagingActivityPreview();
-    QueryingDatabase queryingDatabase = new QueryingDatabase(null);
+    Formatting mFormatting = new Formatting();
+    ManagingActivityPreview mManagingActivityPreview = new ManagingActivityPreview();
+    QueryingDatabase mQueryingDatabase = new QueryingDatabase(null);
 
 
     @Override
@@ -52,12 +51,12 @@ public class ListOfReceivedMediaActivity extends AppCompatActivity {
     public void onWindowFocusChanged(boolean hasFocus) {
         super.onWindowFocusChanged(hasFocus);
         if (hasFocus) {
-            managingActivityPreview.hideSystemUI(getWindow().getDecorView());
+            mManagingActivityPreview.hideSystemUI(getWindow().getDecorView());
         }
     }
 
 
-    private void setBtnBackToMessagesActivity(){
+    private void setBtnBackToMessagesActivity() {
         btnBackToMessagesActivity.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -67,8 +66,8 @@ public class ListOfReceivedMediaActivity extends AppCompatActivity {
         });
     }
 
-    
-    private void setBtnRefreshMessages(){
+
+    private void setBtnRefreshMessages() {
         btnRefreshMessages.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -86,23 +85,26 @@ public class ListOfReceivedMediaActivity extends AppCompatActivity {
     }
 
     private void displayConversations() {
-        queryingDatabase.getExistingReceivedMediaDetails(this, new QueryingDatabase.OnGetExistingReceivedMediaDetailsListener() {
-            @Override
-            public void onSuccess(List<HashMap<String, String>> receivedMediaDetails, int numberOfStories) {
+        mQueryingDatabase.getExistingReceivedMediaDetails(this,
+                new QueryingDatabase.OnGetExistingReceivedMediaDetailsListener() {
+                    @Override
+                    public void onSuccess(List<HashMap<String, String>> receivedMediaDetails,
+                                          int numberOfStories) {
 
-                //reorder messages so most recent is displayed first
-                receivedMediaDetails = formatting.orderReceivedMediaDetails(receivedMediaDetails);
+                        //reorder messages so most recent is displayed first
+                        receivedMediaDetails = mFormatting.orderReceivedMediaDetails(receivedMediaDetails);
 
-                //display to user
-                mLayoutManager = new LinearLayoutManager(ListOfReceivedMediaActivity.this);
-                mAdapter = new ViewingMessagesReceivedAdapter(receivedMediaDetails, numberOfStories, ListOfReceivedMediaActivity.this);
+                        //display to user
+                        mLayoutManager = new LinearLayoutManager(ListOfReceivedMediaActivity.this);
+                        mAdapter = new ViewingMessagesReceivedAdapter(receivedMediaDetails, numberOfStories,
+                                ListOfReceivedMediaActivity.this);
 
-                recyclerView.setLayoutManager(mLayoutManager);
-                recyclerView.setHasFixedSize(true);
-                recyclerView.setAdapter(mAdapter);
+                        recyclerView.setLayoutManager(mLayoutManager);
+                        recyclerView.setHasFixedSize(true);
+                        recyclerView.setAdapter(mAdapter);
 
-            }
-        });
+                    }
+                });
     }
 
 }

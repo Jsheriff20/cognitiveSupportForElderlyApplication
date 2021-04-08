@@ -16,25 +16,26 @@ import messaging.app.contactingFirebase.QueryingDatabase;
 
 public class LeaderBoardActivity extends AppCompatActivity {
 
-    private RecyclerView recyclerView;
     ImageButton btnBackToSelectGamesActivity;
     ImageButton btnRefreshLeaderBoard;
 
-    private LeaderBoardAdapter mAdapter;
-    private RecyclerView.LayoutManager mLayoutManager;
+    LeaderBoardAdapter mAdapter;
+    RecyclerView.LayoutManager mLayoutManager;
+    String mGameType = "";
+    private RecyclerView mRecyclerView;
 
-    QueryingDatabase queryingDatabase = new QueryingDatabase(null);
-    String gameType = "";
+    QueryingDatabase mQueryingDatabase = new QueryingDatabase(null);
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_leader_board);
 
-        recyclerView = findViewById(R.id.lstLeaderboard);
+        mRecyclerView = findViewById(R.id.lstLeaderboard);
         btnBackToSelectGamesActivity = findViewById(R.id.btnBackToSelectGames);
         btnRefreshLeaderBoard = findViewById(R.id.btnRefreshLeaderBoard);
 
-        gameType = getIntent().getStringExtra("gameType");
+        mGameType = getIntent().getStringExtra("gameType");
 
         displayHighScores();
         setBtnBackToSelectGamesActivity();
@@ -53,31 +54,33 @@ public class LeaderBoardActivity extends AppCompatActivity {
         });
     }
 
-        private void setBtnBackToSelectGamesActivity () {
-            btnBackToSelectGamesActivity.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    Intent intent = new Intent(LeaderBoardActivity.this, SelectGameActivity.class);
-                    LeaderBoardActivity.this.startActivity(intent);
-                }
-            });
-        }
-
-        private void displayHighScores () {
-
-            queryingDatabase.getLeaderBoardData(new QueryingDatabase.OnGetLeaderBoardDataListener() {
-                @Override
-                public void onSuccess(List<AccountsHighScores> accountsHighScores) {
-
-                    //display to user
-                    mLayoutManager = new LinearLayoutManager(LeaderBoardActivity.this);
-                    mAdapter = new LeaderBoardAdapter(accountsHighScores, gameType, LeaderBoardActivity.this);
-
-                    recyclerView.setLayoutManager(mLayoutManager);
-                    recyclerView.setHasFixedSize(true);
-                    recyclerView.setAdapter(mAdapter);
-                }
-            });
-
-        }
+    private void setBtnBackToSelectGamesActivity() {
+        btnBackToSelectGamesActivity.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(LeaderBoardActivity.this,
+                        SelectGameActivity.class);
+                LeaderBoardActivity.this.startActivity(intent);
+            }
+        });
     }
+
+    private void displayHighScores() {
+
+        mQueryingDatabase.getLeaderBoardData(new QueryingDatabase.OnGetLeaderBoardDataListener() {
+            @Override
+            public void onSuccess(List<AccountsHighScores> accountsHighScores) {
+
+                //display to user
+                mLayoutManager = new LinearLayoutManager(LeaderBoardActivity.this);
+                mAdapter = new LeaderBoardAdapter(accountsHighScores, mGameType,
+                        LeaderBoardActivity.this);
+
+                mRecyclerView.setLayoutManager(mLayoutManager);
+                mRecyclerView.setHasFixedSize(true);
+                mRecyclerView.setAdapter(mAdapter);
+            }
+        });
+
+    }
+}

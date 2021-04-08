@@ -21,7 +21,7 @@ public class MessagesActivity extends AppCompatActivity {
     LinearLayoutCompat llayViewMessages;
     LinearLayoutCompat llayAppOptions;
 
-    ManagingActivityPreview managingActivityPreview = new ManagingActivityPreview();
+    ManagingActivityPreview mManagingActivityPreview = new ManagingActivityPreview();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,7 +39,8 @@ public class MessagesActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
 
-        Intent intent = new Intent(MessagesActivity.this, SelectAreaOfApplicationActivity.class);
+        Intent intent = new Intent(MessagesActivity.this,
+                SelectAreaOfApplicationActivity.class);
         MessagesActivity.this.startActivity(intent);
     }
 
@@ -48,16 +49,17 @@ public class MessagesActivity extends AppCompatActivity {
     public void onWindowFocusChanged(boolean hasFocus) {
         super.onWindowFocusChanged(hasFocus);
         if (hasFocus) {
-            managingActivityPreview.hideSystemUI(getWindow().getDecorView());
+            mManagingActivityPreview.hideSystemUI(getWindow().getDecorView());
         }
     }
 
 
-    private void setLayoutButtonOnClick(){
+    private void setLayoutButtonOnClick() {
         llaySendMessages.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(MessagesActivity.this, CaptureActivity.class);
+                Intent intent = new Intent(MessagesActivity.this,
+                        CaptureActivity.class);
                 intent.putExtra("captureForProfileImage", false);
                 MessagesActivity.this.startActivity(intent);
             }
@@ -66,7 +68,8 @@ public class MessagesActivity extends AppCompatActivity {
         llayFriends.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(MessagesActivity.this, ViewFriendsListActivity.class);
+                Intent intent = new Intent(MessagesActivity.this,
+                        ViewFriendsListActivity.class);
                 MessagesActivity.this.startActivity(intent);
             }
         });
@@ -74,7 +77,8 @@ public class MessagesActivity extends AppCompatActivity {
         llayViewMessages.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(MessagesActivity.this, ListOfReceivedMediaActivity.class);
+                Intent intent = new Intent(MessagesActivity.this,
+                        ListOfReceivedMediaActivity.class);
                 MessagesActivity.this.startActivity(intent);
             }
         });
@@ -82,7 +86,8 @@ public class MessagesActivity extends AppCompatActivity {
         llayAppOptions.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(MessagesActivity.this, SelectAreaOfApplicationActivity.class);
+                Intent intent = new Intent(MessagesActivity.this,
+                        SelectAreaOfApplicationActivity.class);
                 MessagesActivity.this.startActivity(intent);
             }
         });

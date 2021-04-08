@@ -35,18 +35,20 @@ import messaging.app.messages.capturingMedia.CaptureActivity;
 public class ViewingMessagesReceivedAdapter extends RecyclerView.Adapter {
     List<HashMap<String, String>> mReceivedMediaDetails;
     int mNumberOfStories;
-    Context context;
+    Context mContext;
     private File mImageFolder;
     private String mImageFilePath;
-    MediaManagement mediaManagement;
-    QueryingDatabase queryingDatabase = new QueryingDatabase(null);
+
+    MediaManagement mMediaManagement;
+    QueryingDatabase mQueryingDatabase = new QueryingDatabase(null);
 
 
-    public ViewingMessagesReceivedAdapter(List<HashMap<String, String>> receivedMediaDetails, int numberOfStories, Context context) {
+    public ViewingMessagesReceivedAdapter(List<HashMap<String, String>> receivedMediaDetails,
+                                          int numberOfStories, Context context) {
         this.mReceivedMediaDetails = receivedMediaDetails;
         this.mNumberOfStories = numberOfStories;
-        this.context = context;
-        mediaManagement = new MediaManagement(context);
+        this.mContext = context;
+        mMediaManagement = new MediaManagement(context);
     }
 
 
@@ -102,13 +104,16 @@ public class ViewingMessagesReceivedAdapter extends RecyclerView.Adapter {
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         switch (viewType) {
             case 0:
-                View storyView = LayoutInflater.from(parent.getContext()).inflate(R.layout.view_story_row, parent, false);
+                View storyView = LayoutInflater.from(parent.getContext())
+                        .inflate(R.layout.view_story_row, parent, false);
                 return new ViewingMessagesReceivedAdapter.StoryViewHolder(storyView);
             case 1:
-                View friendsMessagesView = LayoutInflater.from(parent.getContext()).inflate(R.layout.view_friends_message_row, parent, false);
+                View friendsMessagesView = LayoutInflater.from(parent.getContext())
+                        .inflate(R.layout.view_friends_message_row, parent, false);
                 return new ViewingMessagesReceivedAdapter.FriendsMessagesViewHolder(friendsMessagesView);
             default:
-                View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.view_friends_message_row, parent, false);
+                View view = LayoutInflater.from(parent.getContext())
+                        .inflate(R.layout.view_friends_message_row, parent, false);
                 return new ViewingMessagesReceivedAdapter.FriendsMessagesViewHolder(view);
         }
     }
@@ -118,26 +123,29 @@ public class ViewingMessagesReceivedAdapter extends RecyclerView.Adapter {
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
         switch (holder.getItemViewType()) {
             case 0:
-                final ViewingMessagesReceivedAdapter.StoryViewHolder storyViewHolder = (ViewingMessagesReceivedAdapter.StoryViewHolder) holder;
-                if(mNumberOfStories > 0) {
+                final ViewingMessagesReceivedAdapter.StoryViewHolder storyViewHolder =
+                        (ViewingMessagesReceivedAdapter.StoryViewHolder) holder;
+                if (mNumberOfStories > 0) {
                     storyViewHolder.lblStoryStatus.setText(mNumberOfStories + " received");
-                    storyViewHolder.imgStoryStatus.setImageResource(R.drawable.closed_envelope_shadow_icon);
-                    storyViewHolder.imgStoryStatus.setBackgroundResource(R.drawable.btn_rectangle_red_gradient);
+                    storyViewHolder.imgStoryStatus
+                            .setImageResource(R.drawable.closed_envelope_shadow_icon);
+                    storyViewHolder.imgStoryStatus
+                            .setBackgroundResource(R.drawable.btn_rectangle_red_gradient);
                     storyViewHolder.imgStoryStatus.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            queryingDatabase.getStoryForUUID(new QueryingDatabase.OnGetStoryForUUIDListener() {
+                            mQueryingDatabase.getStoryForUUID(new QueryingDatabase.OnGetStoryForUUIDListener() {
                                 @Override
                                 public void onSuccess(ArrayList<MessageData> storyMessagesDataList) {
                                     Intent intent;
 
 
                                     //check if there is a text message to display
-                                    if(storyMessagesDataList.get(0).getTextMessage().equals(null) || storyMessagesDataList.get(0).getTextMessage().equals("")) {
-                                        intent = new Intent(context, ViewMediaMessageActivity.class);
-                                    }
-                                    else{
-                                        intent = new Intent(context, ViewTextMessageActivity.class);
+                                    if (storyMessagesDataList.get(0).getmTextMessage().equals(null) ||
+                                            storyMessagesDataList.get(0).getmTextMessage().equals("")) {
+                                        intent = new Intent(mContext, ViewMediaMessageActivity.class);
+                                    } else {
+                                        intent = new Intent(mContext, ViewTextMessageActivity.class);
                                     }
 
 
@@ -149,29 +157,37 @@ public class ViewingMessagesReceivedAdapter extends RecyclerView.Adapter {
                             });
                         }
                     });
-                }
-                else{
+                } else {
                     storyViewHolder.lblStoryStatus.setText("No new stories");
-                    storyViewHolder.imgStoryStatus.setImageResource(R.drawable.opened_envelope_shadow_icon);
-                    storyViewHolder.imgStoryStatus.setBackgroundResource(R.drawable.btn_rectangle_green_gradient);
+                    storyViewHolder.imgStoryStatus
+                            .setImageResource(R.drawable.opened_envelope_shadow_icon);
+                    storyViewHolder.imgStoryStatus
+                            .setBackgroundResource(R.drawable.btn_rectangle_green_gradient);
                 }
                 break;
             case 1:
-                final ViewingMessagesReceivedAdapter.FriendsMessagesViewHolder friendsMessagesViewHolder = (ViewingMessagesReceivedAdapter.FriendsMessagesViewHolder) holder;
-                friendsMessagesViewHolder.position = position -1;
-                Map<String, String> currentKVPair = mReceivedMediaDetails.get(friendsMessagesViewHolder.position);
+                final ViewingMessagesReceivedAdapter
+                        .FriendsMessagesViewHolder friendsMessagesViewHolder =
+                        (ViewingMessagesReceivedAdapter.FriendsMessagesViewHolder) holder;
+                friendsMessagesViewHolder.position = position - 1;
+                Map<String, String> currentKVPair =
+                        mReceivedMediaDetails.get(friendsMessagesViewHolder.position);
 
                 friendsMessagesViewHolder.UUID = currentKVPair.get("UUID");
-                friendsMessagesViewHolder.lblViewMessageFriendsName.setText(currentKVPair.get("fullName"));
+                friendsMessagesViewHolder.lblViewMessageFriendsName
+                        .setText(currentKVPair.get("fullName"));
 
-                if(currentKVPair.get("profileImageUrl") != null) {
+                if (currentKVPair.get("profileImageUrl") != null) {
                     //create directories for files
-                    File[] mediaFolders = mediaManagement.createMediaFolders();
+                    File[] mediaFolders = mMediaManagement.createMediaFolders();
                     mImageFolder = mediaFolders[1];
 
                     try {
-                        mImageFilePath = mediaManagement.createImageFileName(mImageFolder).getAbsolutePath();
-                        try (BufferedInputStream inputStream = new BufferedInputStream(new URL(currentKVPair.get("profileImageUrl")).openStream());
+                        mImageFilePath = mMediaManagement
+                                .createImageFileName(mImageFolder).getAbsolutePath();
+                        try (BufferedInputStream inputStream =
+                                     new BufferedInputStream(
+                                             new URL(currentKVPair.get("profileImageUrl")).openStream());
                              FileOutputStream fileOS = new FileOutputStream(mImageFilePath)) {
                             byte data[] = new byte[1024];
                             int byteContent;
@@ -187,67 +203,76 @@ public class ViewingMessagesReceivedAdapter extends RecyclerView.Adapter {
                         ExifInterface exif = null;
                         //display the media in the correct rotation
                         exif = new ExifInterface(mImageFilePath);
-                        int exifOrientation = exif.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL);
-                        Bitmap myBitmap = BitmapFactory.decodeFile(new File(mImageFilePath).getAbsolutePath());
+                        int exifOrientation = exif.getAttributeInt(ExifInterface.TAG_ORIENTATION,
+                                ExifInterface.ORIENTATION_NORMAL);
+                        Bitmap myBitmap = BitmapFactory.decodeFile(
+                                new File(mImageFilePath).getAbsolutePath());
 
-                        Bitmap adjustedBitmapImage = mediaManagement.adjustBitmapImage(exifOrientation, myBitmap);
+                        Bitmap adjustedBitmapImage = mMediaManagement
+                                .adjustBitmapImage(exifOrientation, myBitmap);
 
-                        friendsMessagesViewHolder.imgFriendsProfileImage.setImageBitmap(adjustedBitmapImage);
+                        friendsMessagesViewHolder.imgFriendsProfileImage
+                                .setImageBitmap(adjustedBitmapImage);
 
 
-                        mediaManagement.deleteMediaFile(mImageFilePath, context);
+                        mMediaManagement.deleteMediaFile(mImageFilePath, mContext);
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
                 }
 
-                if(Integer.parseInt(currentKVPair.get("unopenedMessage")) == 1){
-                    friendsMessagesViewHolder.btnMessageAction.setImageResource(R.drawable.closed_envelope_shadow_icon);
-                    friendsMessagesViewHolder.btnMessageAction.setBackgroundResource(R.drawable.btn_rectangle_red_gradient);
+                if (Integer.parseInt(currentKVPair.get("unopenedMessage")) == 1) {
+                    friendsMessagesViewHolder.btnMessageAction
+                            .setImageResource(R.drawable.closed_envelope_shadow_icon);
+                    friendsMessagesViewHolder.btnMessageAction
+                            .setBackgroundResource(R.drawable.btn_rectangle_red_gradient);
 
-                    friendsMessagesViewHolder.btnMessageAction.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-
-
-                            //on success get message data using the messageData class
-                            queryingDatabase.getMessagesFromUUID(friendsMessagesViewHolder.UUID, new QueryingDatabase.OnGetMessagesFromListener() {
+                    friendsMessagesViewHolder.btnMessageAction
+                            .setOnClickListener(new View.OnClickListener() {
                                 @Override
-                                public void onSuccess(ArrayList<MessageData> messageDataList) {
-                                    Intent intent;
-
-                                    //check if there is a text message to display
-                                    if(messageDataList.get(0).getTextMessage().equals(null) || messageDataList.get(0).getTextMessage().equals("")) {
-                                        intent = new Intent(context, ViewMediaMessageActivity.class);
-                                    }
-                                    else{
-                                        intent = new Intent(context, ViewTextMessageActivity.class);
-                                    }
+                                public void onClick(View v) {
 
 
-                                    intent.putExtra("messagesList", messageDataList);
-                                    intent.putExtra("friendsUUID", friendsMessagesViewHolder.UUID);
-                                    intent.putExtra("numOfMessages", (messageDataList.size()));
-                                    intent.putExtra("viewingType", "directMessages");
+                                    //on success get message data using the messageData class
+                                    mQueryingDatabase.getMessagesFromUUID(friendsMessagesViewHolder.UUID,
+                                            new QueryingDatabase.OnGetMessagesFromListener() {
+                                                @Override
+                                                public void onSuccess(ArrayList<MessageData> messageDataList) {
+                                                    Intent intent;
+
+                                                    //check if there is a text message to display
+                                                    if (messageDataList.get(0).getmTextMessage().equals(null) ||
+                                                            messageDataList.get(0).getmTextMessage().equals("")) {
+                                                        intent = new Intent(mContext, ViewMediaMessageActivity.class);
+                                                    } else {
+                                                        intent = new Intent(mContext, ViewTextMessageActivity.class);
+                                                    }
+
+
+                                                    intent.putExtra("messagesList", messageDataList);
+                                                    intent.putExtra("friendsUUID", friendsMessagesViewHolder.UUID);
+                                                    intent.putExtra("numOfMessages", (messageDataList.size()));
+                                                    intent.putExtra("viewingType", "directMessages");
+                                                    friendsMessagesViewHolder.itemViewContext.startActivity(intent);
+                                                }
+                                            });
+                                }
+                            });
+                } else {
+                    friendsMessagesViewHolder.btnMessageAction.setImageResource(R.drawable.send_icon);
+                    friendsMessagesViewHolder.btnMessageAction
+                            .setBackgroundResource(R.drawable.btn_rectangle_orange_gradient);
+
+
+                    friendsMessagesViewHolder.btnMessageAction
+                            .setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    Intent intent = new Intent(mContext, CaptureActivity.class);
+                                    intent.putExtra("replyingTo", friendsMessagesViewHolder.UUID);
                                     friendsMessagesViewHolder.itemViewContext.startActivity(intent);
                                 }
                             });
-                        }
-                    });
-                }
-                else{
-                    friendsMessagesViewHolder.btnMessageAction.setImageResource(R.drawable.send_icon);
-                    friendsMessagesViewHolder.btnMessageAction.setBackgroundResource(R.drawable.btn_rectangle_orange_gradient);
-
-
-                    friendsMessagesViewHolder.btnMessageAction.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            Intent intent = new Intent(context, CaptureActivity.class);
-                            intent.putExtra("replyingTo", friendsMessagesViewHolder.UUID);
-                            friendsMessagesViewHolder.itemViewContext.startActivity(intent);
-                        }
-                    });
                 }
 
                 break;

@@ -2,12 +2,9 @@ package messaging.app;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.LinearLayoutCompat;
-import androidx.core.content.ContextCompat;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.provider.Settings;
-import android.util.Log;
 import android.view.View;
 
 import messaging.app.games.SelectGameActivity;
@@ -21,7 +18,8 @@ public class SelectAreaOfApplicationActivity extends AppCompatActivity {
     LinearLayoutCompat llayFriends;
     LinearLayoutCompat llayGames;
     LinearLayoutCompat llaySettings;
-    ManagingActivityPreview managingActivityPreview = new ManagingActivityPreview();
+
+    ManagingActivityPreview mManagingActivityPreview = new ManagingActivityPreview();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,16 +54,17 @@ public class SelectAreaOfApplicationActivity extends AppCompatActivity {
     public void onWindowFocusChanged(boolean hasFocus) {
         super.onWindowFocusChanged(hasFocus);
         if (hasFocus) {
-            managingActivityPreview.hideSystemUI(getWindow().getDecorView());
+            mManagingActivityPreview.hideSystemUI(getWindow().getDecorView());
         }
     }
 
 
-    private void setLayoutButtonOnClick(){
+    private void setLayoutButtonOnClick() {
         llayMessages.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(SelectAreaOfApplicationActivity.this, MessagesActivity.class);
+                Intent intent = new Intent(SelectAreaOfApplicationActivity.this
+                        , MessagesActivity.class);
                 SelectAreaOfApplicationActivity.this.startActivity(intent);
             }
         });
@@ -74,17 +73,18 @@ public class SelectAreaOfApplicationActivity extends AppCompatActivity {
         llayFriends.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(SelectAreaOfApplicationActivity.this, ViewFriendsListActivity.class);
+                Intent intent = new Intent(SelectAreaOfApplicationActivity.this,
+                        ViewFriendsListActivity.class);
                 SelectAreaOfApplicationActivity.this.startActivity(intent);
             }
         });
 
 
-
         llayGames.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(SelectAreaOfApplicationActivity.this, SelectGameActivity.class);
+                Intent intent = new Intent(SelectAreaOfApplicationActivity.this,
+                        SelectGameActivity.class);
                 SelectAreaOfApplicationActivity.this.startActivity(intent);
             }
         });
@@ -93,7 +93,8 @@ public class SelectAreaOfApplicationActivity extends AppCompatActivity {
         llaySettings.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(SelectAreaOfApplicationActivity.this, SettingsActivity.class);
+                Intent intent = new Intent(SelectAreaOfApplicationActivity.this,
+                        SettingsActivity.class);
                 SelectAreaOfApplicationActivity.this.startActivity(intent);
             }
         });

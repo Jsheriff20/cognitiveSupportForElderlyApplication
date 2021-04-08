@@ -42,7 +42,8 @@ public class SelectMemoryGameActivity extends AppCompatActivity {
         llayPairGame.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(SelectMemoryGameActivity.this, StartPairsGameActivity.class);
+                Intent intent = new Intent(SelectMemoryGameActivity.this,
+                        StartPairsGameActivity.class);
                 SelectMemoryGameActivity.this.startActivity(intent);
             }
         });
@@ -52,7 +53,8 @@ public class SelectMemoryGameActivity extends AppCompatActivity {
         llayPatternGame.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(SelectMemoryGameActivity.this, StartMemorizingPatternActivity.class);
+                Intent intent = new Intent(SelectMemoryGameActivity.this,
+                        StartMemorizingPatternActivity.class);
                 SelectMemoryGameActivity.this.startActivity(intent);
             }
         });
@@ -62,7 +64,8 @@ public class SelectMemoryGameActivity extends AppCompatActivity {
         btnBackToSelectGames.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(SelectMemoryGameActivity.this, SelectGameActivity.class);
+                Intent intent = new Intent(SelectMemoryGameActivity.this,
+                        SelectGameActivity.class);
                 SelectMemoryGameActivity.this.startActivity(intent);
             }
         });
@@ -72,7 +75,8 @@ public class SelectMemoryGameActivity extends AppCompatActivity {
         llayLeaderBoard.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(SelectMemoryGameActivity.this, LeaderBoardActivity.class);
+                Intent intent = new Intent(SelectMemoryGameActivity.this,
+                        LeaderBoardActivity.class);
                 intent.putExtra("gameType", "memory");
                 SelectMemoryGameActivity.this.startActivity(intent);
             }

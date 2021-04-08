@@ -34,26 +34,26 @@ public class ViewMediaMessageActivity extends AppCompatActivity {
     ImageView imgViewMediaMessage;
     Button btnViewTextMessage;
 
-    Intent intent;
-    MessageData displayingMessage;
-    MediaManagement mediaManagement;
-    int messageNum;
-    int numberOfMessages;
-    int newMessageNum;
-    String friendsUUID;
-    String viewingType;
-    String messageUrl;
-    int deviceOrientationMode;
-    ArrayList<Parcelable> messageList;
+    Intent mIntent;
+    int mMessageNum;
+    int mNumberOfMessages;
+    int mNewMessageNum;
+    String mFriendsUUID;
+    String mViewingType;
+    String mMessageUrl;
+    int mDeviceOrientationMode;
+    ArrayList<Parcelable> mMessageList;
 
     private File mImageFolder;
     private String mImageFilePath;
 
-    ManagingMessages managingMessages = new ManagingMessages(this);
-    ManagingActivityPreview managingActivityPreview = new ManagingActivityPreview();
+    ManagingMessages mManagingMessages = new ManagingMessages(this);
+    ManagingActivityPreview mManagingActivityPreview = new ManagingActivityPreview();
+    MessageData mDisplayingMessage;
+    MediaManagement mMediaManagement;
 
     public ViewMediaMessageActivity() {
-         mediaManagement = new MediaManagement(this);
+        mMediaManagement = new MediaManagement(this);
     }
 
     @Override
@@ -65,32 +65,32 @@ public class ViewMediaMessageActivity extends AppCompatActivity {
         imgViewMediaMessage = findViewById(R.id.imgViewMediaMessage);
         btnViewTextMessage = findViewById(R.id.btnViewTextMessage);
 
-        intent = getIntent();
-        messageNum = intent.getIntExtra("messageNum", -1);
+        mIntent = getIntent();
+        mMessageNum = mIntent.getIntExtra("messageNum", -1);
 
         //if this is the first message, set he message number to 0
-        if (messageNum == -1) {
-            messageNum = 0;
-            intent.putExtra("messageNum", 0);
+        if (mMessageNum == -1) {
+            mMessageNum = 0;
+            mIntent.putExtra("messageNum", 0);
         }
 
-        messageList = intent.getParcelableArrayListExtra("messagesList");
-        displayingMessage = (MessageData) messageList.get(messageNum);
-        numberOfMessages = intent.getIntExtra("numOfMessages", 0);
-        friendsUUID = intent.getStringExtra("friendsUUID");
-        viewingType = intent.getStringExtra("viewingType");
-        deviceOrientationMode = displayingMessage.getDeviceOrientationMode();
+        mMessageList = mIntent.getParcelableArrayListExtra("messagesList");
+        mDisplayingMessage = (MessageData) mMessageList.get(mMessageNum);
+        mNumberOfMessages = mIntent.getIntExtra("numOfMessages", 0);
+        mFriendsUUID = mIntent.getStringExtra("friendsUUID");
+        mViewingType = mIntent.getStringExtra("viewingType");
+        mDeviceOrientationMode = mDisplayingMessage.getmDeviceOrientationMode();
 
-        newMessageNum = messageNum + 1;
-        if (newMessageNum >= numberOfMessages) {
+        mNewMessageNum = mMessageNum + 1;
+        if (mNewMessageNum >= mNumberOfMessages) {
             btnViewTextMessage.setText("Exit");
         }
 
 
         lockOrientation(true);
 
-        messageUrl = displayingMessage.getMediaMessageUrl();
-        String fileExtension = displayingMessage.getFileExtension();
+        mMessageUrl = mDisplayingMessage.getmMediaMessageUrl();
+        String fileExtension = mDisplayingMessage.getmFileExtension();
 
         int SDK_INT = android.os.Build.VERSION.SDK_INT;
         if (SDK_INT > 8) {
@@ -102,8 +102,7 @@ public class ViewMediaMessageActivity extends AppCompatActivity {
 
         if (fileExtension.equals(".jpg")) {
             displayReceivedImage();
-        }
-        else {
+        } else {
             displayReceivedVideo();
         }
 
@@ -115,22 +114,23 @@ public class ViewMediaMessageActivity extends AppCompatActivity {
     public void onWindowFocusChanged(boolean hasFocus) {
         super.onWindowFocusChanged(hasFocus);
         if (hasFocus) {
-            managingActivityPreview.hideSystemUI(getWindow().getDecorView());
+            mManagingActivityPreview.hideSystemUI(getWindow().getDecorView());
         }
     }
 
 
-    private void displayReceivedImage(){
+    private void displayReceivedImage() {
         vidViewMediaMessage.setVisibility(View.INVISIBLE);
 
-        if(messageUrl != null && !messageUrl.equals("") ) {
+        if (mMessageUrl != null && !mMessageUrl.equals("")) {
             //create directories for files
-            File[] mediaFolders = mediaManagement.createMediaFolders();
+            File[] mediaFolders = mMediaManagement.createMediaFolders();
             mImageFolder = mediaFolders[1];
 
             try {
-                mImageFilePath = mediaManagement.createImageFileName(mImageFolder).getAbsolutePath();
-                try (BufferedInputStream inputStream = new BufferedInputStream(new URL(messageUrl).openStream());
+                mImageFilePath = mMediaManagement.createImageFileName(mImageFolder).getAbsolutePath();
+                try (BufferedInputStream inputStream =
+                             new BufferedInputStream(new URL(mMessageUrl).openStream());
                      FileOutputStream fileOS = new FileOutputStream(mImageFilePath)) {
                     byte data[] = new byte[1024];
                     int byteContent;
@@ -148,21 +148,22 @@ public class ViewMediaMessageActivity extends AppCompatActivity {
                 exif = new ExifInterface(mImageFilePath);
 
 
-                int exifOrientation = exif.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL);
+                int exifOrientation = exif.getAttributeInt(ExifInterface.TAG_ORIENTATION,
+                        ExifInterface.ORIENTATION_NORMAL);
                 Bitmap myBitmap = BitmapFactory.decodeFile(new File(mImageFilePath).getAbsolutePath());
 
                 //pre rotate bitmap to account for the device rotation
                 int currentDeviceOrientationMode = getWindowManager().getDefaultDisplay().getRotation();
-                if (currentDeviceOrientationMode != deviceOrientationMode) {
-                    myBitmap = mediaManagement.rotateBitmap(myBitmap, 90);
+                if (currentDeviceOrientationMode != mDeviceOrientationMode) {
+                    myBitmap = mMediaManagement.rotateBitmap(myBitmap, 90);
                 }
 
-                Bitmap adjustedBitmapImage = mediaManagement.adjustBitmapImage(exifOrientation, myBitmap);
+                Bitmap adjustedBitmapImage = mMediaManagement.adjustBitmapImage(exifOrientation, myBitmap);
 
                 imgViewMediaMessage.setImageBitmap(adjustedBitmapImage);
 
 
-                mediaManagement.deleteMediaFile(mImageFilePath, ViewMediaMessageActivity.this);
+                mMediaManagement.deleteMediaFile(mImageFilePath, ViewMediaMessageActivity.this);
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -170,9 +171,9 @@ public class ViewMediaMessageActivity extends AppCompatActivity {
     }
 
 
-    private void displayReceivedVideo(){
+    private void displayReceivedVideo() {
         imgViewMediaMessage.setVisibility(View.INVISIBLE);
-        vidViewMediaMessage.setVideoPath(messageUrl);
+        vidViewMediaMessage.setVideoPath(mMessageUrl);
         vidViewMediaMessage.start();
         setVideoViewListener();
     }
@@ -181,12 +182,13 @@ public class ViewMediaMessageActivity extends AppCompatActivity {
     public void onBackPressed() {
 
         lockOrientation(false);
-        if(viewingType.equals("directMessages")) {
-            managingMessages.deleteMessage(displayingMessage.getTimeStamp(), friendsUUID);
-            managingMessages.logMediaMessageViewed(messageUrl);
+        if (mViewingType.equals("directMessages")) {
+            mManagingMessages.deleteMessage(mDisplayingMessage.getmTimeStamp(), mFriendsUUID);
+            mManagingMessages.logMediaMessageViewed(mMessageUrl);
         }
 
-        Intent intent = new Intent(ViewMediaMessageActivity.this, ListOfReceivedMediaActivity.class);
+        Intent intent = new Intent(ViewMediaMessageActivity.this,
+                ListOfReceivedMediaActivity.class);
         ViewMediaMessageActivity.this.startActivity(intent);
     }
 
@@ -200,29 +202,30 @@ public class ViewMediaMessageActivity extends AppCompatActivity {
                 Intent newIntent;
                 lockOrientation(false);
 
-                if(viewingType.equals("directMessages")) {
-                    managingMessages.deleteMessage(displayingMessage.getTimeStamp(), friendsUUID);
-                    managingMessages.logMediaMessageViewed(messageUrl);
+                if (mViewingType.equals("directMessages")) {
+                    mManagingMessages.deleteMessage(mDisplayingMessage.getmTimeStamp(), mFriendsUUID);
+                    mManagingMessages.logMediaMessageViewed(mMessageUrl);
                 }
 
 
-                if (newMessageNum >= numberOfMessages) {
+                if (mNewMessageNum >= mNumberOfMessages) {
 
                     //if there are no more messages, load the list of messages from friends
-                    newIntent = new Intent(ViewMediaMessageActivity.this, ListOfReceivedMediaActivity.class);
-                }
-                else {
-                    MessageData tempMessageData = (MessageData) messageList.get(newMessageNum);
-                    intent.putExtra("messageNum", newMessageNum);
+                    newIntent = new Intent(ViewMediaMessageActivity.this,
+                            ListOfReceivedMediaActivity.class);
+                } else {
+                    MessageData tempMessageData = (MessageData) mMessageList.get(mNewMessageNum);
+                    mIntent.putExtra("messageNum", mNewMessageNum);
 
                     //check to see if there is a text message
-                    if (tempMessageData.getTextMessage().equals("")) {
-                        newIntent = new Intent(ViewMediaMessageActivity.this, ViewMediaMessageActivity.class);
-                        newIntent.putExtras(intent.getExtras());
-                    }
-                    else {
-                        newIntent = new Intent(ViewMediaMessageActivity.this, ViewTextMessageActivity.class);
-                        newIntent.putExtras(intent.getExtras());
+                    if (tempMessageData.getmTextMessage().equals("")) {
+                        newIntent = new Intent(ViewMediaMessageActivity.this,
+                                ViewMediaMessageActivity.class);
+                        newIntent.putExtras(mIntent.getExtras());
+                    } else {
+                        newIntent = new Intent(ViewMediaMessageActivity.this,
+                                ViewTextMessageActivity.class);
+                        newIntent.putExtras(mIntent.getExtras());
                     }
                 }
                 ViewMediaMessageActivity.this.startActivity(newIntent);
@@ -244,7 +247,8 @@ public class ViewMediaMessageActivity extends AppCompatActivity {
 
         if (lock) {
             int landscape = 1;
-            boolean inLandscapeMode = ((int) getWindowManager().getDefaultDisplay().getRotation() == landscape);
+            boolean inLandscapeMode =
+                    ((int) getWindowManager().getDefaultDisplay().getRotation() == landscape);
             if (inLandscapeMode) {
                 setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
             } else {

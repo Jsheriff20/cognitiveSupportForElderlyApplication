@@ -10,11 +10,14 @@
         android:id="@+id/btnLogout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
         android:text="Logout"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:textSize="24sp"
+        android:background="@drawable/btn_rectangle_red_gradient"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.439"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/divider27" />
 
     <Button
         android:id="@+id/btnManageAdmins"
@@ -25,6 +28,7 @@
         android:layout_marginEnd="24dp"
         android:text="Manage Account Admins"
         android:textSize="24sp"
+        android:background="@drawable/btn_rectangle_blue_gradient"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -38,6 +42,7 @@
         android:layout_marginEnd="24dp"
         android:text="Start Managing Account"
         android:textSize="24sp"
+        android:background="@drawable/btn_rectangle_orange_gradient"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.49"
         app:layout_constraintStart_toStartOf="parent"
@@ -52,6 +57,7 @@
         android:layout_marginEnd="24dp"
         android:text="Manage medication reminders"
         android:textSize="24sp"
+        android:background="@drawable/btn_rectangle_green_gradient"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"

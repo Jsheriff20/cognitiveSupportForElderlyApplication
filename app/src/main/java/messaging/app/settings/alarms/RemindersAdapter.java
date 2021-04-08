@@ -4,53 +4,39 @@ import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Color;
-import android.media.ExifInterface;
 import android.os.StrictMode;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
 
-import java.io.BufferedInputStream;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.net.URL;
-import java.util.ArrayList;
 import java.util.List;
 
-import messaging.app.AccountDetails;
-import messaging.app.MediaManagement;
 import messaging.app.R;
 import messaging.app.contactingFirebase.ManagingReminders;
-import messaging.app.contactingFirebase.QueryingDatabase;
 
 public class RemindersAdapter extends RecyclerView.Adapter<RemindersAdapter.ViewHolder> {
 
-    Context context;
-    private List<ReminderDetails> reminderDetailsList;
-    ManagingReminders managingReminders = new ManagingReminders();
+    Context mContext;
+    private List<ReminderDetails> mReminderDetailsList;
+    ManagingReminders mManagingReminders = new ManagingReminders();
 
     public RemindersAdapter(List<ReminderDetails> reminderDetailsList, Context context) {
-        this.reminderDetailsList = reminderDetailsList;
-        this.context = context;
+        this.mReminderDetailsList = reminderDetailsList;
+        this.mContext = context;
     }
 
 
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.current_reminder_row, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.current_reminder_row,
+                parent, false);
         ViewHolder viewHolder = new ViewHolder(view);
 
         return viewHolder;
@@ -60,28 +46,30 @@ public class RemindersAdapter extends RecyclerView.Adapter<RemindersAdapter.View
     @Override
     public void onBindViewHolder(@NonNull final ViewHolder holder, int position) {
 
-        ReminderDetails reminderDetails = reminderDetailsList.get(position);
-        holder.lblMedicationName.setText(reminderDetails.getMedicationName());
-        holder.lblFrequency.setText(reminderDetails.getFrequency());
-        holder.lblReminderTime.setText(reminderDetails.getTime());
+        ReminderDetails reminderDetails = mReminderDetailsList.get(position);
+        holder.lblMedicationName.setText(reminderDetails.getmMedicationName());
+        holder.lblFrequency.setText(reminderDetails.getmFrequency());
+        holder.lblReminderTime.setText(reminderDetails.getmTime());
 
-        holder.reminderID = reminderDetails.getReminderID();
-        holder.intentID = reminderDetails.getIntentID();
+        holder.reminderID = reminderDetails.getmReminderID();
+        holder.intentID = reminderDetails.getmIntentID();
 
         holder.btnRemoveReminder.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                managingReminders.removeReminder(holder.reminderID);
-                reminderDetailsList.remove(position);
+                mManagingReminders.removeReminder(holder.reminderID);
+                mReminderDetailsList.remove(position);
                 notifyItemRemoved(position);
-                notifyItemRangeChanged(position, reminderDetailsList.size());
+                notifyItemRangeChanged(position, mReminderDetailsList.size());
 
 
-                AlarmManager manager = (AlarmManager) context.getSystemService(context.ALARM_SERVICE);
-                Intent alarmIntent = new Intent(context, AlarmReceiver.class);
+                AlarmManager manager =
+                        (AlarmManager) mContext.getSystemService(mContext.ALARM_SERVICE);
+                Intent alarmIntent = new Intent(mContext, AlarmReceiver.class);
 
                 //overwriting the alarm
-                PendingIntent pendingIntent = PendingIntent.getBroadcast(context, holder.intentID, alarmIntent, 0);
+                PendingIntent pendingIntent =
+                        PendingIntent.getBroadcast(mContext, holder.intentID, alarmIntent, 0);
 
                 //cancelling the new set alarm alarm
                 manager.cancel(pendingIntent);
@@ -95,12 +83,12 @@ public class RemindersAdapter extends RecyclerView.Adapter<RemindersAdapter.View
 
     @Override
     public int getItemCount() {
-        return reminderDetailsList.size();
+        return mReminderDetailsList.size();
     }
 
 
     //friend row layout
-    public class ViewHolder extends RecyclerView.ViewHolder{
+    public class ViewHolder extends RecyclerView.ViewHolder {
         TextView lblMedicationName;
         TextView lblReminderTime;
         TextView lblFrequency;

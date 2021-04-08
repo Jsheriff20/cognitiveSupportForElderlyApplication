@@ -9,7 +9,6 @@ import android.media.ExifInterface;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -28,7 +27,6 @@ import messaging.app.contactingFirebase.ManagingAccounts;
 import messaging.app.login.LoginActivity;
 import messaging.app.R;
 import messaging.app.messages.capturingMedia.CaptureActivity;
-import messaging.app.messages.viewingMessages.ListOfReceivedMediaActivity;
 
 import static android.widget.Toast.LENGTH_SHORT;
 
@@ -56,9 +54,9 @@ public class RegisterProfileImageActivity extends AppCompatActivity {
     int mProfileImageRotation = 0;
     private boolean mButtonPressProcessing = false;
 
-    ManagingAccounts mangingAccounts = new ManagingAccounts(this);
-    MediaManagement mediaManagement = new MediaManagement();
-    ManagingActivityPreview managingActivityPreview = new ManagingActivityPreview();
+    ManagingAccounts mMangingAccounts = new ManagingAccounts(this);
+    MediaManagement mMediaManagement = new MediaManagement();
+    ManagingActivityPreview mManagingActivityPreview = new ManagingActivityPreview();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -92,10 +90,13 @@ public class RegisterProfileImageActivity extends AppCompatActivity {
                 ExifInterface exif = null;
                 //display the media in the correct rotation
                 exif = new ExifInterface(mProfileImagePath);
-                int exifOrientation = exif.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL);
-                Bitmap myBitmap = BitmapFactory.decodeFile(new File(mProfileImagePath).getAbsolutePath());
+                int exifOrientation = exif.getAttributeInt(ExifInterface.TAG_ORIENTATION,
+                        ExifInterface.ORIENTATION_NORMAL);
+                Bitmap myBitmap = BitmapFactory.decodeFile(
+                        new File(mProfileImagePath).getAbsolutePath());
 
-                Bitmap adjustedBitmapImage = mediaManagement.adjustBitmapImage(exifOrientation, myBitmap);
+                Bitmap adjustedBitmapImage =
+                        mMediaManagement.adjustBitmapImage(exifOrientation, myBitmap);
 
                 imgProfileImage.setImageBitmap(adjustedBitmapImage);
 
@@ -131,7 +132,7 @@ public class RegisterProfileImageActivity extends AppCompatActivity {
     public void onWindowFocusChanged(boolean hasFocus) {
         super.onWindowFocusChanged(hasFocus);
         if (hasFocus) {
-            managingActivityPreview.hideSystemUI(getWindow().getDecorView());
+            mManagingActivityPreview.hideSystemUI(getWindow().getDecorView());
         }
     }
 
@@ -144,10 +145,12 @@ public class RegisterProfileImageActivity extends AppCompatActivity {
                     mButtonPressProcessing = true;
 
                     if (mProfileImagePath != null) {
-                        mediaManagement.deleteMediaFile(mProfileImagePath, RegisterProfileImageActivity.this);
+                        mMediaManagement.deleteMediaFile(mProfileImagePath,
+                                RegisterProfileImageActivity.this);
                     }
 
-                    Intent intent = new Intent(RegisterProfileImageActivity.this, RegisterPersonalInfoActivity.class);
+                    Intent intent = new Intent(RegisterProfileImageActivity.this,
+                            RegisterPersonalInfoActivity.class);
                     intent.putExtra("email", mEmail);
                     intent.putExtra("password", mPassword);
                     intent.putExtra("username", mUsername);
@@ -171,15 +174,18 @@ public class RegisterProfileImageActivity extends AppCompatActivity {
                     mButtonPressProcessing = true;
 
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                        if (ContextCompat.checkSelfPermission(RegisterProfileImageActivity.this, Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
+                        if (ContextCompat.checkSelfPermission(RegisterProfileImageActivity.this,
+                                Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
                             //open the storage if permissions are granted
                             openFileSelector();
                         } else {
                             if (shouldShowRequestPermissionRationale(Manifest.permission.READ_EXTERNAL_STORAGE)) {
                                 //if permissions are denied say why permission is needed
-                                Toast.makeText(RegisterProfileImageActivity.this, "Please enable Storage Access", LENGTH_SHORT).show();
+                                Toast.makeText(RegisterProfileImageActivity.this,
+                                        "Please enable Storage Access", LENGTH_SHORT).show();
                             }
-                            requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, REQUEST_EXTERNAL_STORAGE_PERMISSION_RESULT);
+                            requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
+                                    REQUEST_EXTERNAL_STORAGE_PERMISSION_RESULT);
                         }
                     } else {
                         openFileSelector();
@@ -213,7 +219,8 @@ public class RegisterProfileImageActivity extends AppCompatActivity {
         Intent intent = new Intent();
         intent.setType("image/*");
         intent.setAction(Intent.ACTION_GET_CONTENT);
-        startActivityForResult(intent.createChooser(intent, "Select Profile Picture"), REQUEST_EXTERNAL_STORAGE_PERMISSION_RESULT);
+        startActivityForResult(intent.createChooser(intent, "Select Profile Picture"),
+                REQUEST_EXTERNAL_STORAGE_PERMISSION_RESULT);
     }
 
 
@@ -249,7 +256,8 @@ public class RegisterProfileImageActivity extends AppCompatActivity {
             public void onClick(View v) {
                 if (!mButtonPressProcessing) {
                     mButtonPressProcessing = true;
-                    mangingAccounts.createUserWithEmailAndPassword(mEmail, mPassword, mFirstName, mSurname, mProfileImage, mUsername);
+                    mMangingAccounts.createUserWithEmailAndPassword(mEmail, mPassword,
+                            mFirstName, mSurname, mProfileImage, mUsername);
                 }
 
             }

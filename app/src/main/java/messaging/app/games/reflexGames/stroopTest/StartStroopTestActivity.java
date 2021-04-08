@@ -16,7 +16,6 @@ import android.widget.VideoView;
 import messaging.app.R;
 import messaging.app.contactingFirebase.ManagingGames;
 import messaging.app.games.reflexGames.SelectReactionGameActivity;
-import messaging.app.games.reflexGames.gridReactionGames.StartGridReactionGameActivity;
 
 public class StartStroopTestActivity extends AppCompatActivity {
 
@@ -29,7 +28,7 @@ public class StartStroopTestActivity extends AppCompatActivity {
     TextView lblStoopTestDesc;
     VideoView vidStoopTextExample;
 
-    ManagingGames managingGames = new ManagingGames(this);
+    ManagingGames mManagingGames = new ManagingGames(this);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,16 +47,16 @@ public class StartStroopTestActivity extends AppCompatActivity {
         btnCancel.setVisibility(View.INVISIBLE);
 
 
-        if(getIntent().getLongExtra("reactionTime", 999999999)  != 999999999){
+        if (getIntent().getLongExtra("reactionTime", 999999999) != 999999999) {
 
             //display to user
             long reactionTime = getIntent().getLongExtra("reactionTime", 999999999);
             lblStoopTestTitle.setText("You results:");
-            lblStoopTestDesc.setText("Your average reaction speed was " + reactionTime +" ms");
+            lblStoopTestDesc.setText("Your average reaction speed was " + reactionTime + " ms");
 
             //store score in database
             //if high score set as their high score
-            managingGames.storeGameResult("stroopTest", reactionTime);
+            mManagingGames.storeGameResult("stroopTest", reactionTime);
         }
 
 
@@ -68,19 +67,19 @@ public class StartStroopTestActivity extends AppCompatActivity {
     }
 
 
-
-    private void setBtnBackToReactionGamesOnClick(){
+    private void setBtnBackToReactionGamesOnClick() {
         btnBackToReactionGame.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(StartStroopTestActivity.this, SelectReactionGameActivity.class);
+                Intent intent = new Intent(StartStroopTestActivity.this,
+                        SelectReactionGameActivity.class);
                 StartStroopTestActivity.this.startActivity(intent);
             }
         });
     }
 
 
-    private void setBtnWatchStoopTestVidOnClick(){
+    private void setBtnWatchStoopTestVidOnClick() {
         btnWatchStoopTestVid.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -111,7 +110,7 @@ public class StartStroopTestActivity extends AppCompatActivity {
     }
 
 
-    private void setBtnCancelOnClick(){
+    private void setBtnCancelOnClick() {
         btnCancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -130,12 +129,12 @@ public class StartStroopTestActivity extends AppCompatActivity {
     }
 
 
-
-    private void setBtnStartStoopTestOnClick(){
+    private void setBtnStartStoopTestOnClick() {
         btnStartStoopTest.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(StartStroopTestActivity.this, StroopTestActivity.class);
+                Intent intent = new Intent(StartStroopTestActivity.this,
+                        StroopTestActivity.class);
                 StartStroopTestActivity.this.startActivity(intent);
             }
         });

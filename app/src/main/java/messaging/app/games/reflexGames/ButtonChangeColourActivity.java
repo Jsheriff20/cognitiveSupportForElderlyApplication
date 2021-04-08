@@ -22,9 +22,6 @@ import java.util.Random;
 
 import messaging.app.R;
 import messaging.app.contactingFirebase.ManagingGames;
-import messaging.app.games.memoryGames.SelectMemoryGameActivity;
-import messaging.app.games.memoryGames.memorizingPatternGame.StartMemorizingPatternActivity;
-import messaging.app.games.reflexGames.stroopTest.StartStroopTestActivity;
 
 public class ButtonChangeColourActivity extends AppCompatActivity {
 
@@ -37,13 +34,12 @@ public class ButtonChangeColourActivity extends AppCompatActivity {
     TextView lblColourChangeTitle;
     VideoView vidColourChangeExample;
 
-    boolean greenColourActive = false;
+    boolean mGreenColourActive = false;
+    int mRoundNum = 0;
+    long mStartTime, mEndTime, mReactionTime;
 
-    int roundNum = 0;
-    List <Long> pastScores = new ArrayList();
-    long startTime, endTime, reactionTime;
-
-    ManagingGames managingGames = new ManagingGames(this);
+    List<Long> mPastScores = new ArrayList();
+    ManagingGames mManagingGames = new ManagingGames(this);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,29 +67,31 @@ public class ButtonChangeColourActivity extends AppCompatActivity {
     }
 
 
-    private void setBtnColourChangingButton(){
+    private void setBtnColourChangingButton() {
         btnColourChangingButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 //if user pressed too early (trying to predict they will be penalised)
-                if(!greenColourActive){
-                    Toast.makeText(ButtonChangeColourActivity.this, "Pressed too early! Penalised 2 seconds", Toast.LENGTH_SHORT).show();
-                    pastScores.add((long) 2000);
-                }
-                else {
-                    endTime = System.currentTimeMillis();
-                    reactionTime = endTime - startTime;
+                if (!mGreenColourActive) {
+                    Toast.makeText(ButtonChangeColourActivity.this,
+                            "Pressed too early! Penalised 2 seconds",
+                            Toast.LENGTH_SHORT).show();
+                    mPastScores.add((long) 2000);
+                } else {
+                    mEndTime = System.currentTimeMillis();
+                    mReactionTime = mEndTime - mStartTime;
 
-                    btnColourChangingButton.setBackgroundResource(R.drawable.btn_rectangle_red_gradient);
+                    btnColourChangingButton
+                            .setBackgroundResource(R.drawable.btn_rectangle_red_gradient);
                     btnColourChangingButton.setVisibility(View.INVISIBLE);
                     btnColourChangingButton.setText("");
 
-                    greenColourActive = false;
-                    pastScores.add(reactionTime);
+                    mGreenColourActive = false;
+                    mPastScores.add(mReactionTime);
 
-                    if (roundNum < 4) {
+                    if (mRoundNum < 4) {
                         startNewRound();
-                        roundNum++;
+                        mRoundNum++;
                     } else {
                         btnStartButtonChangeColour.setVisibility(View.VISIBLE);
                         btnBackToReactionGames.setVisibility(View.VISIBLE);
@@ -101,11 +99,13 @@ public class ButtonChangeColourActivity extends AppCompatActivity {
                         lblColourChangeDesc.setVisibility(View.VISIBLE);
 
                         lblColourChangeTitle.setText("Your results:");
-                        lblColourChangeDesc.setText("Your average reaction speed was " + getAverage(pastScores) +" ms");
+                        lblColourChangeDesc.setText("Your average reaction speed was " +
+                                getAverage(mPastScores) + " ms");
 
                         //store score in database
                         //if high score set as their high score
-                        managingGames.storeGameResult("buttonChange", getAverage(pastScores));
+                        mManagingGames.storeGameResult("buttonChange",
+                                getAverage(mPastScores));
 
                     }
                 }
@@ -114,29 +114,30 @@ public class ButtonChangeColourActivity extends AppCompatActivity {
     }
 
 
-    private void setBtnStartButtonChangeColour(){
+    private void setBtnStartButtonChangeColour() {
         btnStartButtonChangeColour.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                roundNum = 0;
-                pastScores = new ArrayList();
+                mRoundNum = 0;
+                mPastScores = new ArrayList();
                 startNewRound();
             }
         });
     }
 
 
-    private void setBtnBackToReactionGames(){
+    private void setBtnBackToReactionGames() {
         btnBackToReactionGames.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(ButtonChangeColourActivity.this, SelectReactionGameActivity.class);
+                Intent intent = new Intent(ButtonChangeColourActivity.this,
+                        SelectReactionGameActivity.class);
                 ButtonChangeColourActivity.this.startActivity(intent);
             }
         });
     }
 
-    private void startNewRound(){
+    private void startNewRound() {
         Random rand = new Random();
         int delayInMills = rand.nextInt(3500 - 1500 + 1) + 1500;
 
@@ -153,8 +154,8 @@ public class ButtonChangeColourActivity extends AppCompatActivity {
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                startTime = System.currentTimeMillis();
-                greenColourActive = true;
+                mStartTime = System.currentTimeMillis();
+                mGreenColourActive = true;
                 btnColourChangingButton.setBackgroundResource(R.drawable.btn_rectangle_blue_gradient);
                 btnColourChangingButton.setText("PRESS");
             }
@@ -162,9 +163,9 @@ public class ButtonChangeColourActivity extends AppCompatActivity {
     }
 
 
-    private long getAverage(List <Long> pastScores) {
+    private long getAverage(List<Long> pastScores) {
         long total = 0;
-        for(Long score : pastScores){
+        for (Long score : pastScores) {
             Log.d("test", "score: " + score);
             total += score;
         }
@@ -173,7 +174,7 @@ public class ButtonChangeColourActivity extends AppCompatActivity {
     }
 
 
-    private void setBtnWatchColourChangeVidOnClick(){
+    private void setBtnWatchColourChangeVidOnClick() {
         btnWatchColourChangeGameVid.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -190,7 +191,8 @@ public class ButtonChangeColourActivity extends AppCompatActivity {
                 MediaController mediaController = new MediaController(ButtonChangeColourActivity.this);
                 mediaController.setAnchorView(vidColourChangeExample);
                 vidColourChangeExample.setMediaController(mediaController);
-                vidColourChangeExample.setVideoURI(Uri.parse("android.resource://" + getPackageName() + "/" +
+                vidColourChangeExample.setVideoURI(Uri.parse("android.resource://" +
+                        getPackageName() + "/" +
                         R.raw.button_change_example));
                 vidColourChangeExample.start();
 
@@ -205,7 +207,7 @@ public class ButtonChangeColourActivity extends AppCompatActivity {
     }
 
 
-    private void setBtnCancelOnClick(){
+    private void setBtnCancelOnClick() {
         btnCancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

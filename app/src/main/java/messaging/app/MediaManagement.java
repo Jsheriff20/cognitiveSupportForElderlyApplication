@@ -3,31 +3,19 @@ package messaging.app;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Matrix;
-import android.graphics.RectF;
 import android.media.ExifInterface;
-import android.os.Environment;
 import android.util.Log;
 import android.util.Size;
-import android.view.Surface;
-import android.widget.Toast;
-
-import androidx.core.content.ContextCompat;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
-
-import static android.widget.Toast.LENGTH_SHORT;
 
 public class MediaManagement {
 
-    Context context;
+    Context mContext;
 
     public MediaManagement(Context context) {
-        this.context = context;
+        this.mContext = context;
     }
 
     public MediaManagement() {
@@ -36,19 +24,21 @@ public class MediaManagement {
     public Bitmap FlipBitmap(Bitmap myBitmap, String flipType) {
 
         Matrix matrix = new Matrix();
-        switch (flipType){
+        switch (flipType) {
             case "Horizontally":
-                matrix.postScale(-1, 1, myBitmap.getWidth() / 2f, myBitmap.getHeight() / 2f);
+                matrix.postScale(-1, 1, myBitmap.getWidth() / 2f,
+                        myBitmap.getHeight() / 2f);
                 break;
             case "Vertically":
-                matrix.postScale(1,-1, myBitmap.getWidth() / 2f, myBitmap.getHeight() / 2f);
+                matrix.postScale(1, -1, myBitmap.getWidth() / 2f,
+                        myBitmap.getHeight() / 2f);
                 break;
         }
 
-        return Bitmap.createBitmap(myBitmap, 0, 0, myBitmap.getWidth(), myBitmap.getHeight(), matrix, true);
+        return Bitmap.createBitmap(myBitmap, 0, 0, myBitmap.getWidth(),
+                myBitmap.getHeight(), matrix, true);
     }
 
-    
 
     public Size getOptimalPreviewSize(Size[] sizes, int w, int h) {
         final double ASPECT_TOLERANCE = 0.1;
@@ -82,17 +72,22 @@ public class MediaManagement {
     }
 
 
-    public static Bitmap rotateBitmap(Bitmap source, float angle){
+    public static Bitmap rotateBitmap(Bitmap source, float angle) {
         Matrix matrix = new Matrix();
         matrix.postRotate(angle);
-        return Bitmap.createBitmap(source, 0, 0, source.getWidth(), source.getHeight(), matrix, true);
+        return Bitmap.createBitmap(source, 0, 0, source.getWidth(),
+                source.getHeight(), matrix, true);
     }
 
 
     public static int exifToDegrees(int exifOrientation) {
-        if (exifOrientation == ExifInterface.ORIENTATION_ROTATE_90) { return 90; }
-        else if (exifOrientation == ExifInterface.ORIENTATION_ROTATE_180) {  return 180; }
-        else if (exifOrientation == ExifInterface.ORIENTATION_ROTATE_270) {  return 270; }
+        if (exifOrientation == ExifInterface.ORIENTATION_ROTATE_90) {
+            return 90;
+        } else if (exifOrientation == ExifInterface.ORIENTATION_ROTATE_180) {
+            return 180;
+        } else if (exifOrientation == ExifInterface.ORIENTATION_ROTATE_270) {
+            return 270;
+        }
         return 0;
     }
 
@@ -109,7 +104,7 @@ public class MediaManagement {
     }
 
 
-    public void deleteMediaFile(String path, Context context){
+    public void deleteMediaFile(String path, Context context) {
         File file = new File(path);
         boolean deleted = file.delete();
 
@@ -119,8 +114,7 @@ public class MediaManagement {
 
     public Bitmap adjustBitmapImage(int exifOrientation, Bitmap myBitmap) {
 
-        switch (exifOrientation)
-        {
+        switch (exifOrientation) {
             case 2:
                 myBitmap = rotateBitmap(myBitmap, 0);
                 myBitmap = FlipBitmap(myBitmap, "Horizontally");
@@ -154,7 +148,6 @@ public class MediaManagement {
     }
 
 
-
     public File createVideoFileName(File videoFolder) throws IOException {
         File videoFile = File.createTempFile("tempFile", ".mp4", videoFolder);
         Log.d("test", "getAbsolutePath: " + videoFile.getAbsolutePath());
@@ -169,10 +162,9 @@ public class MediaManagement {
     }
 
 
-
     public File[] createMediaFolders() {
         //create folders for media files
-        File directory = context.getFilesDir();
+        File directory = mContext.getFilesDir();
 
         File videoFolder = new File(directory, "capturesFromElderlyApp");
         File imageFolder = new File(directory, "capturesFromElderlyApp");

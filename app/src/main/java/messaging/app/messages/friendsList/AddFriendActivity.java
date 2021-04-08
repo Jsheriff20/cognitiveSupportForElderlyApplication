@@ -18,7 +18,6 @@ import messaging.app.ManagingActivityPreview;
 import messaging.app.R;
 import messaging.app.contactingFirebase.ManagingFriends;
 import messaging.app.contactingFirebase.QueryingDatabase;
-import messaging.app.messages.capturingMedia.CaptureActivity;
 
 public class AddFriendActivity extends AppCompatActivity {
 
@@ -27,15 +26,15 @@ public class AddFriendActivity extends AppCompatActivity {
     ImageButton btnSendFriendRequest;
     ImageButton btnBackToFriendsList;
     ImageButton btnRefreshFriendRequests;
-    private RecyclerView recyclerView;
 
-    CheckInputsValidity checkInputsValidity = new CheckInputsValidity(this);
-    ManagingActivityPreview managingActivityPreview = new ManagingActivityPreview();
-    QueryingDatabase queryingDatabase;
-    ManagingFriends managingFriends;
-
+    private RecyclerView mRecyclerView;
     private RecyclerView.Adapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
+
+    CheckInputsValidity mCheckInputsValidity = new CheckInputsValidity(this);
+    ManagingActivityPreview mManagingActivityPreview = new ManagingActivityPreview();
+    QueryingDatabase mQueryingDatabase;
+    ManagingFriends mManagingFriends;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,19 +44,18 @@ public class AddFriendActivity extends AppCompatActivity {
         txtAddingUsername = findViewById(R.id.txtAddingUsername);
         btnSendFriendRequest = findViewById(R.id.btnSendFriendRequest);
         txtRelationship = findViewById(R.id.txtReceivedFriendRequestRelationship);
-        recyclerView = findViewById(R.id.lstAddFriend);
+        mRecyclerView = findViewById(R.id.lstAddFriend);
         btnBackToFriendsList = findViewById(R.id.btnBackToFriendsList);
         btnRefreshFriendRequests = findViewById(R.id.btnRefreshFriendRequests);
 
-        if(getIntent().getStringExtra("adminUUID") != null){
+        if (getIntent().getStringExtra("adminUUID") != null) {
             String friendsUUID = getIntent().getStringExtra("adminUUID");
 
-            managingFriends = new ManagingFriends(this, friendsUUID);
-            queryingDatabase = new QueryingDatabase(friendsUUID);
-        }
-        else{
-            managingFriends = new ManagingFriends(this, null);
-            queryingDatabase = new QueryingDatabase(null);
+            mManagingFriends = new ManagingFriends(this, friendsUUID);
+            mQueryingDatabase = new QueryingDatabase(friendsUUID);
+        } else {
+            mManagingFriends = new ManagingFriends(this, null);
+            mQueryingDatabase = new QueryingDatabase(null);
         }
 
         setBtnSearchFriendOnClick();
@@ -69,7 +67,7 @@ public class AddFriendActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         Intent intent = new Intent(AddFriendActivity.this, ViewFriendsListActivity.class);
-        if(getIntent().getStringExtra("adminUUID") != null){
+        if (getIntent().getStringExtra("adminUUID") != null) {
             intent.putExtra("adminUUID", getIntent().getStringExtra("adminUUID"));
         }
         AddFriendActivity.this.startActivity(intent);
@@ -80,12 +78,12 @@ public class AddFriendActivity extends AppCompatActivity {
     public void onWindowFocusChanged(boolean hasFocus) {
         super.onWindowFocusChanged(hasFocus);
         if (hasFocus) {
-            managingActivityPreview.hideSystemUI(getWindow().getDecorView());
+            mManagingActivityPreview.hideSystemUI(getWindow().getDecorView());
         }
     }
 
 
-    private void setBtnRefreshFriendRequests(){
+    private void setBtnRefreshFriendRequests() {
         btnRefreshFriendRequests.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -95,12 +93,12 @@ public class AddFriendActivity extends AppCompatActivity {
         });
     }
 
-    private void setBtnBackToFriendsList(){
+    private void setBtnBackToFriendsList() {
         btnBackToFriendsList.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(AddFriendActivity.this, ViewFriendsListActivity.class);
-                if(getIntent().getStringExtra("adminUUID") != null){
+                if (getIntent().getStringExtra("adminUUID") != null) {
                     intent.putExtra("adminUUID", getIntent().getStringExtra("adminUUID"));
                 }
                 AddFriendActivity.this.startActivity(intent);
@@ -109,43 +107,45 @@ public class AddFriendActivity extends AppCompatActivity {
     }
 
     private void displayFriendRequests() {
-        queryingDatabase.getReceivedFriendRequests(new QueryingDatabase.OnGetReceivedFriendRequestsListener() {
+        mQueryingDatabase.getReceivedFriendRequests(new QueryingDatabase.OnGetReceivedFriendRequestsListener() {
             @Override
             public void onSuccess(final List receivedFriendRequests) {
-                queryingDatabase.getSentFriendRequests(new QueryingDatabase.OnGetSentFriendRequestsListener() {
+                mQueryingDatabase.getSentFriendRequests(new QueryingDatabase.OnGetSentFriendRequestsListener() {
                     @Override
                     public void onSuccess(List sentFriendRequests) {
 
                         //display to user
                         mLayoutManager = new LinearLayoutManager(AddFriendActivity.this);
-                        mAdapter = new AddFriendsAdapter(sentFriendRequests, receivedFriendRequests, AddFriendActivity.this);
+                        mAdapter = new AddFriendsAdapter(sentFriendRequests, receivedFriendRequests,
+                                AddFriendActivity.this);
 
-                        recyclerView.setLayoutManager(mLayoutManager);
-                        recyclerView.setHasFixedSize(true);
-                        recyclerView.setAdapter(mAdapter);
+                        mRecyclerView.setLayoutManager(mLayoutManager);
+                        mRecyclerView.setHasFixedSize(true);
+                        mRecyclerView.setAdapter(mAdapter);
                     }
                 });
             }
         });
     }
 
-    private void setBtnSearchFriendOnClick(){
+    private void setBtnSearchFriendOnClick() {
         btnSendFriendRequest.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 String username = txtAddingUsername.getText().toString();
                 String relationship = txtRelationship.getText().toString();
 
-                if(checkInputsValidity.isUsernameValid(username) && checkInputsValidity.isRelationshipValid(relationship)){
-                    managingFriends.addFriend(username, relationship, new ManagingFriends.OnAddFriendListener() {
+                if (mCheckInputsValidity.isUsernameValid(username) &&
+                        mCheckInputsValidity.isRelationshipValid(relationship)) {
+                    mManagingFriends.addFriend(username, relationship, new ManagingFriends.OnAddFriendListener() {
                         @Override
                         public void onSuccess(boolean requestSentSuccessfully) {
-                            if(requestSentSuccessfully){
+                            if (requestSentSuccessfully) {
                                 finish();
                                 startActivity(getIntent());
-                            }
-                            else{
-                                Toast.makeText(AddFriendActivity.this, "Failed to send Friend Request", Toast.LENGTH_SHORT).show();
+                            } else {
+                                Toast.makeText(AddFriendActivity.this,
+                                        "Failed to send Friend Request", Toast.LENGTH_SHORT).show();
                             }
                         }
                     });

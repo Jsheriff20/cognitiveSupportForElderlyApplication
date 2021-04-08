@@ -21,31 +21,36 @@ import messaging.app.messages.capturingMedia.CaptureActivity;
 import messaging.app.messages.sendingMedia.ui.main.SectionsPagerAdapter;
 
 public class SendMediaTabsActivity extends AppCompatActivity implements SectionsPagerAdapter.onRowSelectedListener {
-    ManagingActivityPreview managingActivityPreview = new ManagingActivityPreview();
-    ManagingMessages managingMessages = new ManagingMessages(this);
 
-    String pathToMedia;
-    String typeOfMediaCaptured;
-    String message;
-    int mDeviceOrientationMode;
     private ImageButton btnSend;
-    ArrayList<String> directMessagesUUID = new ArrayList<String>();
-    ArrayList<String> storyMessagesUUID = new ArrayList<String>();;
 
+
+    String mPathToMedia;
+    String mTypeOfMediaCaptured;
+    String mMessage;
+    int mDeviceOrientationMode;
+    ArrayList<String> mDirectMessagesUUID = new ArrayList<String>();
+    ArrayList<String> mStoryMessagesUUID = new ArrayList<String>();
+    ;
+
+
+    ManagingActivityPreview mManagingActivityPreview = new ManagingActivityPreview();
+    ManagingMessages mManagingMessages = new ManagingMessages(this);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_send_media_tabs);
-        SectionsPagerAdapter sectionsPagerAdapter = new SectionsPagerAdapter(this, getSupportFragmentManager(), this);
+        SectionsPagerAdapter sectionsPagerAdapter = new SectionsPagerAdapter(this,
+                getSupportFragmentManager(), this);
         ViewPager viewPager = findViewById(R.id.view_pager);
         viewPager.setAdapter(sectionsPagerAdapter);
         TabLayout tabs = findViewById(R.id.tabs);
         tabs.setupWithViewPager(viewPager);
 
-        pathToMedia = getIntent().getStringExtra("mediaPath");
-        typeOfMediaCaptured = getIntent().getStringExtra("typeOfMediaCaptured");
-        message = getIntent().getStringExtra("message");
+        mPathToMedia = getIntent().getStringExtra("mediaPath");
+        mTypeOfMediaCaptured = getIntent().getStringExtra("typeOfMediaCaptured");
+        mMessage = getIntent().getStringExtra("message");
         mDeviceOrientationMode = getIntent().getIntExtra("deviceOrientationMode", 0);
         btnSend = findViewById(R.id.btnSend);
 
@@ -70,16 +75,17 @@ public class SendMediaTabsActivity extends AppCompatActivity implements Sections
     public void onWindowFocusChanged(boolean hasFocus) {
         super.onWindowFocusChanged(hasFocus);
         if (hasFocus) {
-            managingActivityPreview.hideSystemUI(getWindow().getDecorView());
+            mManagingActivityPreview.hideSystemUI(getWindow().getDecorView());
         }
     }
 
 
-    private void sendMedia(ArrayList<String> directMessagesUUID,  ArrayList<String> storyMessagesUUID){
+    private void sendMedia(ArrayList<String> directMessagesUUID, ArrayList<String> storyMessagesUUID) {
 
         try {
 
-            managingMessages.sendMessages(directMessagesUUID, storyMessagesUUID, pathToMedia, typeOfMediaCaptured, message, mDeviceOrientationMode);
+            mManagingMessages.sendMessages(directMessagesUUID, storyMessagesUUID,
+                    mPathToMedia, mTypeOfMediaCaptured, mMessage, mDeviceOrientationMode);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -90,11 +96,11 @@ public class SendMediaTabsActivity extends AppCompatActivity implements Sections
     }
 
 
-    private void btnSendOnClick(){
+    private void btnSendOnClick() {
         btnSend.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                sendMedia(directMessagesUUID, storyMessagesUUID);
+                sendMedia(mDirectMessagesUUID, mStoryMessagesUUID);
 
             }
         });
@@ -102,20 +108,20 @@ public class SendMediaTabsActivity extends AppCompatActivity implements Sections
 
     @Override
     public void onSelectedListener(String UUID, String messageType) {
-        if(messageType == "friends"){
-            if(directMessagesUUID.contains(UUID)){
-                directMessagesUUID.remove(UUID);
+        if (messageType == "friends") {
+            if (mDirectMessagesUUID.contains(UUID)) {
+                mDirectMessagesUUID.remove(UUID);
                 return;
             }
-            directMessagesUUID.add(UUID);
+            mDirectMessagesUUID.add(UUID);
             return;
         }
 
-        if(storyMessagesUUID.contains(UUID)){
-            storyMessagesUUID.remove(UUID);
+        if (mStoryMessagesUUID.contains(UUID)) {
+            mStoryMessagesUUID.remove(UUID);
             return;
         }
-        storyMessagesUUID.add(UUID);
+        mStoryMessagesUUID.add(UUID);
 
     }
 }

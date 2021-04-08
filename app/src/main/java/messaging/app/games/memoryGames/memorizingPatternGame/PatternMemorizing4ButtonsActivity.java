@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.CountDownTimer;
-import android.os.SystemClock;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
@@ -17,7 +16,6 @@ import java.util.List;
 import java.util.Random;
 
 import messaging.app.R;
-import messaging.app.games.memoryGames.SelectMemoryGameActivity;
 
 public class PatternMemorizing4ButtonsActivity extends AppCompatActivity {
 
@@ -27,17 +25,17 @@ public class PatternMemorizing4ButtonsActivity extends AppCompatActivity {
     ImageButton btnGrid4Of4;
     TextView lblCurrentStatus;
 
-    int currentButtonNum = 0;
-    int currentRound;
-    int currentLevel = 1;
-    int numberOfRounds;
+    int mCurrentButtonNum = 0;
+    int mCurrentRound;
+    int mCurrentLevel = 1;
+    int mNumberOfRounds;
 
-    List<ImageButton> buttonPatternOrder = new ArrayList();
-    ImageButton[] possibleButtons;
+    List<ImageButton> mButtonPatternOrder = new ArrayList();
+    List<Drawable> mPossibleBackgroundColours = new ArrayList<>();
+    List<Drawable> mDisplayedColoursOrder = new ArrayList();
+    ImageButton[] mPossibleButtons;
 
-    Drawable defaultColour;
-    List<Drawable> possibleBackgroundColours = new ArrayList<>();
-    List<Drawable> displayedColoursOrder = new ArrayList();
+    Drawable mDefaultColour;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,14 +50,14 @@ public class PatternMemorizing4ButtonsActivity extends AppCompatActivity {
 
         lblCurrentStatus.setVisibility(View.INVISIBLE);
 
-        possibleBackgroundColours.add(getDrawable(R.drawable.btn_rectangle_blue_gradient));
-        possibleBackgroundColours.add(getDrawable(R.drawable.btn_rectangle_green_gradient));
-        possibleBackgroundColours.add(getDrawable(R.drawable.btn_rectangle_orange_gradient));
-        possibleBackgroundColours.add(getDrawable(R.drawable.btn_rectangle_purple_gradient));
-        possibleBackgroundColours.add(getDrawable(R.drawable.btn_rectangle_red_gradient));
-        defaultColour = getDrawable(R.drawable.btn_rectangle_grey_gradient);
+        mPossibleBackgroundColours.add(getDrawable(R.drawable.btn_rectangle_blue_gradient));
+        mPossibleBackgroundColours.add(getDrawable(R.drawable.btn_rectangle_green_gradient));
+        mPossibleBackgroundColours.add(getDrawable(R.drawable.btn_rectangle_orange_gradient));
+        mPossibleBackgroundColours.add(getDrawable(R.drawable.btn_rectangle_purple_gradient));
+        mPossibleBackgroundColours.add(getDrawable(R.drawable.btn_rectangle_red_gradient));
+        mDefaultColour = getDrawable(R.drawable.btn_rectangle_grey_gradient);
 
-        possibleButtons = new ImageButton[]{btnGrid1Of4, btnGrid2Of4, btnGrid3Of4, btnGrid4Of4};
+        mPossibleButtons = new ImageButton[]{btnGrid1Of4, btnGrid2Of4, btnGrid3Of4, btnGrid4Of4};
 
         btnGrid1Of4.setEnabled(false);
         btnGrid2Of4.setEnabled(false);
@@ -71,32 +69,30 @@ public class PatternMemorizing4ButtonsActivity extends AppCompatActivity {
     }
 
 
-
     @Override
     protected void onStart() {
         super.onStart();
     }
 
 
-
     private void setButtonClicks() {
-        for (ImageButton button : possibleButtons) {
+        for (ImageButton button : mPossibleButtons) {
             button.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    button.setBackground(defaultColour);
+                    button.setBackground(mDefaultColour);
 
-                    if (buttonPatternOrder.get(currentRound) == button) {
+                    if (mButtonPatternOrder.get(mCurrentRound) == button) {
                         Log.d("test", "Correct");
                         //correct
 
                         //display the button to the user, and change to default color after 1 seconds
-                        toggleButton(button, (0), (500), displayedColoursOrder.get(currentRound));
+                        toggleButton(button, (0), (500), mDisplayedColoursOrder.get(mCurrentRound));
 
-                        currentRound++;
-                        if (currentRound == numberOfRounds) {
-                            currentLevel++;
-                            if(currentLevel < 8) {
+                        mCurrentRound++;
+                        if (mCurrentRound == mNumberOfRounds) {
+                            mCurrentLevel++;
+                            if (mCurrentLevel < 8) {
                                 lblCurrentStatus.setText("Complete");
                                 lblCurrentStatus.setVisibility(View.VISIBLE);
 
@@ -116,21 +112,22 @@ public class PatternMemorizing4ButtonsActivity extends AppCompatActivity {
                                         startLevel();
                                     }
                                 }.start();
-                            }
-                            else{
+                            } else {
                                 //user has hit the target number
-                                Intent intent = new Intent(PatternMemorizing4ButtonsActivity.this, StartMemorizingPatternActivity.class);
+                                Intent intent = new Intent(PatternMemorizing4ButtonsActivity.this,
+                                        StartMemorizingPatternActivity.class);
                                 intent.putExtra("level", "2x2");
-                                intent.putExtra("highScore", currentLevel);
+                                intent.putExtra("highScore", mCurrentLevel);
                                 PatternMemorizing4ButtonsActivity.this.startActivity(intent);
                             }
                         }
                     } else {
                         Log.d("test", "Wrong");
 
-                        Intent intent = new Intent(PatternMemorizing4ButtonsActivity.this, StartMemorizingPatternActivity.class);
+                        Intent intent = new Intent(PatternMemorizing4ButtonsActivity.this,
+                                StartMemorizingPatternActivity.class);
                         intent.putExtra("level", "2x2");
-                        intent.putExtra("highScore", currentLevel);
+                        intent.putExtra("highScore", mCurrentLevel);
                         PatternMemorizing4ButtonsActivity.this.startActivity(intent);
                     }
                 }
@@ -139,40 +136,40 @@ public class PatternMemorizing4ButtonsActivity extends AppCompatActivity {
     }
 
 
-
     private void startLevel() {
-        buttonPatternOrder = new ArrayList();
-        displayedColoursOrder = new ArrayList();
-        currentRound = 0;
-        currentButtonNum = 0;
-        numberOfRounds = currentLevel + 2;
+        mButtonPatternOrder = new ArrayList();
+        mDisplayedColoursOrder = new ArrayList();
+        mCurrentRound = 0;
+        mCurrentButtonNum = 0;
+        mNumberOfRounds = mCurrentLevel + 2;
 
         //get a random button for each round;
-        for (int i = 0; i < numberOfRounds; i++) {
+        for (int i = 0; i < mNumberOfRounds; i++) {
 
 
             //get a random position in the button list
             Random rand = new Random();
-            int randomButtonNum = rand.nextInt(possibleButtons.length - 1);
+            int randomButtonNum = rand.nextInt(mPossibleButtons.length - 1);
 
             //add the random button  to the pattern order
-            ImageButton button = possibleButtons[randomButtonNum];
-            buttonPatternOrder.add(button);
+            ImageButton button = mPossibleButtons[randomButtonNum];
+            mButtonPatternOrder.add(button);
 
             //get a random position in the colours list
-            int randomColourNum = rand.nextInt(possibleBackgroundColours.size());
+            int randomColourNum = rand.nextInt(mPossibleBackgroundColours.size());
 
             //get a random colour and save it in the list of displayed colours
-            Drawable currentBackgroundColour = possibleBackgroundColours.get(randomColourNum);
-            displayedColoursOrder.add(currentBackgroundColour);
-            Log.d("Test", "displayedColoursOrder" + displayedColoursOrder);
+            Drawable currentBackgroundColour = mPossibleBackgroundColours.get(randomColourNum);
+            mDisplayedColoursOrder.add(currentBackgroundColour);
+            Log.d("Test", "displayedColoursOrder" + mDisplayedColoursOrder);
 
             //display the button to the user, and change to default color after 0.8 seconds
             toggleButton(button, (i * 1300), (i * 1300 + 800), currentBackgroundColour);
         }
     }
 
-    private void toggleButton(ImageButton button, int colourCountDownTimer, int defaultColourCountDownTimer, Drawable colour) {
+    private void toggleButton(ImageButton button, int colourCountDownTimer,
+                              int defaultColourCountDownTimer, Drawable colour) {
 
         new CountDownTimer(colourCountDownTimer, 50) {
             @Override
@@ -192,11 +189,11 @@ public class PatternMemorizing4ButtonsActivity extends AppCompatActivity {
 
             @Override
             public void onFinish() {
-                button.setBackground(defaultColour);
-                currentButtonNum++;
+                button.setBackground(mDefaultColour);
+                mCurrentButtonNum++;
 
-                if(currentButtonNum >= numberOfRounds){
-                    currentButtonNum = -2000;
+                if (mCurrentButtonNum >= mNumberOfRounds) {
+                    mCurrentButtonNum = -2000;
 
                     lblCurrentStatus.setText("GO");
                     lblCurrentStatus.setVisibility(View.VISIBLE);

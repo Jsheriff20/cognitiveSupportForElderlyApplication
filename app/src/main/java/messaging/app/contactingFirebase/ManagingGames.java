@@ -5,7 +5,6 @@ import android.util.Log;
 
 import androidx.annotation.NonNull;
 
-import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -18,14 +17,13 @@ import java.sql.Timestamp;
 
 public class ManagingGames {
 
-    Context context;
-    FirebaseAuth mAuth;
+    Context mContext;
     FirebaseDatabase mDatabase;
     FirebaseStorage mStorage;
-    QueryingDatabase queryingDatabase = new QueryingDatabase(null);
+    QueryingDatabase mQueryingDatabase = new QueryingDatabase(null);
 
     public ManagingGames(Context context) {
-        this.context = context;
+        this.mContext = context;
         mDatabase = FirebaseDatabase.getInstance();
         mStorage = FirebaseStorage.getInstance();
     }
@@ -36,28 +34,29 @@ public class ManagingGames {
         //store game data for analysis review
         DatabaseReference databaseRef = mDatabase.getReference("gamesDetails");
         Timestamp timestamp = new Timestamp(System.currentTimeMillis());
-        databaseRef.child(queryingDatabase.getCurrentUsersUUID() + "//" + gameType + "//" + timestamp.getTime()).setValue(score);
-
-
+        databaseRef.child(mQueryingDatabase.getCurrentUsersUUID() + "//" + gameType + "//" +
+                timestamp.getTime()).setValue(score);
 
 
         //Add game data to users past 5 scores
         databaseRef = mDatabase.getReference("userGamesDetails");
-        databaseRef.child(queryingDatabase.getCurrentUsersUUID() + "//" + gameType + "//" + timestamp.getTime()).setValue(score);
+        databaseRef.child(mQueryingDatabase.getCurrentUsersUUID() + "//" + gameType + "//" +
+                timestamp.getTime()).setValue(score);
 
         //if there are more than 5 scores stored, remove any old ones
-        Query query = databaseRef.child(queryingDatabase.getCurrentUsersUUID() + "//" + gameType).orderByKey();
+        Query query = databaseRef.child(mQueryingDatabase.getCurrentUsersUUID() + "//" +
+                gameType).orderByKey();
         query.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 Log.d("test", "list of most recent 5 scores" + snapshot);
 
-                if(snapshot.getChildrenCount() > 5){
+                if (snapshot.getChildrenCount() > 5) {
                     long numberOfExtraScores = snapshot.getChildrenCount() - 5;
 
                     long count = 0;
-                    for(DataSnapshot ds : snapshot.getChildren()){
-                        if(count >= numberOfExtraScores){
+                    for (DataSnapshot ds : snapshot.getChildren()) {
+                        if (count >= numberOfExtraScores) {
                             break;
                         }
                         //remove the extra score
@@ -75,24 +74,24 @@ public class ManagingGames {
         });
 
 
-
-
         //check if score is a high score, if so update the users high score
         DatabaseReference highScoreDatabaseRef = mDatabase.getReference("userDetails");
-        Query highScoreQuery = highScoreDatabaseRef.child(queryingDatabase.getCurrentUsersUUID() + "/highScores/" + gameType);
+        Query highScoreQuery = highScoreDatabaseRef.child(mQueryingDatabase.getCurrentUsersUUID() +
+                "/highScores/" + gameType);
         highScoreQuery.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 //check if it is a reaction game or not.
                 //reaction games a lower score is better (quicker reactions)
-                if(gameType.equals("pairs") || gameType.equals("pattern")){
-                    if(snapshot.getValue() == null || (long) snapshot.getValue() < score){
-                        highScoreDatabaseRef.child(queryingDatabase.getCurrentUsersUUID() + "/highScores/" + gameType).setValue(score);
+                if (gameType.equals("pairs") || gameType.equals("pattern")) {
+                    if (snapshot.getValue() == null || (long) snapshot.getValue() < score) {
+                        highScoreDatabaseRef.child(mQueryingDatabase.getCurrentUsersUUID() +
+                                "/highScores/" + gameType).setValue(score);
                     }
-                }
-                else{
-                    if(snapshot.getValue() == null || (long) snapshot.getValue() > score ){
-                        highScoreDatabaseRef.child(queryingDatabase.getCurrentUsersUUID() + "/highScores/" + gameType).setValue(score);
+                } else {
+                    if (snapshot.getValue() == null || (long) snapshot.getValue() > score) {
+                        highScoreDatabaseRef.child(mQueryingDatabase.getCurrentUsersUUID() +
+                                "/highScores/" + gameType).setValue(score);
                     }
                 }
             }

@@ -5,7 +5,6 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
-import android.media.Image;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -15,10 +14,6 @@ import java.util.List;
 
 import messaging.app.R;
 import messaging.app.contactingFirebase.QueryingDatabase;
-import messaging.app.messages.friendsList.EditFriendActivity;
-import messaging.app.messages.friendsList.ViewFriendsListActivity;
-import messaging.app.messages.viewingMessages.ListOfReceivedMediaActivity;
-import messaging.app.messages.viewingMessages.ViewingMessagesReceivedAdapter;
 import messaging.app.settings.SettingsActivity;
 
 public class ManageRemindersActivity extends AppCompatActivity {
@@ -30,7 +25,7 @@ public class ManageRemindersActivity extends AppCompatActivity {
     private RemindersAdapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
 
-    QueryingDatabase queryingDatabase = new QueryingDatabase(null);
+    QueryingDatabase mQueryingDatabase = new QueryingDatabase(null);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,7 +55,7 @@ public class ManageRemindersActivity extends AppCompatActivity {
 
 
     private void setupLstCurrentReminders() {
-        queryingDatabase.getAllReminders(new QueryingDatabase.OnGetAllRemindersListener() {
+        mQueryingDatabase.getAllReminders(new QueryingDatabase.OnGetAllRemindersListener() {
             @Override
             public void onSuccess(List<ReminderDetails> reminderDetailsList) {
 

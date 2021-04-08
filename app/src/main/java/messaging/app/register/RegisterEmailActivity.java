@@ -20,9 +20,10 @@ public class RegisterEmailActivity extends AppCompatActivity {
     EditText txtEmail;
     Button btnLoadPasswordRegister;
     Button btnLoadLogin;
-    CheckInputsValidity checkInputsValidity = new CheckInputsValidity(this);
-    ManagingActivityPreview managingActivityPreview = new ManagingActivityPreview();
-    QueryingDatabase queryingDatabase = new QueryingDatabase(null);
+
+    CheckInputsValidity mCheckInputsValidity = new CheckInputsValidity(this);
+    ManagingActivityPreview mManagingActivityPreview = new ManagingActivityPreview();
+    QueryingDatabase mQueryingDatabase = new QueryingDatabase(null);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,16 +31,15 @@ public class RegisterEmailActivity extends AppCompatActivity {
         setContentView(R.layout.activity_register_email);
 
 
-
         txtEmail = findViewById(R.id.txtEmail);
         btnLoadPasswordRegister = findViewById(R.id.btnLoadPasswordRegister);
         btnLoadLogin = findViewById(R.id.btnLoadLogin);
 
         //if user has selected "Back" then this information will be displayed
-        if(getIntent().getStringExtra("email") != null ){
+        if (getIntent().getStringExtra("email") != null) {
             String email = getIntent().getStringExtra("email");
             txtEmail.setText(email);
-        }else{
+        } else {
             txtEmail.setText("");
         }
 
@@ -58,26 +58,28 @@ public class RegisterEmailActivity extends AppCompatActivity {
     public void onWindowFocusChanged(boolean hasFocus) {
         super.onWindowFocusChanged(hasFocus);
         if (hasFocus) {
-            managingActivityPreview.hideSystemUI(getWindow().getDecorView());
+            mManagingActivityPreview.hideSystemUI(getWindow().getDecorView());
         }
     }
 
 
-
-    private void setBtnLoadPasswordRegisterOnClick(){
+    private void setBtnLoadPasswordRegisterOnClick() {
         btnLoadPasswordRegister.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 final String email = txtEmail.getText().toString().trim();
-                if(checkInputsValidity.isEmailValid(email)) {
-                    queryingDatabase.isEmailAvailable(email,new QueryingDatabase.OnEmailCheckListener(){
+                if (mCheckInputsValidity.isEmailValid(email)) {
+                    mQueryingDatabase.isEmailAvailable(email, new QueryingDatabase.OnEmailCheckListener() {
                         @Override
-                        public void onSuccess(boolean isRegistered){
+                        public void onSuccess(boolean isRegistered) {
 
-                            if(isRegistered){
-                                Toast.makeText(RegisterEmailActivity.this, "Email already linked with another account", Toast.LENGTH_SHORT).show();
+                            if (isRegistered) {
+                                Toast.makeText(RegisterEmailActivity.this,
+                                        "Email already linked with another account",
+                                        Toast.LENGTH_SHORT).show();
                             } else {
-                                Intent intent = new Intent(RegisterEmailActivity.this, RegisterPasswordActivity.class);
+                                Intent intent = new Intent(RegisterEmailActivity.this,
+                                        RegisterPasswordActivity.class);
                                 intent.putExtra("email", email);
                                 RegisterEmailActivity.this.startActivity(intent);
                                 return;
@@ -90,7 +92,7 @@ public class RegisterEmailActivity extends AppCompatActivity {
     }
 
 
-    private void setBtnLoadLoginOnClick(){
+    private void setBtnLoadLoginOnClick() {
         btnLoadLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

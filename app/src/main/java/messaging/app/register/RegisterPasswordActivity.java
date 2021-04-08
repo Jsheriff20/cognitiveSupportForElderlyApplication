@@ -21,11 +21,12 @@ public class RegisterPasswordActivity extends AppCompatActivity {
     Button btnLoadRegisterUsername;
     Button btnLoadLogin;
     Button btnBackToRegisterEmail;
-    CheckInputsValidity checkInputsValidity = new CheckInputsValidity(this);
-    ManagingActivityPreview managingActivityPreview = new ManagingActivityPreview();
 
-    //data received from previous activity
+    CheckInputsValidity mCheckInputsValidity = new CheckInputsValidity(this);
+    ManagingActivityPreview mManagingActivityPreview = new ManagingActivityPreview();
+
     String mEmail;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -57,17 +58,18 @@ public class RegisterPasswordActivity extends AppCompatActivity {
     public void onWindowFocusChanged(boolean hasFocus) {
         super.onWindowFocusChanged(hasFocus);
         if (hasFocus) {
-            managingActivityPreview.hideSystemUI(getWindow().getDecorView());
+            mManagingActivityPreview.hideSystemUI(getWindow().getDecorView());
         }
     }
 
 
-    private void setBtnLoadPersonInfoOnClick(){
+    private void setBtnLoadPersonInfoOnClick() {
         btnLoadRegisterUsername.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(checkRegisterPasswordIsValid()) {
-                    Intent intent = new Intent(RegisterPasswordActivity.this, RegisterUsernameActivity.class);
+                if (checkRegisterPasswordIsValid()) {
+                    Intent intent = new Intent(RegisterPasswordActivity.this,
+                            RegisterUsernameActivity.class);
                     intent.putExtra("password", txtPassword.getText().toString());
                     intent.putExtra("email", mEmail);
                     RegisterPasswordActivity.this.startActivity(intent);
@@ -78,11 +80,12 @@ public class RegisterPasswordActivity extends AppCompatActivity {
     }
 
 
-    private void setBtnBackToRegisterEmailOnClick(){
+    private void setBtnBackToRegisterEmailOnClick() {
         btnBackToRegisterEmail.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(RegisterPasswordActivity.this, RegisterEmailActivity.class);
+                Intent intent = new Intent(RegisterPasswordActivity.this,
+                        RegisterEmailActivity.class);
                 intent.putExtra("email", mEmail);
                 RegisterPasswordActivity.this.startActivity(intent);
                 return;
@@ -91,9 +94,9 @@ public class RegisterPasswordActivity extends AppCompatActivity {
     }
 
 
-    private boolean checkRegisterPasswordIsValid(){
-        if(txtPassword.getText().toString().equals(txtConfirmPassword.getText().toString())){
-            if(checkInputsValidity.isPasswordValid(txtPassword.getText().toString())){
+    private boolean checkRegisterPasswordIsValid() {
+        if (txtPassword.getText().toString().equals(txtConfirmPassword.getText().toString())) {
+            if (mCheckInputsValidity.isPasswordValid(txtPassword.getText().toString())) {
                 return true;
             }
             return false;
@@ -103,7 +106,7 @@ public class RegisterPasswordActivity extends AppCompatActivity {
     }
 
 
-    private void setBtnLoadLoginOnClick(){
+    private void setBtnLoadLoginOnClick() {
         btnLoadLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

@@ -1,89 +1,89 @@
 package messaging.app.games;
 
 public class AccountsHighScores {
-    long buttonChangeHighScore;
-    long gridReactionHighScore;
-    long pairsHighScore;
-    long patternHighScore;
-    long stoopTestHighScore;
+    long mButtonChangeHighScore;
+    long mGridReactionHighScore;
+    long mPairsHighScore;
+    long mPatternHighScore;
+    long mStoopTestHighScore;
 
-    String fullName;
-    String profileImageURL = null;
-    String profileImageRotation = null;
-    String usersUUID;
+    String mFullName;
+    String mProfileImageURL = null;
+    String mProfileImageRotation = null;
+    String mUsersUUID;
 
     public AccountsHighScores() {
     }
 
-    public String getFullName() {
-        return fullName;
+    public String getmFullName() {
+        return mFullName;
     }
 
-    public void setFullName(String fullName) {
-        this.fullName = fullName;
+    public void setmFullName(String mFullName) {
+        this.mFullName = mFullName;
     }
 
-    public String getProfileImageURL() {
-        return profileImageURL;
+    public String getmProfileImageURL() {
+        return mProfileImageURL;
     }
 
-    public void setProfileImageURL(String profileImageURL) {
-        this.profileImageURL = profileImageURL;
+    public void setmProfileImageURL(String mProfileImageURL) {
+        this.mProfileImageURL = mProfileImageURL;
     }
 
-    public String getProfileImageRotation() {
-        return profileImageRotation;
+    public String getmProfileImageRotation() {
+        return mProfileImageRotation;
     }
 
-    public void setProfileImageRotation(String profileImageRotation) {
-        this.profileImageRotation = profileImageRotation;
+    public void setmProfileImageRotation(String mProfileImageRotation) {
+        this.mProfileImageRotation = mProfileImageRotation;
     }
 
-    public long getButtonChangeHighScore() {
-        return buttonChangeHighScore;
+    public long getmButtonChangeHighScore() {
+        return mButtonChangeHighScore;
     }
 
-    public void setButtonChangeHighScore(long buttonChangeHighScore) {
-        this.buttonChangeHighScore = buttonChangeHighScore;
+    public void setmButtonChangeHighScore(long mButtonChangeHighScore) {
+        this.mButtonChangeHighScore = mButtonChangeHighScore;
     }
 
-    public long getGridReactionHighScore() {
-        return gridReactionHighScore;
+    public long getmGridReactionHighScore() {
+        return mGridReactionHighScore;
     }
 
-    public void setGridReactionHighScore(long gridReactionHighScore) {
-        this.gridReactionHighScore = gridReactionHighScore;
+    public void setmGridReactionHighScore(long mGridReactionHighScore) {
+        this.mGridReactionHighScore = mGridReactionHighScore;
     }
 
-    public long getPairsHighScore() {
-        return pairsHighScore;
+    public long getmPairsHighScore() {
+        return mPairsHighScore;
     }
 
-    public void setPairsHighScore(long pairsHighScore) {
-        this.pairsHighScore = pairsHighScore;
+    public void setmPairsHighScore(long mPairsHighScore) {
+        this.mPairsHighScore = mPairsHighScore;
     }
 
-    public long getPatternHighScore() {
-        return patternHighScore;
+    public long getmPatternHighScore() {
+        return mPatternHighScore;
     }
 
-    public void setPatternHighScore(long patternHighScore) {
-        this.patternHighScore = patternHighScore;
+    public void setmPatternHighScore(long mPatternHighScore) {
+        this.mPatternHighScore = mPatternHighScore;
     }
 
-    public long getStoopTestHighScore() {
-        return stoopTestHighScore;
+    public long getmStoopTestHighScore() {
+        return mStoopTestHighScore;
     }
 
-    public void setStoopTestHighScore(long stoopTestHighScore) {
-        this.stoopTestHighScore = stoopTestHighScore;
+    public void setmStoopTestHighScore(long mStoopTestHighScore) {
+        this.mStoopTestHighScore = mStoopTestHighScore;
     }
 
-    public String getUsersUUID() {
-        return usersUUID;
+    public String getmUsersUUID() {
+        return mUsersUUID;
     }
 
-    public void setUsersUUID(String usersUUID) {
-        this.usersUUID = usersUUID;
+    public void setmUsersUUID(String mUsersUUID) {
+        this.mUsersUUID = mUsersUUID;
     }
 }

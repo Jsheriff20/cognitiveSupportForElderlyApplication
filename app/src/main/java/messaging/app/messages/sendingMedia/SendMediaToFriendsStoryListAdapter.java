@@ -16,8 +16,6 @@ import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.squareup.picasso.Picasso;
-
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -30,15 +28,17 @@ import messaging.app.AccountDetails;
 import messaging.app.MediaManagement;
 import messaging.app.R;
 
-public class SendMediaToFriendsStoryListAdapter extends RecyclerView.Adapter<SendMediaToFriendsStoryListAdapter.ViewHolder> {
+public class SendMediaToFriendsStoryListAdapter extends
+        RecyclerView.Adapter<SendMediaToFriendsStoryListAdapter.ViewHolder> {
 
-    Context context;
+    Context mContext;
     private List<AccountDetails> mFriendsDetailsList;
     public List mSelectedFriends = new ArrayList();
-    MediaManagement mediaManagement;
-    onFriendsStorySelectRecyclerViewClickedUUIDListener listener;
+    onFriendsStorySelectRecyclerViewClickedUUIDListener mListener;
     private File mImageFolder;
     private String mImageFilePath;
+
+    MediaManagement mMediaManagement;
 
 
     public interface onFriendsStorySelectRecyclerViewClickedUUIDListener {
@@ -47,18 +47,21 @@ public class SendMediaToFriendsStoryListAdapter extends RecyclerView.Adapter<Sen
     }
 
 
-    public SendMediaToFriendsStoryListAdapter(List<AccountDetails> friendsDetailsList, Context context, onFriendsStorySelectRecyclerViewClickedUUIDListener listener) {
+    public SendMediaToFriendsStoryListAdapter(List<AccountDetails> friendsDetailsList,
+                                              Context context,
+                                              onFriendsStorySelectRecyclerViewClickedUUIDListener listener) {
         mFriendsDetailsList = friendsDetailsList;
-        this.context = context;
-        this.listener = listener;
-        mediaManagement = new MediaManagement(context);
+        this.mContext = context;
+        this.mListener = listener;
+        mMediaManagement = new MediaManagement(context);
     }
 
 
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.send_media_friend_row, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.send_media_friend_row,
+                parent, false);
         ViewHolder viewHolder = new ViewHolder(view);
 
         return viewHolder;
@@ -70,20 +73,21 @@ public class SendMediaToFriendsStoryListAdapter extends RecyclerView.Adapter<Sen
 
         AccountDetails currentListItem = mFriendsDetailsList.get(position);
         //provide the details of each view element for each friend row
-        holder.lblName.setText(currentListItem.getFirstName() + " " + currentListItem.getSurname());
-        holder.lblRelationship.setText(currentListItem.getRelationship());
-        holder.UUID = currentListItem.getUUID();
-        holder.profileImageRotation = mediaManagement.exifToDegrees(currentListItem.getProfileImageRotation());
+        holder.lblName.setText(currentListItem.getmFirstName() + " " + currentListItem.getmSurname());
+        holder.lblRelationship.setText(currentListItem.getmRelationship());
+        holder.UUID = currentListItem.getmUUID();
+        holder.profileImageRotation = mMediaManagement.exifToDegrees(currentListItem.getmProfileImageRotation());
 
-        if (currentListItem.getProfileImageUrl() != null && !currentListItem.getProfileImageUrl().equals("")) {
+        if (currentListItem.getmProfileImageUrl() != null && !currentListItem.getmProfileImageUrl().equals("")) {
             //create directories for files
-            File[] mediaFolders = mediaManagement.createMediaFolders();
+            File[] mediaFolders = mMediaManagement.createMediaFolders();
             mImageFolder = mediaFolders[1];
 
             try {
 
-                mImageFilePath = mediaManagement.createImageFileName(mImageFolder).getAbsolutePath();
-                try (BufferedInputStream inputStream = new BufferedInputStream(new URL(currentListItem.getProfileImageUrl()).openStream());
+                mImageFilePath = mMediaManagement.createImageFileName(mImageFolder).getAbsolutePath();
+                try (BufferedInputStream inputStream =
+                             new BufferedInputStream(new URL(currentListItem.getmProfileImageUrl()).openStream());
                      FileOutputStream fileOS = new FileOutputStream(mImageFilePath)) {
                     byte data[] = new byte[1024];
                     int byteContent;
@@ -99,14 +103,16 @@ public class SendMediaToFriendsStoryListAdapter extends RecyclerView.Adapter<Sen
                 ExifInterface exif = null;
                 //display the media in the correct rotation
                 exif = new ExifInterface(mImageFilePath);
-                int exifOrientation = exif.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL);
+                int exifOrientation = exif.getAttributeInt(ExifInterface.TAG_ORIENTATION,
+                        ExifInterface.ORIENTATION_NORMAL);
                 Bitmap myBitmap = BitmapFactory.decodeFile(new File(mImageFilePath).getAbsolutePath());
 
-                Bitmap adjustedBitmapImage = mediaManagement.adjustBitmapImage(exifOrientation, myBitmap);
+                Bitmap adjustedBitmapImage = mMediaManagement
+                        .adjustBitmapImage(exifOrientation, myBitmap);
 
                 holder.imgFriendsImage.setImageBitmap(adjustedBitmapImage);
 
-                mediaManagement.deleteMediaFile(mImageFilePath, context);
+                mMediaManagement.deleteMediaFile(mImageFilePath, mContext);
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -127,7 +133,7 @@ public class SendMediaToFriendsStoryListAdapter extends RecyclerView.Adapter<Sen
                     holder.friendRowLayout.setBackgroundColor(Color.rgb(230, 187, 173));
 
                 }
-                listener.onSelected(holder.UUID, "story");
+                mListener.onSelected(holder.UUID, "story");
             }
         });
 

@@ -20,23 +20,24 @@ import messaging.app.contactingFirebase.ManagingFriends;
 
 public class AdminFriendsAdapter extends RecyclerView.Adapter<AdminFriendsAdapter.ViewHolder> {
 
-    Context context;
-    ManagingFriends managingFriends;
+    Context mContext;
+    ManagingFriends mManagingFriends;
     HashMap<String, String> mAdminFriends;
-    List keys;
+    List mKeys;
 
     public AdminFriendsAdapter(HashMap<String, String> mAdminFriends, Context context) {
-        this.context = context;
+        this.mContext = context;
         this.mAdminFriends = mAdminFriends;
-        managingFriends = new ManagingFriends(context, null);
-        this.keys = new ArrayList(mAdminFriends.keySet());
+        mManagingFriends = new ManagingFriends(context, null);
+        this.mKeys = new ArrayList(mAdminFriends.keySet());
     }
 
 
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.current_admin_friends, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.current_admin_friends,
+                parent, false);
         ViewHolder viewHolder = new ViewHolder(view);
 
         return viewHolder;
@@ -46,7 +47,7 @@ public class AdminFriendsAdapter extends RecyclerView.Adapter<AdminFriendsAdapte
     @Override
     public void onBindViewHolder(@NonNull final ViewHolder holder, int position) {
 
-        String UUID = (String) keys.get(position);
+        String UUID = (String) mKeys.get(position);
         String name = mAdminFriends.get(UUID);
 
         holder.lblAdminFriendName.setText(name);
@@ -55,7 +56,7 @@ public class AdminFriendsAdapter extends RecyclerView.Adapter<AdminFriendsAdapte
             @Override
             public void onClick(View view) {
                 mAdminFriends.remove(UUID);
-                managingFriends.removeFriendAsAdmin(UUID);
+                mManagingFriends.removeFriendAsAdmin(UUID);
                 notifyItemRemoved(position);
                 notifyItemRangeChanged(position, mAdminFriends.size());
             }
@@ -70,7 +71,7 @@ public class AdminFriendsAdapter extends RecyclerView.Adapter<AdminFriendsAdapte
 
 
     //friend row layout
-    public class ViewHolder extends RecyclerView.ViewHolder{
+    public class ViewHolder extends RecyclerView.ViewHolder {
         TextView lblAdminFriendName;
         ImageButton btnRemoveAdminFriend;
         ConstraintLayout adminFriendRowLayout;

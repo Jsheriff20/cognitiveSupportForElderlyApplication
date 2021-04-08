@@ -32,8 +32,6 @@ import messaging.app.ManagingActivityPreview;
 import messaging.app.MediaManagement;
 import messaging.app.R;
 import messaging.app.contactingFirebase.ManagingMessages;
-import messaging.app.messages.capturingMedia.CaptureActivity;
-import messaging.app.messages.friendsList.AddFriendActivity;
 import messaging.app.messages.viewingMessages.ListOfReceivedMediaActivity;
 
 import static android.widget.Toast.LENGTH_SHORT;
@@ -54,15 +52,15 @@ public class AddMessageToMediaActivity extends AppCompatActivity {
     String mMediaPath;
     String mMessage;
     int mDeviceOrientationMode;
-    private boolean userWantsToSendTheirAudioRecording = false;
-    private boolean permissionToRecordAccepted = false;
+    private boolean mUserWantsToSendTheirAudioRecording = false;
+    private boolean mPermissionToRecordAccepted = false;
     private SpeechRecognizer speechRecognizer;
 
     private String mReplyingToUUID = null;
 
-    MediaManagement mediaManagement = new MediaManagement();
-    ManagingActivityPreview managingActivityPreview = new ManagingActivityPreview();
-    ManagingMessages managingMessages = new ManagingMessages(this);
+    MediaManagement mMediaManagement = new MediaManagement();
+    ManagingActivityPreview mManagingActivityPreview = new ManagingActivityPreview();
+    ManagingMessages mManagingMessages = new ManagingMessages(this);
 
 
     @Override
@@ -83,13 +81,14 @@ public class AddMessageToMediaActivity extends AppCompatActivity {
         vidCapturedVideoPreview = findViewById(R.id.vidCapturedVideoPreview);
         btnBackToCaptureMedia = findViewById(R.id.btnBackToCaptureMedia);
 
-        if(getIntent().getStringExtra("replyingTo") != null){
+        if (getIntent().getStringExtra("replyingTo") != null) {
             mReplyingToUUID = getIntent().getStringExtra("replyingTo");
         }
 
 
-        if(userWantsToSendTheirAudioRecording) {
-            ActivityCompat.requestPermissions(AddMessageToMediaActivity.this, new String[]{Manifest.permission.RECORD_AUDIO}, REQUEST_SPEECH_INPUT_RESULT);
+        if (mUserWantsToSendTheirAudioRecording) {
+            ActivityCompat.requestPermissions(AddMessageToMediaActivity.this,
+                    new String[]{Manifest.permission.RECORD_AUDIO}, REQUEST_SPEECH_INPUT_RESULT);
         }
         setBtnStartVoiceToTextOnClick();
         setBtnStopVoiceToTextOnClick();
@@ -118,12 +117,12 @@ public class AddMessageToMediaActivity extends AppCompatActivity {
     public void onWindowFocusChanged(boolean hasFocus) {
         super.onWindowFocusChanged(hasFocus);
         if (hasFocus) {
-            managingActivityPreview.hideSystemUI(getWindow().getDecorView());
+            mManagingActivityPreview.hideSystemUI(getWindow().getDecorView());
         }
     }
 
 
-    private void setBtnBackToCaptureMedia(){
+    private void setBtnBackToCaptureMedia() {
         btnBackToCaptureMedia.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -133,7 +132,7 @@ public class AddMessageToMediaActivity extends AppCompatActivity {
     }
 
 
-    private void setBtnSelectRecipientsActivityOnClick(){
+    private void setBtnSelectRecipientsActivityOnClick() {
         btnSelectRecipientsActivity.setOnClickListener(new View.OnClickListener() {
 
             @Override
@@ -141,8 +140,9 @@ public class AddMessageToMediaActivity extends AppCompatActivity {
 
                 mMessage = txtMessage.getText().toString();
 
-                if(mReplyingToUUID == null) {
-                    Intent intent = new Intent(AddMessageToMediaActivity.this, SendMediaTabsActivity.class);
+                if (mReplyingToUUID == null) {
+                    Intent intent = new Intent(AddMessageToMediaActivity.this,
+                            SendMediaTabsActivity.class);
                     intent.putExtra("typeOfMediaCaptured", mTypeOfMediaCaptured);
                     intent.putExtra("mediaPath", mMediaPath);
                     intent.putExtra("message", mMessage);
@@ -150,34 +150,37 @@ public class AddMessageToMediaActivity extends AppCompatActivity {
 
 
                     startActivity(intent);
-                }
-                else{
+                } else {
                     sendMedia(mReplyingToUUID, mMediaPath, mTypeOfMediaCaptured, mMessage, mDeviceOrientationMode);
                 }
             }
         });
     }
 
-    private void sendMedia(String friendsUUID, String pathToMedia, String typeOfMediaCaptured, String message, int deviceOrientationMode ){
+    private void sendMedia(String friendsUUID, String pathToMedia, String typeOfMediaCaptured,
+                           String message, int deviceOrientationMode) {
 
         ArrayList<String> directMessagesUUID = new ArrayList<String>();
-        ArrayList<String> storyMessagesUUID = new ArrayList<String>();;
+        ArrayList<String> storyMessagesUUID = new ArrayList<String>();
+        ;
 
         directMessagesUUID.add(friendsUUID);
 
         try {
-            managingMessages.sendMessages(directMessagesUUID, storyMessagesUUID, pathToMedia, typeOfMediaCaptured, message, deviceOrientationMode);
+            mManagingMessages.sendMessages(directMessagesUUID, storyMessagesUUID, pathToMedia,
+                    typeOfMediaCaptured, message, deviceOrientationMode);
         } catch (IOException e) {
             e.printStackTrace();
         }
 
 
-        Intent intent = new Intent(AddMessageToMediaActivity.this, ListOfReceivedMediaActivity.class);
+        Intent intent = new Intent(AddMessageToMediaActivity.this,
+                ListOfReceivedMediaActivity.class);
         AddMessageToMediaActivity.this.startActivity(intent);
     }
 
 
-    private void setBtnStartVoiceToTextOnClick(){
+    private void setBtnStartVoiceToTextOnClick() {
         btnVoiceToText.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -188,7 +191,7 @@ public class AddMessageToMediaActivity extends AppCompatActivity {
     }
 
 
-    private void setBtnStopVoiceToTextOnClick(){
+    private void setBtnStopVoiceToTextOnClick() {
         btnStopVoiceToText.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -249,7 +252,8 @@ public class AddMessageToMediaActivity extends AppCompatActivity {
 
             @Override
             public void onResults(Bundle results) {
-                Toast.makeText(AddMessageToMediaActivity.this, "Stopped listening", LENGTH_SHORT).show();
+                Toast.makeText(AddMessageToMediaActivity.this,
+                        "Stopped listening", LENGTH_SHORT).show();
 
                 btnVoiceToText.setVisibility(View.VISIBLE);
                 btnStopVoiceToText.setVisibility(View.INVISIBLE);
@@ -272,36 +276,37 @@ public class AddMessageToMediaActivity extends AppCompatActivity {
         });
 
 
-        if(start){
+        if (start) {
             speechRecognizer.startListening(intent);
-        }
-        else{
+        } else {
             speechRecognizer.stopListening();
         }
     }
 
 
-    private void previewCapturedMedia(String typeOfCapturedMedia, String mediaPath){
+    private void previewCapturedMedia(String typeOfCapturedMedia, String mediaPath) {
 
         File mediaFile;
 
         //display the captured media
-        switch (typeOfCapturedMedia){
+        switch (typeOfCapturedMedia) {
             case "Image":
                 //get image file
                 mediaFile = new File(mediaPath);
 
                 //update image view
-                if(mediaFile.exists()){
+                if (mediaFile.exists()) {
                     try {
 
                         ExifInterface exif = null;
                         //display the media in the correct rotation
                         exif = new ExifInterface(mediaFile.getPath());
-                        int exifOrientation = exif.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL);
+                        int exifOrientation = exif.getAttributeInt(ExifInterface.TAG_ORIENTATION,
+                                ExifInterface.ORIENTATION_NORMAL);
                         Bitmap myBitmap = BitmapFactory.decodeFile(mediaFile.getAbsolutePath());
 
-                        Bitmap adjustedBitmapImage = mediaManagement.adjustBitmapImage(exifOrientation, myBitmap);
+                        Bitmap adjustedBitmapImage = mMediaManagement
+                                .adjustBitmapImage(exifOrientation, myBitmap);
 
                         imgCapturedImagePreview.setImageBitmap(adjustedBitmapImage);
 
@@ -309,8 +314,9 @@ public class AddMessageToMediaActivity extends AppCompatActivity {
                         e.printStackTrace();
                     }
 
-                }else{
-                    Toast.makeText(AddMessageToMediaActivity.this, "Could not find image", LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(AddMessageToMediaActivity.this,
+                            "Could not find image", LENGTH_SHORT).show();
                 }
 
                 //display image
@@ -323,14 +329,15 @@ public class AddMessageToMediaActivity extends AppCompatActivity {
                 mediaFile = new File(mediaPath);
 
                 //update image view
-                if(mediaFile.exists()){
+                if (mediaFile.exists()) {
 
                     vidCapturedVideoPreview.setVideoPath(mediaPath);
                     vidCapturedVideoPreview.start();
 
 
-                }else{
-                    Toast.makeText(AddMessageToMediaActivity.this, "Could not find video", LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(AddMessageToMediaActivity.this,
+                            "Could not find video", LENGTH_SHORT).show();
                 }
 
                 //display image
@@ -343,7 +350,7 @@ public class AddMessageToMediaActivity extends AppCompatActivity {
     }
 
 
-    public void setVideoViewListener(){
+    public void setVideoViewListener() {
         vidCapturedVideoPreview.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
             @Override
             public void onPrepared(MediaPlayer mp) {
@@ -354,13 +361,14 @@ public class AddMessageToMediaActivity extends AppCompatActivity {
 
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[]
+            permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        switch (requestCode){
+        switch (requestCode) {
             case REQUEST_SPEECH_INPUT_RESULT:
-                permissionToRecordAccepted  = grantResults[0] == PackageManager.PERMISSION_GRANTED;
+                mPermissionToRecordAccepted = grantResults[0] == PackageManager.PERMISSION_GRANTED;
                 break;
         }
-        if (!permissionToRecordAccepted ) finish();
+        if (!mPermissionToRecordAccepted) finish();
     }
 }

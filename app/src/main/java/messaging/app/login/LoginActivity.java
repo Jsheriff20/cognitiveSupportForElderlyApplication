@@ -1,4 +1,4 @@
- package messaging.app.login;
+package messaging.app.login;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -20,7 +20,7 @@ import messaging.app.SelectAreaOfApplicationActivity;
 import messaging.app.contactingFirebase.ManagingAccounts;
 import messaging.app.register.RegisterEmailActivity;
 
- public class LoginActivity extends AppCompatActivity {
+public class LoginActivity extends AppCompatActivity {
 
     EditText txtEmail;
     EditText txtPassword;
@@ -28,9 +28,9 @@ import messaging.app.register.RegisterEmailActivity;
     Button btnLoadRegister;
     TextView lblResetPassword;
 
-    ManagingAccounts managingAccounts = new ManagingAccounts(this);
-    CheckInputsValidity checkInputsValidity = new CheckInputsValidity(this);
-    ManagingActivityPreview managingActivityPreview = new ManagingActivityPreview();
+    ManagingAccounts mManagingAccounts = new ManagingAccounts(this);
+    CheckInputsValidity mCheckInputsValidity = new CheckInputsValidity(this);
+    ManagingActivityPreview mManagingActivityPreview = new ManagingActivityPreview();
 
 
     @Override
@@ -61,8 +61,9 @@ import messaging.app.register.RegisterEmailActivity;
         super.onStart();
         FirebaseAuth mAuth = FirebaseAuth.getInstance();
         FirebaseUser currentUser = mAuth.getCurrentUser();
-        if(currentUser != null){
-            LoginActivity.this.startActivity(new Intent(LoginActivity.this, SelectAreaOfApplicationActivity.class));
+        if (currentUser != null) {
+            LoginActivity.this.startActivity(new Intent(LoginActivity.this,
+                    SelectAreaOfApplicationActivity.class));
         }
     }
 
@@ -71,15 +72,16 @@ import messaging.app.register.RegisterEmailActivity;
     public void onWindowFocusChanged(boolean hasFocus) {
         super.onWindowFocusChanged(hasFocus);
         if (hasFocus) {
-            managingActivityPreview.hideSystemUI(getWindow().getDecorView());
+            mManagingActivityPreview.hideSystemUI(getWindow().getDecorView());
         }
     }
 
-    private void setBtnLoadRegisterOnClick(){
+    private void setBtnLoadRegisterOnClick() {
         btnLoadRegister.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(LoginActivity.this, RegisterEmailActivity.class);
+                Intent intent = new Intent(LoginActivity.this,
+                        RegisterEmailActivity.class);
                 LoginActivity.this.startActivity(intent);
             }
         });
@@ -90,27 +92,27 @@ import messaging.app.register.RegisterEmailActivity;
         lblResetPassword.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(LoginActivity.this, ResetPasswordActivity.class);
+                Intent intent = new Intent(LoginActivity.this,
+                        ResetPasswordActivity.class);
                 LoginActivity.this.startActivity(intent);
             }
         });
     }
 
 
-    private void setBtnLoginOnClick(){
+    private void setBtnLoginOnClick() {
         btnLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 String email = txtEmail.getText().toString().trim();
-                if(!checkInputsValidity.isEmailValid(email)){
+                if (!mCheckInputsValidity.isEmailValid(email)) {
                     return;
-                }
-                else if(txtPassword.getText().toString().length() < 1){
-                    Toast.makeText(LoginActivity.this, "Please enter a password", Toast.LENGTH_SHORT).show();
+                } else if (txtPassword.getText().toString().length() < 1) {
+                    Toast.makeText(LoginActivity.this, "Please enter a password",
+                            Toast.LENGTH_SHORT).show();
                     return;
-                }
-                else {
-                    managingAccounts.loginUser(email, txtPassword.getText().toString());
+                } else {
+                    mManagingAccounts.loginUser(email, txtPassword.getText().toString());
 
                 }
             }

@@ -9,7 +9,6 @@ import android.widget.Button;
 import android.widget.EditText;
 
 import messaging.app.CheckInputsValidity;
-import messaging.app.Formatting;
 import messaging.app.ManagingActivityPreview;
 import messaging.app.login.LoginActivity;
 import messaging.app.R;
@@ -21,9 +20,9 @@ public class RegisterPersonalInfoActivity extends AppCompatActivity {
     Button btnLoadProfileImageRegister;
     Button btnLoadLogin;
     Button btnBackToRegisterUsername;
-    CheckInputsValidity checkInputsValidity = new CheckInputsValidity(this);
-    Formatting formatting = new Formatting();
-    ManagingActivityPreview managingActivityPreview = new ManagingActivityPreview();
+
+    CheckInputsValidity mCheckInputsValidity = new CheckInputsValidity(this);
+    ManagingActivityPreview mManagingActivityPreview = new ManagingActivityPreview();
 
     String mEmail;
     String mPassword;
@@ -47,10 +46,10 @@ public class RegisterPersonalInfoActivity extends AppCompatActivity {
 
 
         //if user has selected "Back" then this information will be displayed
-        if(getIntent().getStringExtra("firstName") != null){
+        if (getIntent().getStringExtra("firstName") != null) {
             txtFirstName.setText(getIntent().getStringExtra("firstName"));
         }
-        if(getIntent().getStringExtra("surname") != null){
+        if (getIntent().getStringExtra("surname") != null) {
             txtSurname.setText(getIntent().getStringExtra("surname"));
         }
 
@@ -70,16 +69,17 @@ public class RegisterPersonalInfoActivity extends AppCompatActivity {
     public void onWindowFocusChanged(boolean hasFocus) {
         super.onWindowFocusChanged(hasFocus);
         if (hasFocus) {
-            managingActivityPreview.hideSystemUI(getWindow().getDecorView());
+            mManagingActivityPreview.hideSystemUI(getWindow().getDecorView());
         }
     }
 
 
-    private void setBtnBackToRegisterUsernameOnClick(){
+    private void setBtnBackToRegisterUsernameOnClick() {
         btnBackToRegisterUsername.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(RegisterPersonalInfoActivity.this, RegisterUsernameActivity.class);
+                Intent intent = new Intent(RegisterPersonalInfoActivity.this,
+                        RegisterUsernameActivity.class);
                 intent.putExtra("email", mEmail);
                 intent.putExtra("username", mUsername);
                 RegisterPersonalInfoActivity.this.startActivity(intent);
@@ -89,14 +89,15 @@ public class RegisterPersonalInfoActivity extends AppCompatActivity {
     }
 
 
-    private void setBtnLoadProfileImageRegisterOnClick(){
+    private void setBtnLoadProfileImageRegisterOnClick() {
         btnLoadProfileImageRegister.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 String firstName = txtFirstName.getText().toString().trim();
                 String surname = txtSurname.getText().toString().trim();
-                if(checkInputsValidity.isNameValid(firstName + surname)){
-                    Intent intent = new Intent(RegisterPersonalInfoActivity.this, RegisterProfileImageActivity.class);
+                if (mCheckInputsValidity.isNameValid(firstName + surname)) {
+                    Intent intent = new Intent(RegisterPersonalInfoActivity.this,
+                            RegisterProfileImageActivity.class);
                     intent.putExtra("password", mPassword);
                     intent.putExtra("email", mEmail);
                     intent.putExtra("username", mUsername);
@@ -109,11 +110,12 @@ public class RegisterPersonalInfoActivity extends AppCompatActivity {
         });
     }
 
-    private void setBtnLoadLoginOnClick(){
+    private void setBtnLoadLoginOnClick() {
         btnLoadLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(RegisterPersonalInfoActivity.this, LoginActivity.class);
+                Intent intent = new Intent(RegisterPersonalInfoActivity.this,
+                        LoginActivity.class);
                 RegisterPersonalInfoActivity.this.startActivity(intent);
             }
         });

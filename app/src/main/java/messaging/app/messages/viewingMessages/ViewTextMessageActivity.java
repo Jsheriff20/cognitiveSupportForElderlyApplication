@@ -17,11 +17,8 @@ import java.util.Locale;
 import messaging.app.Formatting;
 import messaging.app.ManagingActivityPreview;
 import messaging.app.R;
-import messaging.app.messages.friendsList.ViewFriendsListActivity;
 
 public class ViewTextMessageActivity extends AppCompatActivity {
-    Intent intent;
-    MessageData displayingMessage;
 
     TextView lblMessageFromName;
     TextView lblDisplayingMessage;
@@ -30,8 +27,11 @@ public class ViewTextMessageActivity extends AppCompatActivity {
     ImageButton btnTextToSpeech;
     TextToSpeech textToSpeech;
 
-    Formatting formatting = new Formatting();
-    ManagingActivityPreview managingActivityPreview = new ManagingActivityPreview();
+    Intent mIntent;
+    MessageData mDisplayingMessage;
+    Formatting mFormatting = new Formatting();
+
+    ManagingActivityPreview mManagingActivityPreview = new ManagingActivityPreview();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,24 +45,24 @@ public class ViewTextMessageActivity extends AppCompatActivity {
         btnTextToSpeech = findViewById(R.id.btnTextToSpeech);
 
 
-        intent = getIntent();
-        int messageNum = intent.getIntExtra("messageNum", -1);
+        mIntent = getIntent();
+        int messageNum = mIntent.getIntExtra("messageNum", -1);
 
-        if(messageNum == -1){
+        if (messageNum == -1) {
             messageNum = 0;
-            intent.putExtra("messageNum", 0);
+            mIntent.putExtra("messageNum", 0);
         }
 
 
-        ArrayList<Parcelable> messageList = intent.getParcelableArrayListExtra("messagesList");
-        displayingMessage = (MessageData) messageList.get(messageNum);
+        ArrayList<Parcelable> messageList = mIntent.getParcelableArrayListExtra("messagesList");
+        mDisplayingMessage = (MessageData) messageList.get(messageNum);
 
 
         //display the "displayingMessage" data to the user
-        lblMessageFromName.setText(displayingMessage.getFullName());
-        lblDisplayingMessage.setText(displayingMessage.getTextMessage());
+        lblMessageFromName.setText(mDisplayingMessage.getmFullName());
+        lblDisplayingMessage.setText(mDisplayingMessage.getmTextMessage());
 
-        String formattedTimeAgo = formatting.howLongAgo(displayingMessage.getTimeStamp());
+        String formattedTimeAgo = mFormatting.howLongAgo(mDisplayingMessage.getmTimeStamp());
         lblReceivedTime.setText(formattedTimeAgo + " Ago");
 
         setBtnViewMediaMessageOnClick();
@@ -73,7 +73,8 @@ public class ViewTextMessageActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        Intent intent = new Intent(ViewTextMessageActivity.this, ListOfReceivedMediaActivity.class);
+        Intent intent = new Intent(ViewTextMessageActivity.this,
+                ListOfReceivedMediaActivity.class);
         ViewTextMessageActivity.this.startActivity(intent);
     }
 
@@ -82,42 +83,44 @@ public class ViewTextMessageActivity extends AppCompatActivity {
     public void onWindowFocusChanged(boolean hasFocus) {
         super.onWindowFocusChanged(hasFocus);
         if (hasFocus) {
-            managingActivityPreview.hideSystemUI(getWindow().getDecorView());
+            mManagingActivityPreview.hideSystemUI(getWindow().getDecorView());
         }
     }
 
 
-    private void setupTextToSpeech(){
-        textToSpeech = new TextToSpeech(ViewTextMessageActivity.this, new TextToSpeech.OnInitListener() {
-            @Override
-            public void onInit(int i) {
-                if(i == TextToSpeech.SUCCESS){
-                     textToSpeech.setLanguage(Locale.ENGLISH);
-                }
-            }
-        });
+    private void setupTextToSpeech() {
+        textToSpeech = new TextToSpeech(ViewTextMessageActivity.this,
+                new TextToSpeech.OnInitListener() {
+                    @Override
+                    public void onInit(int i) {
+                        if (i == TextToSpeech.SUCCESS) {
+                            textToSpeech.setLanguage(Locale.ENGLISH);
+                        }
+                    }
+                });
     }
 
 
-    private void setBtnTextToSpeechOnClick(){
+    private void setBtnTextToSpeechOnClick() {
         btnTextToSpeech.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 String text = lblDisplayingMessage.getText().toString();
 
                 //convert text to speech
-               textToSpeech.speak(text, TextToSpeech.QUEUE_FLUSH, null);
+                textToSpeech.speak(text, TextToSpeech.QUEUE_FLUSH, null);
             }
         });
     }
 
 
-    private void setBtnViewMediaMessageOnClick(){
+    private void setBtnViewMediaMessageOnClick() {
         btnViewMediaMessage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent newIntent = new Intent(ViewTextMessageActivity.this, ViewMediaMessageActivity.class);
-                newIntent.putExtras(intent.getExtras());
+                Intent newIntent = new Intent(ViewTextMessageActivity.this,
+                        ViewMediaMessageActivity.class);
+                newIntent.putExtras(mIntent.getExtras());
                 ViewTextMessageActivity.this.startActivity(newIntent);
             }
         });

@@ -17,7 +17,7 @@ public class ResetPasswordActivity extends AppCompatActivity {
     Button btnResetPassword;
     Button btnLoadLogin;
 
-    ManagingAccounts managingAccounts = new ManagingAccounts(this);
+    ManagingAccounts mManagingAccounts = new ManagingAccounts(this);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,22 +40,23 @@ public class ResetPasswordActivity extends AppCompatActivity {
     }
 
 
-    private void setBtnLoadLoginOnClick(){
+    private void setBtnLoadLoginOnClick() {
         btnLoadLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(ResetPasswordActivity.this, LoginActivity.class);
+                Intent intent = new Intent(ResetPasswordActivity.this,
+                        LoginActivity.class);
                 ResetPasswordActivity.this.startActivity(intent);
             }
         });
     }
 
-    private void setBtnResetPasswordOnClick(){
+    private void setBtnResetPasswordOnClick() {
         btnResetPassword.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 //set user email to reset password and load login if successful;
-                managingAccounts.resetPassword(txtEmail.getText().toString());
+                mManagingAccounts.resetPassword(txtEmail.getText().toString());
             }
         });
     }

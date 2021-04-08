@@ -30,17 +30,18 @@ import messaging.app.AccountDetails;
 import messaging.app.MediaManagement;
 import messaging.app.R;
 
-public class SendMediaToFriendsListAdapter extends RecyclerView.Adapter<SendMediaToFriendsListAdapter.ViewHolder> {
+public class SendMediaToFriendsListAdapter extends
+        RecyclerView.Adapter<SendMediaToFriendsListAdapter.ViewHolder> {
 
-    Context context;
+    Context mContext;
     private List<AccountDetails> mFriendsDetailsList;
     public List mSelectedFriends = new ArrayList();
-    MediaManagement mediaManagement;
-    onFriendsSelectRecyclerViewClickedUUIDListener listener;
+    onFriendsSelectRecyclerViewClickedUUIDListener mListener;
 
     private File mImageFolder;
     private String mImageFilePath;
 
+    MediaManagement mMediaManagement;
 
     public interface onFriendsSelectRecyclerViewClickedUUIDListener {
         //message type will either be story or friend (the direct message)
@@ -48,18 +49,21 @@ public class SendMediaToFriendsListAdapter extends RecyclerView.Adapter<SendMedi
     }
 
 
-    public SendMediaToFriendsListAdapter(List<AccountDetails> friendsDetailsList, Context context, onFriendsSelectRecyclerViewClickedUUIDListener listener) {
+    public SendMediaToFriendsListAdapter(List<AccountDetails> friendsDetailsList,
+                                         Context context,
+                                         onFriendsSelectRecyclerViewClickedUUIDListener listener) {
         mFriendsDetailsList = friendsDetailsList;
-        this.context = context;
-        this.listener = listener;
-        mediaManagement = new MediaManagement(context);
+        this.mContext = context;
+        this.mListener = listener;
+        mMediaManagement = new MediaManagement(context);
     }
 
 
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.send_media_friend_row, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.send_media_friend_row,
+                parent, false);
         ViewHolder viewHolder = new ViewHolder(view);
 
         return viewHolder;
@@ -71,21 +75,24 @@ public class SendMediaToFriendsListAdapter extends RecyclerView.Adapter<SendMedi
 
         AccountDetails currentListItem = mFriendsDetailsList.get(position);
         //provide the details of each view element for each friend row
-        holder.lblName.setText(currentListItem.getFirstName() + " " + currentListItem.getSurname());
-        holder.lblRelationship.setText(currentListItem.getRelationship());
-        holder.UUID = currentListItem.getUUID();
-        holder.profileImageRotation = mediaManagement.exifToDegrees(currentListItem.getProfileImageRotation());
+        holder.lblName.setText(currentListItem.getmFirstName() + " " + currentListItem.getmSurname());
+        holder.lblRelationship.setText(currentListItem.getmRelationship());
+        holder.UUID = currentListItem.getmUUID();
+        holder.profileImageRotation = mMediaManagement
+                .exifToDegrees(currentListItem.getmProfileImageRotation());
 
-        Log.d("test", "onBindViewHolder: " + currentListItem.getProfileImageUrl());
-        if(currentListItem.getProfileImageUrl() != null && !currentListItem.getProfileImageUrl().equals("") ) {
+        Log.d("test", "onBindViewHolder: " + currentListItem.getmProfileImageUrl());
+        if (currentListItem.getmProfileImageUrl() != null &&
+                !currentListItem.getmProfileImageUrl().equals("")) {
             //create directories for files
-            File[] mediaFolders = mediaManagement.createMediaFolders();
+            File[] mediaFolders = mMediaManagement.createMediaFolders();
             mImageFolder = mediaFolders[1];
 
             try {
 
-                mImageFilePath = mediaManagement.createImageFileName(mImageFolder).getAbsolutePath();
-                try (BufferedInputStream inputStream = new BufferedInputStream(new URL(currentListItem.getProfileImageUrl()).openStream());
+                mImageFilePath = mMediaManagement.createImageFileName(mImageFolder).getAbsolutePath();
+                try (BufferedInputStream inputStream = new BufferedInputStream(
+                        new URL(currentListItem.getmProfileImageUrl()).openStream());
                      FileOutputStream fileOS = new FileOutputStream(mImageFilePath)) {
                     byte data[] = new byte[1024];
                     int byteContent;
@@ -101,14 +108,16 @@ public class SendMediaToFriendsListAdapter extends RecyclerView.Adapter<SendMedi
                 ExifInterface exif = null;
                 //display the media in the correct rotation
                 exif = new ExifInterface(mImageFilePath);
-                int exifOrientation = exif.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL);
+                int exifOrientation = exif.getAttributeInt(ExifInterface.TAG_ORIENTATION,
+                        ExifInterface.ORIENTATION_NORMAL);
                 Bitmap myBitmap = BitmapFactory.decodeFile(new File(mImageFilePath).getAbsolutePath());
 
-                Bitmap adjustedBitmapImage = mediaManagement.adjustBitmapImage(exifOrientation, myBitmap);
+                Bitmap adjustedBitmapImage = mMediaManagement
+                        .adjustBitmapImage(exifOrientation, myBitmap);
 
                 holder.imgFriendsImage.setImageBitmap(adjustedBitmapImage);
 
-                mediaManagement.deleteMediaFile(mImageFilePath, context);
+                mMediaManagement.deleteMediaFile(mImageFilePath, mContext);
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -120,15 +129,15 @@ public class SendMediaToFriendsListAdapter extends RecyclerView.Adapter<SendMedi
             public void onClick(View v) {
 
                 //manage selected friends and the background colour
-                if(mSelectedFriends.contains(holder.UUID)){
+                if (mSelectedFriends.contains(holder.UUID)) {
                     mSelectedFriends.remove(mSelectedFriends.indexOf(holder.UUID));
-                    holder.friendRowLayout.setBackgroundColor(Color.rgb(255,255,255));
+                    holder.friendRowLayout.setBackgroundColor(Color.rgb(255, 255, 255));
 
-                }else{
+                } else {
                     mSelectedFriends.add(holder.UUID);
-                    holder.friendRowLayout.setBackgroundColor(Color.rgb(173,216,230));
+                    holder.friendRowLayout.setBackgroundColor(Color.rgb(173, 216, 230));
                 }
-                listener.onSelected(holder.UUID, "friends");
+                mListener.onSelected(holder.UUID, "friends");
             }
         });
 
@@ -143,7 +152,7 @@ public class SendMediaToFriendsListAdapter extends RecyclerView.Adapter<SendMedi
 
 
     //friend row layout
-    public class ViewHolder extends RecyclerView.ViewHolder{
+    public class ViewHolder extends RecyclerView.ViewHolder {
         ImageView imgFriendsImage;
         TextView lblName;
         TextView lblRelationship;

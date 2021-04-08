@@ -1,7 +1,6 @@
 package messaging.app.contactingFirebase;
 
 import android.content.Context;
-import android.util.Log;
 
 import androidx.annotation.NonNull;
 
@@ -21,7 +20,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import messaging.app.AccountDetails;
 import messaging.app.MessageReceivedServiceNotification;
@@ -34,12 +32,12 @@ public class QueryingDatabase {
 
     FirebaseDatabase mDatabase;
     FirebaseAuth mAuth;
-    String friendsUUID = null;
+    String mFriendsUUID = null;
 
     public QueryingDatabase(String friendsUUID) {
         mDatabase = FirebaseDatabase.getInstance();
         if (friendsUUID != null) {
-            this.friendsUUID = friendsUUID;
+            this.mFriendsUUID = friendsUUID;
         }
     }
 
@@ -47,22 +45,24 @@ public class QueryingDatabase {
         void onSuccess(boolean exists);
     }
 
-    public void doesUsernameExist(final String username, final OnCheckIfUsernameExistsListener listener) {
+    public void doesUsernameExist(final String username,
+                                  final OnCheckIfUsernameExistsListener listener) {
 
-        mDatabase.getReference("usernames").child(username).addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                if (snapshot.getValue() != null) {
-                    listener.onSuccess(true);
-                    return;
-                }
-                listener.onSuccess(false);
-            }
+        mDatabase.getReference("usernames").child(username)
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        if (snapshot.getValue() != null) {
+                            listener.onSuccess(true);
+                            return;
+                        }
+                        listener.onSuccess(false);
+                    }
 
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-            }
-        });
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+                    }
+                });
     }
 
 
@@ -70,7 +70,8 @@ public class QueryingDatabase {
         void onSuccess(boolean blocked);
     }
 
-    public void isUserBlockedBy(final String blockedByUsername, final OnCheckIfUserIsBlockedByListener listener) {
+    public void isUserBlockedBy(final String blockedByUsername,
+                                final OnCheckIfUserIsBlockedByListener listener) {
 
         getUsernamesUUID(blockedByUsername, new OnGetUUIDListener() {
             @Override
@@ -79,7 +80,8 @@ public class QueryingDatabase {
                 mAuth = FirebaseAuth.getInstance();
                 String usersUUID = getCurrentUsersUUID();
 
-                mDatabase.getReference("userDetails").child(usersUUID + "/blockedBy/" + blockedByUUID).addListenerForSingleValueEvent(new ValueEventListener() {
+                mDatabase.getReference("userDetails").child(usersUUID + "/blockedBy/" +
+                        blockedByUUID).addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
 
@@ -103,27 +105,30 @@ public class QueryingDatabase {
         void onSuccess(boolean alreadyFriends);
     }
 
-    public void isUserAlreadyFriendsWith(final String friendsWithUsername, final OnCheckIfUserIsAlreadyFriendsWithListener listener) {
+    public void isUserAlreadyFriendsWith(final String friendsWithUsername,
+                                         final OnCheckIfUserIsAlreadyFriendsWithListener listener) {
 
         getUsernamesUUID(friendsWithUsername, new OnGetUUIDListener() {
             @Override
             public void onSuccess(String friendsWithUUID) {
 
-                mDatabase.getReference("userDetails").child(getCurrentUsersUUID() + "/friends/" + friendsWithUUID).addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                mDatabase.getReference("userDetails").child(getCurrentUsersUUID() +
+                        "/friends/" + friendsWithUUID).addListenerForSingleValueEvent(
+                        new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot snapshot) {
 
-                        if (snapshot.getValue() == null) {
-                            listener.onSuccess(false);
-                        } else {
-                            listener.onSuccess(true);
-                        }
-                    }
+                                if (snapshot.getValue() == null) {
+                                    listener.onSuccess(false);
+                                } else {
+                                    listener.onSuccess(true);
+                                }
+                            }
 
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError error) {
-                    }
-                });
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError error) {
+                            }
+                        });
             }
         });
     }
@@ -149,15 +154,16 @@ public class QueryingDatabase {
     public void isEmailAvailable(final String email, final OnEmailCheckListener listener) {
 
         mAuth = FirebaseAuth.getInstance();
-        mAuth.fetchSignInMethodsForEmail(email).addOnCompleteListener(new OnCompleteListener<SignInMethodQueryResult>() {
-            @Override
-            public void onComplete(@NonNull Task<SignInMethodQueryResult> task) {
+        mAuth.fetchSignInMethodsForEmail(email).addOnCompleteListener(
+                new OnCompleteListener<SignInMethodQueryResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<SignInMethodQueryResult> task) {
 
-                boolean check = !task.getResult().getSignInMethods().isEmpty();
+                        boolean check = !task.getResult().getSignInMethods().isEmpty();
 
-                listener.onSuccess(check);
-            }
-        });
+                        listener.onSuccess(check);
+                    }
+                });
 
     }
 
@@ -167,7 +173,8 @@ public class QueryingDatabase {
 
     public void listenForReceivedMessage(final Context context) {
 
-        DatabaseReference databaseRef = mDatabase.getReference("messages/" + getCurrentUsersUUID());
+        DatabaseReference databaseRef = mDatabase.getReference("messages/" +
+                getCurrentUsersUUID());
         databaseRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -176,7 +183,8 @@ public class QueryingDatabase {
                     return;
                 }
 
-                int numberOfMessages = getNumberOfMessages((Map<String, Object>) snapshot.getValue());
+                int numberOfMessages = getNumberOfMessages(
+                        (Map<String, Object>) snapshot.getValue());
 
                 //check that a new message has been added and that it is not the first loop
                 if (previousNumberOfMessage < numberOfMessages && !initiationOfMessageListener) {
@@ -202,7 +210,8 @@ public class QueryingDatabase {
 
     public void listenForReceivedStoryMessage(final Context context) {
 
-        DatabaseReference databaseRef = mDatabase.getReference("stories/" + getCurrentUsersUUID());
+        DatabaseReference databaseRef = mDatabase.getReference("stories/" +
+                getCurrentUsersUUID());
         databaseRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -211,11 +220,13 @@ public class QueryingDatabase {
                 String sendersName = "New message";
 
                 //check that a new message has been added and that it is not the first loop
-                if (previousNumberOfStoryMessages < numberOfStoryMessages && !initiationOfStoryMessageListener) {
+                if (previousNumberOfStoryMessages < numberOfStoryMessages &&
+                        !initiationOfStoryMessageListener) {
                     //send notification
                     MessageReceivedServiceNotification messageReceivedServiceNotification =
                             new MessageReceivedServiceNotification(context);
-                    messageReceivedServiceNotification.sendNotification(sendersName + " added to your story");
+                    messageReceivedServiceNotification
+                            .sendNotification(sendersName + " added to your story");
                 }
                 initiationOfStoryMessageListener = false;
                 previousNumberOfStoryMessages = numberOfStoryMessages;
@@ -230,8 +241,8 @@ public class QueryingDatabase {
 
 
     public String getCurrentUsersUUID() {
-        if (friendsUUID != null) {
-            return friendsUUID;
+        if (mFriendsUUID != null) {
+            return mFriendsUUID;
         } else {
             mAuth = FirebaseAuth.getInstance();
             return mAuth.getCurrentUser().getUid();
@@ -246,7 +257,7 @@ public class QueryingDatabase {
 
     public void getCurrentUsersUsername(OnGetCurrentUsersUsernameListener listener) {
 
-        if (friendsUUID != null) {
+        if (mFriendsUUID != null) {
             getCurrentUsersUUIDUsername(new OnGetFriendsUsernameFromUUIDListener() {
                 @Override
                 public void onSuccess(String friendsUsername) {
@@ -268,25 +279,26 @@ public class QueryingDatabase {
 
     public void getFriendsDetails(final OnGetFriendsDetailsListener listener) {
 
-        mDatabase.getReference("userDetails").child(getCurrentUsersUUID() + "/friends").addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
+        mDatabase.getReference("userDetails").child(getCurrentUsersUUID() + "/friends")
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
 
-                //get friends
-                List friendsDetailsList = new ArrayList<AccountDetails>();
-                for (DataSnapshot ds : snapshot.getChildren()) {
+                        //get friends
+                        List friendsDetailsList = new ArrayList<AccountDetails>();
+                        for (DataSnapshot ds : snapshot.getChildren()) {
 
-                    AccountDetails friendsDetails = getAccountDetailsFromSnapshot(ds);
-                    friendsDetails.setUUID(ds.getKey());
-                    friendsDetailsList.add(friendsDetails);
-                }
-                listener.onSuccess(friendsDetailsList);
-            }
+                            AccountDetails friendsDetails = getAccountDetailsFromSnapshot(ds);
+                            friendsDetails.setmUUID(ds.getKey());
+                            friendsDetailsList.add(friendsDetails);
+                        }
+                        listener.onSuccess(friendsDetailsList);
+                    }
 
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-            }
-        });
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+                    }
+                });
     }
 
 
@@ -297,18 +309,19 @@ public class QueryingDatabase {
 
     public void getCurrentUsersUUIDUsername(final OnGetFriendsUsernameFromUUIDListener listener) {
 
-        mDatabase.getReference("userDetails").child(getCurrentUsersUUID() + "/username").addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
+        mDatabase.getReference("userDetails").child(getCurrentUsersUUID() + "/username")
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
 
-                //get value
-                listener.onSuccess((String) snapshot.getValue());
-            }
+                        //get value
+                        listener.onSuccess((String) snapshot.getValue());
+                    }
 
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-            }
-        });
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+                    }
+                });
     }
 
 
@@ -318,23 +331,23 @@ public class QueryingDatabase {
         for (DataSnapshot ds : snapshot.getChildren()) {
             switch (ds.getKey()) {
                 case "profileImageUrl":
-                    accountDetails.setProfileImageUrl((String) ds.getValue());
+                    accountDetails.setmProfileImageUrl((String) ds.getValue());
                     break;
                 case "profileImageRotation":
                     long rotation = (long) ds.getValue();
-                    accountDetails.setProfileImageRotation((int) rotation);
+                    accountDetails.setmProfileImageRotation((int) rotation);
                     break;
                 case "firstName":
-                    accountDetails.setFirstName((String) ds.getValue());
+                    accountDetails.setmFirstName((String) ds.getValue());
                     break;
                 case "surname":
-                    accountDetails.setSurname((String) ds.getValue());
+                    accountDetails.setmSurname((String) ds.getValue());
                     break;
                 case "relationship":
-                    accountDetails.setRelationship((String) ds.getValue());
+                    accountDetails.setmRelationship((String) ds.getValue());
                     break;
                 case "username":
-                    accountDetails.setUsername((String) ds.getValue());
+                    accountDetails.setmUsername((String) ds.getValue());
                     break;
                 default:
             }
@@ -364,16 +377,17 @@ public class QueryingDatabase {
 
     public void getAccountDetails(final String UUID, final OnGetAccountDetailsListener listener) {
 
-        mDatabase.getReference("userDetails").child(UUID).addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                listener.onSuccess(getAccountDetailsFromSnapshot(snapshot));
-            }
+        mDatabase.getReference("userDetails").child(UUID).addListenerForSingleValueEvent(
+                new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        listener.onSuccess(getAccountDetailsFromSnapshot(snapshot));
+                    }
 
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-            }
-        });
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+                    }
+                });
     }
 
 
@@ -386,27 +400,28 @@ public class QueryingDatabase {
     public void getReceivedFriendRequests(final OnGetReceivedFriendRequestsListener listener) {
         String UUID = getCurrentUsersUUID();
 
-        mDatabase.getReference("userDetails").child(UUID + "/friendRequests").orderByValue().addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
+        mDatabase.getReference("userDetails").child(UUID + "/friendRequests").orderByValue()
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
 
-                HashMap UUIDMap = new HashMap<String, String>();
+                        HashMap UUIDMap = new HashMap<String, String>();
 
 
-                for (DataSnapshot ds : snapshot.getChildren()) {
-                    //build friend request
-                    UUIDMap.put(ds.getKey(), ds.getValue());
+                        for (DataSnapshot ds : snapshot.getChildren()) {
+                            //build friend request
+                            UUIDMap.put(ds.getKey(), ds.getValue());
 
-                    receivedFriendRequests.add(UUIDMap);
-                }
+                            receivedFriendRequests.add(UUIDMap);
+                        }
 
-                listener.onSuccess(receivedFriendRequests);
-            }
+                        listener.onSuccess(receivedFriendRequests);
+                    }
 
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-            }
-        });
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+                    }
+                });
     }
 
 
@@ -419,30 +434,32 @@ public class QueryingDatabase {
     public void getSentFriendRequests(final OnGetSentFriendRequestsListener listener) {
         String UUID = getCurrentUsersUUID();
 
-        mDatabase.getReference("userDetails").child(UUID + "/sentFriendRequests").orderByChild("/username").addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
+        mDatabase.getReference("userDetails").child(UUID + "/sentFriendRequests")
+                .orderByChild("/username").addListenerForSingleValueEvent(
+                new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
 
-                HashMap UUIDMap = new HashMap<String, FriendRequestHelper>();
-                FriendRequestHelper friendRequest;
-
-
-                for (DataSnapshot ds : snapshot.getChildren()) {
-                    //build friend request
-                    friendRequest = ds.getValue(FriendRequestHelper.class);
-                    UUIDMap.put(ds.getKey(), friendRequest);
-
-                    sentFriendRequests.add(UUIDMap);
-                }
+                        HashMap UUIDMap = new HashMap<String, FriendRequestHelper>();
+                        FriendRequestHelper friendRequest;
 
 
-                listener.onSuccess(sentFriendRequests);
-            }
+                        for (DataSnapshot ds : snapshot.getChildren()) {
+                            //build friend request
+                            friendRequest = ds.getValue(FriendRequestHelper.class);
+                            UUIDMap.put(ds.getKey(), friendRequest);
 
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-            }
-        });
+                            sentFriendRequests.add(UUIDMap);
+                        }
+
+
+                        listener.onSuccess(sentFriendRequests);
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+                    }
+                });
     }
 
 
@@ -450,68 +467,70 @@ public class QueryingDatabase {
         void onSuccess(ArrayList<MessageData> messageDataList);
     }
 
-    public void getMessagesFromUUID(final String friendsUUID, final OnGetMessagesFromListener listener) {
+    public void getMessagesFromUUID(final String friendsUUID,
+                                    final OnGetMessagesFromListener listener) {
 
-        mDatabase.getReference("messages").child(getCurrentUsersUUID() + "/" + friendsUUID).addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                ArrayList<MessageData> messageDataList = new ArrayList<MessageData>();
+        mDatabase.getReference("messages").child(getCurrentUsersUUID() + "/" + friendsUUID)
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        ArrayList<MessageData> messageDataList = new ArrayList<MessageData>();
 
-                MessageData messageData;
-                String fullName = null;
-                for (DataSnapshot ds : snapshot.getChildren()) {
-                    messageData = new MessageData();
-                    int dsSize = (int) ds.getChildrenCount();
+                        MessageData messageData;
+                        String fullName = null;
+                        for (DataSnapshot ds : snapshot.getChildren()) {
+                            messageData = new MessageData();
+                            int dsSize = (int) ds.getChildrenCount();
 
-                    if (ds.getKey().equals("fullName")) {
-                        fullName = (String) ds.getValue();
-                    }
+                            if (ds.getKey().equals("fullName")) {
+                                fullName = (String) ds.getValue();
+                            }
 
 
-                    for (DataSnapshot subDS : ds.getChildren()) {
+                            for (DataSnapshot subDS : ds.getChildren()) {
 
-                        //get the data of the message
-                        switch (subDS.getKey()) {
-                            case "fileExtension":
-                                messageData.setFileExtension((String) subDS.getValue());
-                                break;
-                            case "mediaMessageRotation":
-                                long rotation = (long) subDS.getValue();
-                                messageData.setMediaMessageRotation((int) rotation);
-                                break;
-                            case "mediaMessageUrl":
-                                messageData.setMediaMessageUrl((String) subDS.getValue());
-                                break;
-                            case "textMessage":
-                                messageData.setTextMessage((String) subDS.getValue());
-                                break;
-                            case "deviceOrientationMode":
-                                long deviceOrientationMode = (long) subDS.getValue();
-                                messageData.setDeviceOrientationMode((int) deviceOrientationMode);
-                                break;
-                            case "unopened":
-                                messageData.setUnopened((boolean) subDS.getValue());
-                                break;
+                                //get the data of the message
+                                switch (subDS.getKey()) {
+                                    case "fileExtension":
+                                        messageData.setmFileExtension((String) subDS.getValue());
+                                        break;
+                                    case "mediaMessageRotation":
+                                        long rotation = (long) subDS.getValue();
+                                        messageData.setmMediaMessageRotation((int) rotation);
+                                        break;
+                                    case "mediaMessageUrl":
+                                        messageData.setmMediaMessageUrl((String) subDS.getValue());
+                                        break;
+                                    case "textMessage":
+                                        messageData.setmTextMessage((String) subDS.getValue());
+                                        break;
+                                    case "deviceOrientationMode":
+                                        long deviceOrientationMode = (long) subDS.getValue();
+                                        messageData.setmDeviceOrientationMode((int) deviceOrientationMode);
+                                        break;
+                                    case "unopened":
+                                        messageData.setmUnopened((boolean) subDS.getValue());
+                                        break;
+                                }
+                            }
+                            //if the count is more than one then it must be a message
+                            if (dsSize > 0) {
+                                messageData.setmFullName(fullName);
+                                messageData.setmTimeStamp(ds.getKey());
+                                messageDataList.add(messageData);
+                            }
                         }
-                    }
-                    //if the count is more than one then it must be a message
-                    if (dsSize > 0) {
-                        messageData.setFullName(fullName);
-                        messageData.setTimeStamp(ds.getKey());
-                        messageDataList.add(messageData);
-                    }
-                }
 
-                for (MessageData data : messageDataList) {
-                    data.setFullName(fullName);
-                }
-                listener.onSuccess(messageDataList);
-            }
+                        for (MessageData data : messageDataList) {
+                            data.setmFullName(fullName);
+                        }
+                        listener.onSuccess(messageDataList);
+                    }
 
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-            }
-        });
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+                    }
+                });
     }
 
 
@@ -521,50 +540,51 @@ public class QueryingDatabase {
 
     public void getStoryForUUID(final OnGetStoryForUUIDListener listener) {
 
-        mDatabase.getReference("stories").child(getCurrentUsersUUID()).addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                ArrayList<MessageData> messageDataList = new ArrayList<MessageData>();
+        mDatabase.getReference("stories").child(getCurrentUsersUUID())
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        ArrayList<MessageData> messageDataList = new ArrayList<MessageData>();
 
-                for (DataSnapshot ds : snapshot.getChildren()) {
-                    MessageData messageData = new MessageData();
+                        for (DataSnapshot ds : snapshot.getChildren()) {
+                            MessageData messageData = new MessageData();
 
-                    for (DataSnapshot subDS : ds.getChildren()) {
-                        //get the data of the message
-                        switch (subDS.getKey()) {
-                            case "fileExtension":
-                                messageData.setFileExtension((String) subDS.getValue());
-                                break;
-                            case "mediaMessageRotation":
-                                long rotation = (long) subDS.getValue();
-                                messageData.setMediaMessageRotation((int) rotation);
-                                break;
-                            case "mediaMessageUrl":
-                                messageData.setMediaMessageUrl((String) subDS.getValue());
-                                break;
-                            case "textMessage":
-                                messageData.setTextMessage((String) subDS.getValue());
-                                break;
-                            case "unopened":
-                                messageData.setUnopened((boolean) subDS.getValue());
-                                break;
-                            case "fullName":
-                                messageData.setFullName((String) subDS.getValue());
-                                break;
+                            for (DataSnapshot subDS : ds.getChildren()) {
+                                //get the data of the message
+                                switch (subDS.getKey()) {
+                                    case "fileExtension":
+                                        messageData.setmFileExtension((String) subDS.getValue());
+                                        break;
+                                    case "mediaMessageRotation":
+                                        long rotation = (long) subDS.getValue();
+                                        messageData.setmMediaMessageRotation((int) rotation);
+                                        break;
+                                    case "mediaMessageUrl":
+                                        messageData.setmMediaMessageUrl((String) subDS.getValue());
+                                        break;
+                                    case "textMessage":
+                                        messageData.setmTextMessage((String) subDS.getValue());
+                                        break;
+                                    case "unopened":
+                                        messageData.setmUnopened((boolean) subDS.getValue());
+                                        break;
+                                    case "fullName":
+                                        messageData.setmFullName((String) subDS.getValue());
+                                        break;
+                                }
+                            }
+
+                            messageData.setmTimeStamp(ds.getKey());
+                            messageDataList.add(messageData);
                         }
+
+                        listener.onSuccess(messageDataList);
                     }
 
-                    messageData.setTimeStamp(ds.getKey());
-                    messageDataList.add(messageData);
-                }
-
-                listener.onSuccess(messageDataList);
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-            }
-        });
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+                    }
+                });
     }
 
 
@@ -574,20 +594,21 @@ public class QueryingDatabase {
 
     public void getUUIDsUsername(final String UUID, final OnGetUsernameListener listener) {
 
-        mDatabase.getReference("userDetails").child(UUID + "/username").addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
+        mDatabase.getReference("userDetails").child(UUID + "/username")
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
 
-                if (!snapshot.getValue().toString().equals(null)) {
-                    listener.onSuccess(((String) snapshot.getValue()).trim());
-                }
-            }
+                        if (!snapshot.getValue().toString().equals(null)) {
+                            listener.onSuccess(((String) snapshot.getValue()).trim());
+                        }
+                    }
 
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-                listener.onSuccess(null);
-            }
-        });
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+                        listener.onSuccess(null);
+                    }
+                });
     }
 
 
@@ -595,38 +616,41 @@ public class QueryingDatabase {
         void onSuccess(String fullName, String profileImageURL, String profileImageRotation);
     }
 
-    public void getUUIDsFullNameAndProfileImage(final String UUID, final OnGetUUIDsFullNameAndProfileImageListener listener) {
+    public void getUUIDsFullNameAndProfileImage(final String UUID,
+                                                final OnGetUUIDsFullNameAndProfileImageListener listener) {
 
-        mDatabase.getReference("userDetails").child(UUID).addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
+        mDatabase.getReference("userDetails").child(UUID)
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
 
-                String firstName = null;
-                String surname = null;
-                String profileImageUrl = null;
-                String profileImageRotation = null;
+                        String firstName = null;
+                        String surname = null;
+                        String profileImageUrl = null;
+                        String profileImageRotation = null;
 
-                for (DataSnapshot ds : snapshot.getChildren()) {
-                    if (ds.getKey().equals("firstName")) {
-                        firstName = ds.getValue().toString();
-                    } else if (ds.getKey().equals("surname")) {
-                        surname = ds.getValue().toString();
-                    } else if (ds.getKey().equals("profileImageUrl")) {
-                        profileImageUrl = ds.getValue().toString();
-                    } else if (ds.getKey().equals("profileImageRotation")) {
-                        profileImageRotation = ds.getValue().toString();
+                        for (DataSnapshot ds : snapshot.getChildren()) {
+                            if (ds.getKey().equals("firstName")) {
+                                firstName = ds.getValue().toString();
+                            } else if (ds.getKey().equals("surname")) {
+                                surname = ds.getValue().toString();
+                            } else if (ds.getKey().equals("profileImageUrl")) {
+                                profileImageUrl = ds.getValue().toString();
+                            } else if (ds.getKey().equals("profileImageRotation")) {
+                                profileImageRotation = ds.getValue().toString();
+                            }
+                        }
+
+                        listener.onSuccess(firstName + " " + surname,
+                                profileImageUrl, profileImageRotation);
+
                     }
-                }
 
-                listener.onSuccess(firstName + " " + surname, profileImageUrl, profileImageRotation);
-
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-                listener.onSuccess(null, null, null);
-            }
-        });
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+                        listener.onSuccess(null, null, null);
+                    }
+                });
     }
 
 
@@ -636,7 +660,8 @@ public class QueryingDatabase {
 
     public void getUsernamesUUID(final String username, final OnGetUUIDListener listener) {
 
-        mDatabase.getReference("usernames").child(username).addListenerForSingleValueEvent(new ValueEventListener() {
+        mDatabase.getReference("usernames").child(username).addListenerForSingleValueEvent(
+                new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 if (snapshot.getValue() != null) {
@@ -657,7 +682,8 @@ public class QueryingDatabase {
     List<HashMap<String, String>> existingReceivedMediaDetails = new ArrayList<HashMap<String, String>>();
     int numberOfUnopenedStories = 0;
 
-    public void getExistingReceivedMediaDetails(final Context context, final OnGetExistingReceivedMediaDetailsListener listener) {
+    public void getExistingReceivedMediaDetails(final Context context,
+                                                final OnGetExistingReceivedMediaDetailsListener listener) {
 
         String UUID = getCurrentUsersUUID();
         //get story details
@@ -670,7 +696,8 @@ public class QueryingDatabase {
                 for (DataSnapshot ds : snapshot.getChildren()) {
                     String timestamp = ds.getKey();
 
-                    //check if the story message is old, if it is delete it. If not add it to the count
+                    //check if the story message is old, if it is delete it.
+                    //If not add it to the count
                     if (isStoryMessageOld(timestamp)) {
 
                         ManagingMessages managingMessages = new ManagingMessages(context);
@@ -702,15 +729,18 @@ public class QueryingDatabase {
                                 if (subDS.getKey().equals("unopened")) {
                                     boolean unopenedMessage = (boolean) subDS.getValue();
                                     String strUnopenedMessage = unopenedMessage ? "1" : "0";
-                                    friendsMessagesHashMap.put("unopenedMessage", strUnopenedMessage);
+                                    friendsMessagesHashMap.put("unopenedMessage",
+                                            strUnopenedMessage);
                                 } else if (subDS.getKey().equals("fullName")) {
                                     friendsMessagesHashMap.put("fullName", subDS.getValue());
                                 } else if (subDS.getKey().equals("profileImageUrl")) {
                                     friendsMessagesHashMap.put("profileImageUrl", subDS.getValue());
                                 } else if (subDS.getKey().equals("profileImageRotation")) {
-                                    friendsMessagesHashMap.put("profileImageRotation", subDS.getValue().toString());
+                                    friendsMessagesHashMap.put("profileImageRotation",
+                                            subDS.getValue().toString());
                                 } else if (subDS.getKey().equals("lastSentMessageTime")) {
-                                    friendsMessagesHashMap.put("lastMessageTimeStamp", subDS.getValue().toString());
+                                    friendsMessagesHashMap.put("lastMessageTimeStamp",
+                                            subDS.getValue().toString());
                                 }
 
                             }
@@ -742,7 +772,8 @@ public class QueryingDatabase {
     }
 
 
-    public void getFriendsGamingData(final String friendsUUID, HashMap<String, String> friendsMap, final OnGetFriendsGamingDataListener listener) {
+    public void getFriendsGamingData(final String friendsUUID, HashMap<String, String> friendsMap,
+                                     final OnGetFriendsGamingDataListener listener) {
         DatabaseReference databaseRef = mDatabase.getReference("userDetails");
 
         Query query = databaseRef.child(friendsUUID + "/highScores");
@@ -754,33 +785,33 @@ public class QueryingDatabase {
 
                 for (DataSnapshot ds : snapshot.getChildren()) {
                     //get friends high scores
-                    accountsHighScore.setUsersUUID(friendsUUID);
+                    accountsHighScore.setmUsersUUID(friendsUUID);
                     switch (ds.getKey()) {
                         case "buttonChange":
-                            accountsHighScore.setButtonChangeHighScore((Long) ds.getValue());
+                            accountsHighScore.setmButtonChangeHighScore((Long) ds.getValue());
                             break;
                         case "gridReaction":
-                            accountsHighScore.setGridReactionHighScore((Long) ds.getValue());
+                            accountsHighScore.setmGridReactionHighScore((Long) ds.getValue());
                             break;
                         case "pairs":
-                            accountsHighScore.setPairsHighScore((Long) ds.getValue());
+                            accountsHighScore.setmPairsHighScore((Long) ds.getValue());
                             break;
                         case "pattern":
-                            accountsHighScore.setPatternHighScore((Long) ds.getValue());
+                            accountsHighScore.setmPatternHighScore((Long) ds.getValue());
                             break;
                         case "stroopTest":
-                            accountsHighScore.setStoopTestHighScore((Long) ds.getValue());
+                            accountsHighScore.setmStoopTestHighScore((Long) ds.getValue());
                             break;
                     }
                 }
 
-                String fullName = friendsMap.get("firstName")  + " " + friendsMap.get("surname");
+                String fullName = friendsMap.get("firstName") + " " + friendsMap.get("surname");
                 String profileImageRotation = friendsMap.get("profileImageRotation");
                 String profileImageUrl = friendsMap.get("profileImageUrl");
 
-                accountsHighScore.setFullName(fullName);
-                accountsHighScore.setProfileImageRotation(profileImageRotation);
-                accountsHighScore.setProfileImageURL(profileImageUrl);
+                accountsHighScore.setmFullName(fullName);
+                accountsHighScore.setmProfileImageRotation(profileImageRotation);
+                accountsHighScore.setmProfileImageURL(profileImageUrl);
 
                 listener.onSuccess(accountsHighScore);
 
@@ -827,17 +858,21 @@ public class QueryingDatabase {
                             for (DataSnapshot friendsData : subDS.getChildren()) {
                                 switch (friendsData.getKey()) {
                                     case "firstName":
-                                        friendsDetail.put("firstName", (String) friendsData.getValue());
+                                        friendsDetail.put("firstName",
+                                                (String) friendsData.getValue());
                                         break;
                                     case "surname":
-                                        friendsDetail.put("surname", (String) friendsData.getValue());
+                                        friendsDetail.put("surname",
+                                                (String) friendsData.getValue());
                                         break;
                                     case "profileImageUrl":
                                         profileImageFound = true;
-                                        friendsDetail.put("profileImageUrl", (String) friendsData.getValue());
+                                        friendsDetail.put("profileImageUrl",
+                                                (String) friendsData.getValue());
                                         break;
                                     case "profileImageRotation":
-                                        friendsDetail.put("profileImageRotation", Long.toString((Long) friendsData.getValue()));
+                                        friendsDetail.put("profileImageRotation",
+                                                Long.toString((Long) friendsData.getValue()));
                                         break;
                                 }
                             }
@@ -852,30 +887,35 @@ public class QueryingDatabase {
                     } else if (ds.getKey().equals("highScores")) {
                         for (DataSnapshot subDS : ds.getChildren()) {
                             //get the current users high scores
-                            currentAccountHighScore.setUsersUUID(usersUUID);
+                            currentAccountHighScore.setmUsersUUID(usersUUID);
                             switch (subDS.getKey()) {
                                 case "buttonChange":
-                                    currentAccountHighScore.setButtonChangeHighScore((Long) subDS.getValue());
+                                    currentAccountHighScore
+                                            .setmButtonChangeHighScore((Long) subDS.getValue());
                                     break;
                                 case "gridReaction":
-                                    currentAccountHighScore.setGridReactionHighScore((Long) subDS.getValue());
+                                    currentAccountHighScore
+                                            .setmGridReactionHighScore((Long) subDS.getValue());
                                     break;
                                 case "pairs":
-                                    currentAccountHighScore.setPairsHighScore((Long) subDS.getValue());
+                                    currentAccountHighScore
+                                            .setmPairsHighScore((Long) subDS.getValue());
                                     break;
                                 case "pattern":
-                                    currentAccountHighScore.setPatternHighScore((Long) subDS.getValue());
+                                    currentAccountHighScore
+                                            .setmPatternHighScore((Long) subDS.getValue());
                                     break;
                                 case "stroopTest":
-                                    currentAccountHighScore.setStoopTestHighScore((Long) subDS.getValue());
+                                    currentAccountHighScore
+                                            .setmStoopTestHighScore((Long) subDS.getValue());
                                     break;
                             }
                         }
 
-                        currentAccountHighScore.setFullName("My Scores");
+                        currentAccountHighScore.setmFullName("My Scores");
 
                     } else if (ds.getKey().equals("profileImageUrl")) {
-                        currentAccountHighScore.setProfileImageURL((String) ds.getValue());
+                        currentAccountHighScore.setmProfileImageURL((String) ds.getValue());
                     }
                 }
 
@@ -886,12 +926,14 @@ public class QueryingDatabase {
 
                 int finalNumberOfFriends = numberOfFriends;
                 //get each friends high score
-                for (Map.Entry<String, HashMap<String, String>> friendsMap : friendsDetails.entrySet()) {
+                for (Map.Entry<String,
+                        HashMap<String, String>> friendsMap : friendsDetails.entrySet()) {
 
                     String friendsUUID = friendsMap.getKey();
 
                     //get friends
-                    getFriendsGamingData(friendsUUID, friendsMap.getValue(), new OnGetFriendsGamingDataListener() {
+                    getFriendsGamingData(friendsUUID, friendsMap.getValue(),
+                            new OnGetFriendsGamingDataListener() {
                         @Override
                         public void onSuccess(AccountsHighScores friendsGamingData) {
                             accountsHighScores.add(friendsGamingData);
@@ -1117,7 +1159,7 @@ public class QueryingDatabase {
     }
 
 
-    public void getAllReminders(OnGetAllRemindersListener listener){
+    public void getAllReminders(OnGetAllRemindersListener listener) {
 
         String usersUUID = getCurrentUsersUUID();
 
@@ -1131,24 +1173,24 @@ public class QueryingDatabase {
                 List<ReminderDetails> reminderDetailsList = new ArrayList<>();
                 ReminderDetails reminderDetails;
 
-                for(DataSnapshot reminder : snapshot.getChildren()){
+                for (DataSnapshot reminder : snapshot.getChildren()) {
                     reminderDetails = new ReminderDetails();
 
-                    reminderDetails.setReminderID((String) snapshot.getKey());
-                    for(DataSnapshot details : reminder.getChildren()){
-                        switch (details.getKey()){
+                    reminderDetails.setmReminderID((String) snapshot.getKey());
+                    for (DataSnapshot details : reminder.getChildren()) {
+                        switch (details.getKey()) {
                             case "medicationName":
-                                reminderDetails.setMedicationName((String) details.getValue());
+                                reminderDetails.setmMedicationName((String) details.getValue());
                                 break;
                             case "frequency":
-                                reminderDetails.setFrequency((String) details.getValue());
+                                reminderDetails.setmFrequency((String) details.getValue());
                                 break;
                             case "time":
-                                reminderDetails.setTime((String) details.getValue());
+                                reminderDetails.setmTime((String) details.getValue());
                                 break;
                             case "intentID":
                                 long longIntentID = (long) details.getValue();
-                                reminderDetails.setIntentID((int) longIntentID);
+                                reminderDetails.setmIntentID((int) longIntentID);
                                 break;
                         }
                     }

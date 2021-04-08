@@ -11,12 +11,12 @@ import messaging.app.contactingFirebase.QueryingDatabase;
 
 public class NotifyMessageReceivedService extends Service {
 
-    QueryingDatabase queryingDatabase = new QueryingDatabase(null);
+    QueryingDatabase mQueryingDatabase = new QueryingDatabase(null);
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        queryingDatabase.listenForReceivedMessage(getApplicationContext());
-        queryingDatabase.listenForReceivedStoryMessage(getApplicationContext());
+        mQueryingDatabase.listenForReceivedMessage(getApplicationContext());
+        mQueryingDatabase.listenForReceivedStoryMessage(getApplicationContext());
 
 
         return START_STICKY;

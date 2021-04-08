@@ -26,7 +26,6 @@ public class AlarmReceiver extends BroadcastReceiver {
             } else {
                 context.startService(serviceIntent);
             }
-            Log.d("test", "in receiver: ");
         }
     }
 

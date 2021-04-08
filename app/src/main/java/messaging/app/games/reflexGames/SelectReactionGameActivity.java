@@ -43,56 +43,59 @@ public class SelectReactionGameActivity extends AppCompatActivity {
     }
 
 
-    private void setLlayColourChange(){
+    private void setLlayColourChange() {
         llayColourChange.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(SelectReactionGameActivity.this, ButtonChangeColourActivity.class);
+                Intent intent = new Intent(SelectReactionGameActivity.this,
+                        ButtonChangeColourActivity.class);
                 SelectReactionGameActivity.this.startActivity(intent);
             }
         });
     }
 
 
-    private void setLlayGrid(){
+    private void setLlayGrid() {
         llayGrid.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(SelectReactionGameActivity.this, StartGridReactionGameActivity.class);
+                Intent intent = new Intent(SelectReactionGameActivity.this,
+                        StartGridReactionGameActivity.class);
                 SelectReactionGameActivity.this.startActivity(intent);
             }
         });
     }
 
-    private void setLlayStoop(){
+    private void setLlayStoop() {
         llayStoop.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(SelectReactionGameActivity.this, StartStroopTestActivity.class);
+                Intent intent = new Intent(SelectReactionGameActivity.this,
+                        StartStroopTestActivity.class);
                 SelectReactionGameActivity.this.startActivity(intent);
             }
         });
     }
-
 
 
     private void setBtnBackToSelectGamesOnClick() {
         btnBackToSelectGames.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(SelectReactionGameActivity.this, SelectGameActivity.class);
+                Intent intent = new Intent(SelectReactionGameActivity.this,
+                        SelectGameActivity.class);
                 SelectReactionGameActivity.this.startActivity(intent);
             }
         });
     }
 
 
-
     private void setLlayLeaderBoardOnClick() {
         llayLeaderBoard.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(SelectReactionGameActivity.this, LeaderBoardActivity.class);
+                Intent intent = new Intent(SelectReactionGameActivity.this,
+                        LeaderBoardActivity.class);
                 intent.putExtra("gameType", "reaction");
                 SelectReactionGameActivity.this.startActivity(intent);
             }

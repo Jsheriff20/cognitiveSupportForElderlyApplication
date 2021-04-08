@@ -33,11 +33,12 @@ public class StartMemorizingPatternActivity extends AppCompatActivity {
     TextView lblPatternGameDesc;
     VideoView vidPatternExample;
 
-    ManagingGames managingGames = new ManagingGames(this);
-    QueryingDatabase queryingDatabase = new QueryingDatabase(null);
-    Formatting formatting = new Formatting();
     HashMap<String, List<Long>> mHighScores = new HashMap<>();
-    double highScorePercentageChange = 0;
+    double mHighScorePercentageChange = 0;
+
+    ManagingGames mManagingGames = new ManagingGames(this);
+    QueryingDatabase mQueryingDatabase = new QueryingDatabase(null);
+    Formatting mFormatting = new Formatting();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,7 +56,7 @@ public class StartMemorizingPatternActivity extends AppCompatActivity {
         vidPatternExample.setVisibility(View.INVISIBLE);
         btnCancel.setVisibility(View.INVISIBLE);
 
-        queryingDatabase.getHighScores(new QueryingDatabase.OnGetHighScoresListener() {
+        mQueryingDatabase.getHighScores(new QueryingDatabase.OnGetHighScoresListener() {
             @Override
             public void onSuccess(HashMap<String, List<Long>> highScores) {
                 mHighScores = highScores;
@@ -63,7 +64,7 @@ public class StartMemorizingPatternActivity extends AppCompatActivity {
         });
 
 
-        if(getIntent().getStringExtra("level")  != null){
+        if (getIntent().getStringExtra("level") != null) {
             //display scores to user
             String level = getIntent().getStringExtra("level");
             int highScore = getIntent().getIntExtra("highScore", 0);
@@ -74,19 +75,17 @@ public class StartMemorizingPatternActivity extends AppCompatActivity {
             float pointsPerHighestSquare = 0f; //this is how many squares were in the pattern
 
 
-            if(level.equals("2x2")){
+            if (level.equals("2x2")) {
                 maxScoreForLevel = (float) (4f / 9f) * 100f;
                 //8 is the target number for this level
                 pointsPerHighestSquare = maxScoreForLevel / 8f;
 
-            }
-            else if(level.equals("2x3")){
+            } else if (level.equals("2x3")) {
                 maxScoreForLevel = (float) (6f / 9f) * 100f;
                 bonusPointsForLevel = 20f;
                 //6 is the target number for this level
                 pointsPerHighestSquare = (maxScoreForLevel - bonusPointsForLevel) / 6f;
-            }
-            else if(level.equals("3x3")){
+            } else if (level.equals("3x3")) {
                 //no max score for final level
                 bonusPointsForLevel = 40f;
                 pointsPerHighestSquare = (float) (100f - bonusPointsForLevel) / 5f;
@@ -100,7 +99,7 @@ public class StartMemorizingPatternActivity extends AppCompatActivity {
 
             //store score in database
             //if high score set as their high score
-            managingGames.storeGameResult("pattern", userScore);
+            mManagingGames.storeGameResult("pattern", userScore);
         }
 
         setBtnBackToMemoryGamesOnClick();
@@ -110,20 +109,19 @@ public class StartMemorizingPatternActivity extends AppCompatActivity {
     }
 
 
-
-    private void setBtnBackToMemoryGamesOnClick(){
+    private void setBtnBackToMemoryGamesOnClick() {
         btnBackToMemoryGames.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(StartMemorizingPatternActivity.this, SelectMemoryGameActivity.class);
+                Intent intent = new Intent(StartMemorizingPatternActivity.this,
+                        SelectMemoryGameActivity.class);
                 StartMemorizingPatternActivity.this.startActivity(intent);
             }
         });
     }
 
 
-
-    private void setBtnStartPatternGameOnClick(){
+    private void setBtnStartPatternGameOnClick() {
         btnStartPatternGame.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -132,13 +130,15 @@ public class StartMemorizingPatternActivity extends AppCompatActivity {
                 int previousLevel = 1;
                 int newLevel = previousLevel;
 
-                if(mHighScores.containsKey("pattern")) {
+                if (mHighScores.containsKey("pattern")) {
                     if (mHighScores.get("pattern").size() >= 5) {
                         //get the current users progression over the past 5 games
-                        highScorePercentageChange = formatting.getPercentageChangeOfHighScores(mHighScores, "pattern");
+                        mHighScorePercentageChange = mFormatting
+                                .getPercentageChangeOfHighScores(mHighScores, "pattern");
 
                         //get the users previous grid size
-                        if (mHighScores.get("pattern").get(0) > 44 && mHighScores.get("pattern").get(0) <= 66) {
+                        if (mHighScores.get("pattern").get(0) > 44 &&
+                                mHighScores.get("pattern").get(0) <= 66) {
                             previousLevel = 2;
                         } else if (mHighScores.get("pattern").get(0) > 66) {
                             previousLevel = 3;
@@ -148,10 +148,10 @@ public class StartMemorizingPatternActivity extends AppCompatActivity {
                     newLevel = previousLevel;
 
                     //find a level that is best for the user
-                    if (highScorePercentageChange < -20 && previousLevel != 1) {
+                    if (mHighScorePercentageChange < -20 && previousLevel != 1) {
                         //user has been struggling, make the game easier for them
                         newLevel = previousLevel - 1;
-                    } else if (highScorePercentageChange > 30 && previousLevel != 3) {
+                    } else if (mHighScorePercentageChange > 30 && previousLevel != 3) {
                         //user has improved so make the game harder
                         newLevel = previousLevel + 1;
                     }
@@ -160,15 +160,18 @@ public class StartMemorizingPatternActivity extends AppCompatActivity {
 
                 //load the level that is best fit for the user
                 Intent intent;
-                switch (newLevel){
+                switch (newLevel) {
                     case 2:
-                        intent = new Intent(StartMemorizingPatternActivity.this, PatternMemorizing6ButtonsActivity.class);
+                        intent = new Intent(StartMemorizingPatternActivity.this,
+                                PatternMemorizing6ButtonsActivity.class);
                         break;
                     case 3:
-                        intent = new Intent(StartMemorizingPatternActivity.this, PatternMemorizing9ButtonsActivity.class);
+                        intent = new Intent(StartMemorizingPatternActivity.this,
+                                PatternMemorizing9ButtonsActivity.class);
                         break;
                     default:
-                        intent = new Intent(StartMemorizingPatternActivity.this, PatternMemorizing4ButtonsActivity.class);
+                        intent = new Intent(StartMemorizingPatternActivity.this,
+                                PatternMemorizing4ButtonsActivity.class);
                 }
 
                 StartMemorizingPatternActivity.this.startActivity(intent);
@@ -177,7 +180,7 @@ public class StartMemorizingPatternActivity extends AppCompatActivity {
     }
 
 
-    private void setBtnWatchPatternVidOnClick(){
+    private void setBtnWatchPatternVidOnClick() {
         btnWatchPatternGameVid.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -190,10 +193,12 @@ public class StartMemorizingPatternActivity extends AppCompatActivity {
                 lblPatternGameTitle.setVisibility(View.INVISIBLE);
                 lblPatternGameDesc.setVisibility(View.INVISIBLE);
 
-                MediaController mediaController = new MediaController(StartMemorizingPatternActivity.this);
+                MediaController mediaController =
+                        new MediaController(StartMemorizingPatternActivity.this);
                 mediaController.setAnchorView(vidPatternExample);
                 vidPatternExample.setMediaController(mediaController);
-                vidPatternExample.setVideoURI(Uri.parse("android.resource://" + getPackageName() + "/" +
+                vidPatternExample.setVideoURI(Uri.parse("android.resource://" +
+                        getPackageName() + "/" +
                         R.raw.pairs_example));
                 vidPatternExample.start();
 
@@ -208,7 +213,7 @@ public class StartMemorizingPatternActivity extends AppCompatActivity {
     }
 
 
-    private void setBtnCancelOnClick(){
+    private void setBtnCancelOnClick() {
         btnCancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

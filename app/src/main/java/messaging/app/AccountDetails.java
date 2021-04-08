@@ -3,81 +3,82 @@ package messaging.app;
 public class AccountDetails {
 
 
-    private String UUID;
-    private String firstName;
-    private String surname;
-    private String relationship;
-    private String profileImageUrl = null;
-    private String username;
-    private int profileImageRotation;
+    private String mUUID;
+    private String mFirstName;
+    private String mSurname;
+    private String mRelationship;
+    private String mProfileImageUrl = null;
+    private String mUsername;
+    private int mProfileImageRotation;
 
-    public AccountDetails(String UUID, String firstName, String surname, String relationship, String profileImageUrl, int profileImageRotation, String username) {
-        this.UUID = UUID;
-        this.firstName = firstName;
-        this.surname = surname;
-        this.relationship = relationship;
-        this.profileImageUrl = profileImageUrl;
-        this.profileImageRotation = profileImageRotation;
-        this.username = username;
+    public AccountDetails(String UUID, String firstName, String surname, String relationship,
+                          String profileImageUrl, int profileImageRotation, String username) {
+        this.mUUID = UUID;
+        this.mFirstName = firstName;
+        this.mSurname = surname;
+        this.mRelationship = relationship;
+        this.mProfileImageUrl = profileImageUrl;
+        this.mProfileImageRotation = profileImageRotation;
+        this.mUsername = username;
     }
 
-    public AccountDetails(){
+    public AccountDetails() {
 
     }
 
-    public int getProfileImageRotation() {
-        return profileImageRotation;
+    public int getmProfileImageRotation() {
+        return mProfileImageRotation;
     }
 
-    public String getUsername() {
-        return username;
+    public String getmUsername() {
+        return mUsername;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
+    public void setmUsername(String mUsername) {
+        this.mUsername = mUsername;
     }
 
-    public void setProfileImageRotation(int profileImageRotation) {
-        this.profileImageRotation = profileImageRotation;
+    public void setmProfileImageRotation(int mProfileImageRotation) {
+        this.mProfileImageRotation = mProfileImageRotation;
     }
 
-    public String getUUID() {
-        return UUID;
+    public String getmUUID() {
+        return mUUID;
     }
 
-    public void setUUID(String UUID) {
-        this.UUID = UUID;
+    public void setmUUID(String mUUID) {
+        this.mUUID = mUUID;
     }
 
-    public String getFirstName() {
-        return firstName;
+    public String getmFirstName() {
+        return mFirstName;
     }
 
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
+    public void setmFirstName(String mFirstName) {
+        this.mFirstName = mFirstName;
     }
 
-    public String getSurname() {
-        return surname;
+    public String getmSurname() {
+        return mSurname;
     }
 
-    public void setSurname(String surname) {
-        this.surname = surname;
+    public void setmSurname(String mSurname) {
+        this.mSurname = mSurname;
     }
 
-    public String getRelationship() {
-        return relationship;
+    public String getmRelationship() {
+        return mRelationship;
     }
 
-    public void setRelationship(String relationship) {
-        this.relationship = relationship;
+    public void setmRelationship(String mRelationship) {
+        this.mRelationship = mRelationship;
     }
 
-    public String getProfileImageUrl() {
-        return profileImageUrl;
+    public String getmProfileImageUrl() {
+        return mProfileImageUrl;
     }
 
-    public void setProfileImageUrl(String profileImageUrl) {
-        this.profileImageUrl = profileImageUrl;
+    public void setmProfileImageUrl(String mProfileImageUrl) {
+        this.mProfileImageUrl = mProfileImageUrl;
     }
 }

@@ -3,10 +3,8 @@ package messaging.app.games;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Color;
 import android.media.ExifInterface;
 import android.os.StrictMode;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,35 +20,35 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.List;
 
-import messaging.app.AccountDetails;
 import messaging.app.MediaManagement;
 import messaging.app.R;
 
 public class LeaderBoardAdapter extends RecyclerView.Adapter<LeaderBoardAdapter.ViewHolder> {
 
-    Context context;
-    List<AccountsHighScores> accountsHighScores;
-    MediaManagement mediaManagement;
+    Context mContext;
+    List<AccountsHighScores> mAccountsHighScores;
+    MediaManagement mMediaManagement;
 
     private File mImageFolder;
     private String mImageFilePath;
-    private String gamesType;
+    private String mGamesType;
 
-    public LeaderBoardAdapter(List<AccountsHighScores> accountsHighScores, String gamesType, Context context) {
-        this.context = context;
-        this.gamesType = gamesType;
-        this.accountsHighScores = accountsHighScores;
-        mediaManagement = new MediaManagement(context);
+    public LeaderBoardAdapter(List<AccountsHighScores> accountsHighScores,
+                              String gamesType, Context context) {
+        this.mContext = context;
+        this.mGamesType = gamesType;
+        this.mAccountsHighScores = accountsHighScores;
+        mMediaManagement = new MediaManagement(context);
     }
 
 
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.high_score_row, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.high_score_row,
+                parent, false);
         ViewHolder viewHolder = new ViewHolder(view);
 
         return viewHolder;
@@ -60,74 +58,70 @@ public class LeaderBoardAdapter extends RecyclerView.Adapter<LeaderBoardAdapter.
     @Override
     public void onBindViewHolder(@NonNull final ViewHolder holder, int position) {
 
-        AccountsHighScores accountsHighScore = accountsHighScores.get(position);
-        holder.lblHighScoreFriendsName.setText(accountsHighScore.getFullName());
-        if(gamesType.equals("memory")){
+        AccountsHighScores accountsHighScore = mAccountsHighScores.get(position);
+        holder.lblHighScoreFriendsName.setText(accountsHighScore.getmFullName());
+        if (mGamesType.equals("memory")) {
             String patternHighScore;
             String pairsHighScore;
 
-            if(accountsHighScore.getPatternHighScore() == 0){
+            if (accountsHighScore.getmPatternHighScore() == 0) {
                 patternHighScore = "Not played";
-            }
-            else{
-                patternHighScore = String.valueOf(accountsHighScore.getPatternHighScore());
+            } else {
+                patternHighScore = String.valueOf(accountsHighScore.getmPatternHighScore());
             }
 
-            if(accountsHighScore.getPairsHighScore() == 0){
+            if (accountsHighScore.getmPairsHighScore() == 0) {
                 pairsHighScore = "Not played";
-            }
-            else{
-                pairsHighScore = String.valueOf(accountsHighScore.getPairsHighScore());
+            } else {
+                pairsHighScore = String.valueOf(accountsHighScore.getmPairsHighScore());
             }
 
 
             holder.lblFriendsHighScore.setText(
                     "Pairs: " + pairsHighScore +
-                    "\nPattern: " + patternHighScore);
-        }
-        else{
+                            "\nPattern: " + patternHighScore);
+        } else {
 
             String buttonHighScore;
             String stoopTestHighScore;
             String gridReactionHighScore;
 
-            if(accountsHighScore.getButtonChangeHighScore() == 0){
+            if (accountsHighScore.getmButtonChangeHighScore() == 0) {
                 buttonHighScore = "Not played";
-            }
-            else{
-                buttonHighScore = accountsHighScore.getButtonChangeHighScore() + "ms";
+            } else {
+                buttonHighScore = accountsHighScore.getmButtonChangeHighScore() + "ms";
             }
 
-            if(accountsHighScore.getGridReactionHighScore() == 0){
+            if (accountsHighScore.getmGridReactionHighScore() == 0) {
                 gridReactionHighScore = "Not played";
-            }
-            else{
-                gridReactionHighScore = accountsHighScore.getGridReactionHighScore() + "ms";
+            } else {
+                gridReactionHighScore = accountsHighScore.getmGridReactionHighScore() + "ms";
             }
 
-            if(accountsHighScore.getStoopTestHighScore() == 0){
+            if (accountsHighScore.getmStoopTestHighScore() == 0) {
                 stoopTestHighScore = "Not played";
-            }
-            else{
-                stoopTestHighScore = accountsHighScore.getStoopTestHighScore() + "ms";
+            } else {
+                stoopTestHighScore = accountsHighScore.getmStoopTestHighScore() + "ms";
             }
 
-                holder.lblFriendsHighScore.setText(
+            holder.lblFriendsHighScore.setText(
                     "Single: " + buttonHighScore +
-                    "\nGrid: " + gridReactionHighScore +
-                    "\nWords: " + stoopTestHighScore );
+                            "\nGrid: " + gridReactionHighScore +
+                            "\nWords: " + stoopTestHighScore);
         }
 
 
-        if(!accountsHighScore.getProfileImageURL().equals(null) && !accountsHighScore.getProfileImageURL().equals("") ) {
+        if (!accountsHighScore.getmProfileImageURL().equals(null) &&
+                !accountsHighScore.getmProfileImageURL().equals("")) {
             //create directories for files
-            File[] mediaFolders = mediaManagement.createMediaFolders();
+            File[] mediaFolders = mMediaManagement.createMediaFolders();
             mImageFolder = mediaFolders[1];
 
             try {
 
-                mImageFilePath = mediaManagement.createImageFileName(mImageFolder).getAbsolutePath();
-                try (BufferedInputStream inputStream = new BufferedInputStream(new URL(accountsHighScore.getProfileImageURL()).openStream());
+                mImageFilePath = mMediaManagement.createImageFileName(mImageFolder).getAbsolutePath();
+                try (BufferedInputStream inputStream = new BufferedInputStream(
+                        new URL(accountsHighScore.getmProfileImageURL()).openStream());
                      FileOutputStream fileOS = new FileOutputStream(mImageFilePath)) {
                     byte data[] = new byte[1024];
                     int byteContent;
@@ -143,14 +137,16 @@ public class LeaderBoardAdapter extends RecyclerView.Adapter<LeaderBoardAdapter.
                 ExifInterface exif = null;
                 //display the media in the correct rotation
                 exif = new ExifInterface(mImageFilePath);
-                int exifOrientation = exif.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL);
+                int exifOrientation = exif.getAttributeInt(ExifInterface.TAG_ORIENTATION,
+                        ExifInterface.ORIENTATION_NORMAL);
                 Bitmap myBitmap = BitmapFactory.decodeFile(new File(mImageFilePath).getAbsolutePath());
 
-                Bitmap adjustedBitmapImage = mediaManagement.adjustBitmapImage(exifOrientation, myBitmap);
+                Bitmap adjustedBitmapImage = mMediaManagement
+                        .adjustBitmapImage(exifOrientation, myBitmap);
 
                 holder.imgHighScoreProfileImage.setImageBitmap(adjustedBitmapImage);
 
-                mediaManagement.deleteMediaFile(mImageFilePath, context);
+                mMediaManagement.deleteMediaFile(mImageFilePath, mContext);
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -160,12 +156,12 @@ public class LeaderBoardAdapter extends RecyclerView.Adapter<LeaderBoardAdapter.
 
     @Override
     public int getItemCount() {
-        return accountsHighScores.size();
+        return mAccountsHighScores.size();
     }
 
 
     //friend row layout
-    public class ViewHolder extends RecyclerView.ViewHolder{
+    public class ViewHolder extends RecyclerView.ViewHolder {
         ImageView imgHighScoreProfileImage;
         TextView lblHighScoreFriendsName;
         TextView lblFriendsHighScore;

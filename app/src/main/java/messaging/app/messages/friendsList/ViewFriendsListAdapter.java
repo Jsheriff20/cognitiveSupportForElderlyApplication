@@ -5,10 +5,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Matrix;
 import android.media.ExifInterface;
 import android.os.StrictMode;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,37 +18,31 @@ import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.squareup.picasso.Picasso;
-
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.List;
 
 import messaging.app.AccountDetails;
 import messaging.app.MediaManagement;
 import messaging.app.R;
-import messaging.app.register.RegisterPasswordActivity;
-import messaging.app.register.RegisterUsernameActivity;
 
 public class ViewFriendsListAdapter extends RecyclerView.Adapter<ViewFriendsListAdapter.ViewHolder> {
 
-    Context context;
+    Context mContext;
     private List mFriendsDetailsList;
     private File mImageFolder;
     private String mImageFilePath;
 
-    MediaManagement mediaManagement;
+    MediaManagement mMediaManagement;
 
 
     public ViewFriendsListAdapter(List friendsDetailsList, Context context) {
         mFriendsDetailsList = friendsDetailsList;
-        this.context = context;
-        mediaManagement = new MediaManagement(context);
+        this.mContext = context;
+        mMediaManagement = new MediaManagement(context);
     }
 
 
@@ -68,22 +60,23 @@ public class ViewFriendsListAdapter extends RecyclerView.Adapter<ViewFriendsList
 
         final AccountDetails friendsDetails = (AccountDetails) mFriendsDetailsList.get(position);
         //provide the details of each view element for each friend row
-        holder.lblName.setText(friendsDetails.getFirstName() + " " + friendsDetails.getSurname());
-        holder.lblRelationship.setText(friendsDetails.getRelationship());
-        holder.UUID = friendsDetails.getUUID();
-        holder.username = friendsDetails.getUsername();
-        holder.profileImageRotation = mediaManagement.exifToDegrees(friendsDetails.getProfileImageRotation());
-        holder.profileImageUrl = friendsDetails.getProfileImageUrl();
+        holder.lblName.setText(friendsDetails.getmFirstName() + " " + friendsDetails.getmSurname());
+        holder.lblRelationship.setText(friendsDetails.getmRelationship());
+        holder.UUID = friendsDetails.getmUUID();
+        holder.username = friendsDetails.getmUsername();
+        holder.profileImageRotation = mMediaManagement.exifToDegrees(friendsDetails.getmProfileImageRotation());
+        holder.profileImageUrl = friendsDetails.getmProfileImageUrl();
 
 
-        if(holder.profileImageUrl != null && !holder.profileImageUrl.equals("") ) {
+        if (holder.profileImageUrl != null && !holder.profileImageUrl.equals("")) {
             //create directories for files
-            File[] mediaFolders = mediaManagement.createMediaFolders();
+            File[] mediaFolders = mMediaManagement.createMediaFolders();
             mImageFolder = mediaFolders[1];
 
             try {
-                mImageFilePath = mediaManagement.createImageFileName(mImageFolder).getAbsolutePath();
-                try (BufferedInputStream inputStream = new BufferedInputStream(new URL(holder.profileImageUrl).openStream());
+                mImageFilePath = mMediaManagement.createImageFileName(mImageFolder).getAbsolutePath();
+                try (BufferedInputStream inputStream =
+                             new BufferedInputStream(new URL(holder.profileImageUrl).openStream());
                      FileOutputStream fileOS = new FileOutputStream(mImageFilePath)) {
                     byte data[] = new byte[1024];
                     int byteContent;
@@ -99,15 +92,16 @@ public class ViewFriendsListAdapter extends RecyclerView.Adapter<ViewFriendsList
                 ExifInterface exif = null;
                 //display the media in the correct rotation
                 exif = new ExifInterface(mImageFilePath);
-                int exifOrientation = exif.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL);
+                int exifOrientation =
+                        exif.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL);
                 Bitmap myBitmap = BitmapFactory.decodeFile(new File(mImageFilePath).getAbsolutePath());
 
-                Bitmap adjustedBitmapImage = mediaManagement.adjustBitmapImage(exifOrientation, myBitmap);
+                Bitmap adjustedBitmapImage = mMediaManagement.adjustBitmapImage(exifOrientation, myBitmap);
 
                 holder.imgProfileImage.setImageBitmap(adjustedBitmapImage);
 
 
-                mediaManagement.deleteMediaFile(mImageFilePath, context);
+                mMediaManagement.deleteMediaFile(mImageFilePath, mContext);
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -117,7 +111,7 @@ public class ViewFriendsListAdapter extends RecyclerView.Adapter<ViewFriendsList
         holder.btnEditFriend.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(context, EditFriendActivity.class);
+                Intent intent = new Intent(mContext, EditFriendActivity.class);
                 intent.putExtra("name", holder.lblName.getText().toString());
                 intent.putExtra("relationship", holder.lblRelationship.getText().toString());
                 intent.putExtra("UUID", holder.UUID);
@@ -125,8 +119,9 @@ public class ViewFriendsListAdapter extends RecyclerView.Adapter<ViewFriendsList
                 intent.putExtra("profileImageUrl", holder.profileImageUrl);
                 intent.putExtra("profileImageRotation", holder.profileImageRotation);
 
-                if(((Activity) context).getIntent().getStringExtra("adminUUID") != null){
-                    intent.putExtra("adminUUID", ((Activity) context).getIntent().getStringExtra("adminUUID"));
+                if (((Activity) mContext).getIntent().getStringExtra("adminUUID") != null) {
+                    intent.putExtra("adminUUID",
+                            ((Activity) mContext).getIntent().getStringExtra("adminUUID"));
                 }
                 holder.itemViewContext.startActivity(intent);
                 return;

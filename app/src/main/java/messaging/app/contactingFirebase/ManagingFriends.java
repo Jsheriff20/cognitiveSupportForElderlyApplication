@@ -1,7 +1,6 @@
 package messaging.app.contactingFirebase;
 
 import android.content.Context;
-import android.util.Log;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -22,25 +21,27 @@ import messaging.app.AccountDetails;
 import messaging.app.messages.friendsList.FriendRequestHelper;
 
 public class ManagingFriends {
-    Context context;
+    Context mContext;
     FirebaseDatabase mDatabase;
     FirebaseStorage mStorage;
     FirebaseAuth mAuth;
 
-    QueryingDatabase queryingDatabase;
+    QueryingDatabase mQueryingDatabase;
 
     public ManagingFriends(Context context, String friendsUUID) {
-        this.context = context;
+        this.mContext = context;
         mDatabase = FirebaseDatabase.getInstance();
         mStorage = FirebaseStorage.getInstance();
-        queryingDatabase = new QueryingDatabase(friendsUUID);
+        mQueryingDatabase = new QueryingDatabase(friendsUUID);
     }
 
 
     public void cancelSentFriendRequest(String friendsUUID) {
         DatabaseReference databaseRef = mDatabase.getReference("userDetails");
-        Query getSentFriendRequest = databaseRef.child(queryingDatabase.getCurrentUsersUUID() + "/sentFriendRequests/" + friendsUUID);
-        final Query getReceivedFriendRequest = databaseRef.child(friendsUUID + "/friendRequests/" + queryingDatabase.getCurrentUsersUUID());
+        Query getSentFriendRequest = databaseRef.child(mQueryingDatabase.getCurrentUsersUUID() +
+                "/sentFriendRequests/" + friendsUUID);
+        final Query getReceivedFriendRequest = databaseRef.child(friendsUUID + "/friendRequests/" +
+                mQueryingDatabase.getCurrentUsersUUID());
 
         getSentFriendRequest.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -69,8 +70,10 @@ public class ManagingFriends {
 
     public void cancelReceivedFriendRequest(String friendsUUID) {
         DatabaseReference databaseRef = mDatabase.getReference("userDetails");
-        Query getSentFriendRequest = databaseRef.child(friendsUUID + "/sentFriendRequests/" + queryingDatabase.getCurrentUsersUUID());
-        final Query getReceivedFriendRequest = databaseRef.child(queryingDatabase.getCurrentUsersUUID() + "/friendRequests/" + friendsUUID);
+        Query getSentFriendRequest = databaseRef.child(friendsUUID + "/sentFriendRequests/" +
+                mQueryingDatabase.getCurrentUsersUUID());
+        final Query getReceivedFriendRequest = databaseRef.child(
+                mQueryingDatabase.getCurrentUsersUUID() + "/friendRequests/" + friendsUUID);
 
         getSentFriendRequest.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -104,48 +107,55 @@ public class ManagingFriends {
 
         //block the friend
         DatabaseReference databaseRef = mDatabase.getReference("userDetails");
-        databaseRef.child(queryingDatabase.getCurrentUsersUUID() + "/blocked/" + friendsUUID).setValue(friendsUsername);
-        queryingDatabase.getCurrentUsersUsername(new QueryingDatabase.OnGetCurrentUsersUsernameListener() {
-            @Override
-            public void onSuccess(String username) {
+        databaseRef.child(mQueryingDatabase.getCurrentUsersUUID() + "/blocked/" + friendsUUID)
+                .setValue(friendsUsername);
+        mQueryingDatabase.getCurrentUsersUsername(
+                new QueryingDatabase.OnGetCurrentUsersUsernameListener() {
+                    @Override
+                    public void onSuccess(String username) {
 
-                databaseRef.child(friendsUUID + "/blockedBy/" + queryingDatabase.getCurrentUsersUUID()).setValue(username);
+                        databaseRef.child(friendsUUID + "/blockedBy/" +
+                                mQueryingDatabase.getCurrentUsersUUID()).setValue(username);
 
-                Toast.makeText(context, "User has been blocked", Toast.LENGTH_SHORT).show();
-            }
-        });
+                        Toast.makeText(mContext, "User has been blocked", Toast.LENGTH_SHORT).show();
+                    }
+                });
     }
 
 
     public void removeFriend(String friendsUUID) {
 
         DatabaseReference databaseRef = mDatabase.getReference("userDetails");
-        Query removeFriendFromCurrentUsersFriends = databaseRef.child(queryingDatabase.getCurrentUsersUUID() + "/friends/" + friendsUUID);
-        final Query removeCurrentUserFromFriendsFriends = databaseRef.child(friendsUUID + "/friends/" + queryingDatabase.getCurrentUsersUUID());
+        Query removeFriendFromCurrentUsersFriends = databaseRef.child(
+                mQueryingDatabase.getCurrentUsersUUID() + "/friends/" + friendsUUID);
+        final Query removeCurrentUserFromFriendsFriends = databaseRef.child(friendsUUID +
+                "/friends/" + mQueryingDatabase.getCurrentUsersUUID());
 
-        removeFriendFromCurrentUsersFriends.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                for (DataSnapshot ds : snapshot.getChildren()) {
-                    ds.getRef().removeValue();
-                }
-                removeCurrentUserFromFriendsFriends.addListenerForSingleValueEvent(new ValueEventListener() {
+        removeFriendFromCurrentUsersFriends
+                .addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
-                        snapshot.getRef().removeValue();
-                        Toast.makeText(context, "Friend Removed", Toast.LENGTH_SHORT).show();
+                        for (DataSnapshot ds : snapshot.getChildren()) {
+                            ds.getRef().removeValue();
+                        }
+                        removeCurrentUserFromFriendsFriends
+                                .addListenerForSingleValueEvent(new ValueEventListener() {
+                                    @Override
+                                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                        snapshot.getRef().removeValue();
+                                        Toast.makeText(mContext, "Friend Removed", Toast.LENGTH_SHORT).show();
+                                    }
+
+                                    @Override
+                                    public void onCancelled(@NonNull DatabaseError error) {
+                                    }
+                                });
                     }
 
                     @Override
                     public void onCancelled(@NonNull DatabaseError error) {
                     }
                 });
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-            }
-        });
     }
 
 
@@ -153,11 +163,13 @@ public class ManagingFriends {
         void onSuccess(boolean success);
     }
 
-    public void updateFriendRelationship(String friendsUUID, String updatedRelationship, final OnUpdateFriendRelationshipListener listener) {
+    public void updateFriendRelationship(String friendsUUID, String updatedRelationship,
+                                         final OnUpdateFriendRelationshipListener listener) {
 
         try {
             DatabaseReference databaseRef = mDatabase.getReference("userDetails");
-            databaseRef.child(queryingDatabase.getCurrentUsersUUID() + "/friends/" + friendsUUID + "/relationship").setValue(updatedRelationship);
+            databaseRef.child(mQueryingDatabase.getCurrentUsersUUID() + "/friends/" + friendsUUID +
+                    "/relationship").setValue(updatedRelationship);
             listener.onSuccess(true);
         } catch (Exception exception) {
             listener.onSuccess(false);
@@ -171,24 +183,29 @@ public class ManagingFriends {
         cancelReceivedFriendRequest(friendsUUID);
 
         //get details of accounts
-        queryingDatabase.getAccountDetails(queryingDatabase.getCurrentUsersUUID(), new QueryingDatabase.OnGetAccountDetailsListener() {
-            @Override
-            public void onSuccess(final AccountDetails currentUserAccountDetails) {
-
-                queryingDatabase.getAccountDetails(friendsUUID, new QueryingDatabase.OnGetAccountDetailsListener() {
+        mQueryingDatabase.getAccountDetails(mQueryingDatabase.getCurrentUsersUUID(),
+                new QueryingDatabase.OnGetAccountDetailsListener() {
                     @Override
-                    public void onSuccess(AccountDetails accountDetails) {
-                        AccountDetails friendsDetails = accountDetails;
-                        friendsDetails.setRelationship(friendsRelationship);
+                    public void onSuccess(final AccountDetails currentUserAccountDetails) {
 
-                        //add each other as a friend on each account
-                        DatabaseReference databaseRef = mDatabase.getReference("userDetails");
-                        databaseRef.child(friendsUUID + "/friends/" + queryingDatabase.getCurrentUsersUUID()).setValue(currentUserAccountDetails);
-                        databaseRef.child(queryingDatabase.getCurrentUsersUUID() + "/friends/" + friendsUUID).setValue(friendsDetails);
+                        mQueryingDatabase.getAccountDetails(friendsUUID,
+                                new QueryingDatabase.OnGetAccountDetailsListener() {
+                                    @Override
+                                    public void onSuccess(AccountDetails accountDetails) {
+                                        AccountDetails friendsDetails = accountDetails;
+                                        friendsDetails.setmRelationship(friendsRelationship);
+
+                                        //add each other as a friend on each account
+                                        DatabaseReference databaseRef = mDatabase.getReference("userDetails");
+                                        databaseRef.child(friendsUUID + "/friends/" +
+                                                mQueryingDatabase.getCurrentUsersUUID())
+                                                .setValue(currentUserAccountDetails);
+                                        databaseRef.child(mQueryingDatabase.getCurrentUsersUUID() + "/friends/" +
+                                                friendsUUID).setValue(friendsDetails);
+                                    }
+                                });
                     }
                 });
-            }
-        });
 
     }
 
@@ -197,27 +214,30 @@ public class ManagingFriends {
         void onSuccess(boolean result);
     }
 
-    public void checkReceivedFriendRequestFrom(final String friendRequestFromUUID, final OnCheckReceivedFriendRequestFromListener listener) {
+    public void checkReceivedFriendRequestFrom(final String friendRequestFromUUID,
+                                               final OnCheckReceivedFriendRequestFromListener listener) {
 
-        mDatabase.getReference("userDetails").child(queryingDatabase.getCurrentUsersUUID() + "/friendRequests").orderByValue().addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
+        mDatabase.getReference("userDetails").child(mQueryingDatabase.getCurrentUsersUUID() +
+                "/friendRequests").orderByValue().addListenerForSingleValueEvent(
+                new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
 
-                for (DataSnapshot ds : snapshot.getChildren()) {
-                    if (ds.getKey().equals(friendRequestFromUUID)) {
-                        listener.onSuccess(true);
-                    } else {
+                        for (DataSnapshot ds : snapshot.getChildren()) {
+                            if (ds.getKey().equals(friendRequestFromUUID)) {
+                                listener.onSuccess(true);
+                            } else {
+                                listener.onSuccess(false);
+                            }
+                        }
                         listener.onSuccess(false);
+
                     }
-                }
-                listener.onSuccess(false);
 
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-            }
-        });
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+                    }
+                });
     }
 
 
@@ -225,43 +245,49 @@ public class ManagingFriends {
         void onSuccess(boolean requestSentSuccessfully);
     }
 
-    public void sendFriendRequest(final String friendsUsername, final String relationship, final OnCheckIfFriendRequestSentListener listener) {
+    public void sendFriendRequest(final String friendsUsername, final String relationship,
+                                  final OnCheckIfFriendRequestSentListener listener) {
 
-        queryingDatabase.getUsernamesUUID(friendsUsername, new QueryingDatabase.OnGetUUIDListener() {
-            @Override
-            public void onSuccess(final String friendsUUID) {
-                final String usersUUID = queryingDatabase.getCurrentUsersUUID();
+        mQueryingDatabase.getUsernamesUUID(friendsUsername,
+                new QueryingDatabase.OnGetUUIDListener() {
+                    @Override
+                    public void onSuccess(final String friendsUUID) {
+                        final String usersUUID = mQueryingDatabase.getCurrentUsersUUID();
 
-                try {
-                    //build friend request
-                    Map<String, String> usernameMap = new HashMap<String, String>();
-                    Map<String, String> relationshipMap = new HashMap<String, String>();
+                        try {
+                            //build friend request
+                            Map<String, String> usernameMap = new HashMap<String, String>();
+                            Map<String, String> relationshipMap = new HashMap<String, String>();
 
-                    usernameMap.put("username", friendsUsername);
-                    relationshipMap.put("relationship", relationship);
+                            usernameMap.put("username", friendsUsername);
+                            relationshipMap.put("relationship", relationship);
 
-                    FriendRequestHelper friendRequest = new FriendRequestHelper(friendsUsername, relationship);
+                            FriendRequestHelper friendRequest = new FriendRequestHelper(friendsUsername,
+                                    relationship);
 
-                    //add friend request to database
-                    DatabaseReference databaseRef = mDatabase.getReference("userDetails");
-                    databaseRef.child(usersUUID + "/sentFriendRequests/" + friendsUUID).setValue(friendRequest);
-                    queryingDatabase.getCurrentUsersUsername(new QueryingDatabase.OnGetCurrentUsersUsernameListener() {
-                        @Override
-                        public void onSuccess(String username) {
-                            databaseRef.child(friendsUUID + "/friendRequests/" + usersUUID).setValue(username);
+                            //add friend request to database
+                            DatabaseReference databaseRef = mDatabase.getReference("userDetails");
+                            databaseRef.child(usersUUID + "/sentFriendRequests/" + friendsUUID)
+                                    .setValue(friendRequest);
+                            mQueryingDatabase.getCurrentUsersUsername(
+                                    new QueryingDatabase.OnGetCurrentUsersUsernameListener() {
+                                        @Override
+                                        public void onSuccess(String username) {
+                                            databaseRef.child(friendsUUID + "/friendRequests/" + usersUUID)
+                                                    .setValue(username);
 
 
-                            listener.onSuccess(true);
+                                            listener.onSuccess(true);
+                                        }
+                                    });
+
+                        } catch (Exception exception) {
+
+                            listener.onSuccess(false);
                         }
-                    });
 
-                } catch (Exception exception) {
-
-                    listener.onSuccess(false);
-                }
-
-            }
-        });
+                    }
+                });
     }
 
 
@@ -269,86 +295,110 @@ public class ManagingFriends {
         void onSuccess(boolean requestSentSuccessfully);
     }
 
-    public void addFriend(final String friendsUsername, final String relationship, OnAddFriendListener listener) {
+    public void addFriend(final String friendsUsername, final String relationship,
+                          OnAddFriendListener listener) {
 
         mAuth = FirebaseAuth.getInstance();
 
         //check user is not adding themselves
-        queryingDatabase.getCurrentUsersUsername(new QueryingDatabase.OnGetCurrentUsersUsernameListener() {
-            @Override
-            public void onSuccess(String username) {
-                if (friendsUsername.equals(username)) {
-                    Toast.makeText(context, "You can not add yourself", Toast.LENGTH_SHORT).show();
-                    return;
-                } else {
+        mQueryingDatabase.getCurrentUsersUsername(
+                new QueryingDatabase.OnGetCurrentUsersUsernameListener() {
+                    @Override
+                    public void onSuccess(String username) {
+                        if (friendsUsername.equals(username)) {
+                            Toast.makeText(mContext, "You can not add yourself",
+                                    Toast.LENGTH_SHORT).show();
+                            return;
+                        } else {
 
-                    //check username exists
-                    queryingDatabase.doesUsernameExist(friendsUsername, new QueryingDatabase.OnCheckIfUsernameExistsListener() {
-                        @Override
-                        public void onSuccess(boolean exists) {
-                            if (exists) {
+                            //check username exists
+                            mQueryingDatabase.doesUsernameExist(friendsUsername,
+                                    new QueryingDatabase.OnCheckIfUsernameExistsListener() {
+                                        @Override
+                                        public void onSuccess(boolean exists) {
+                                            if (exists) {
 
-                                //check to see if user is already friends with the user
-                                queryingDatabase.isUserAlreadyFriendsWith(friendsUsername, new QueryingDatabase.OnCheckIfUserIsAlreadyFriendsWithListener() {
-                                    @Override
-                                    public void onSuccess(boolean alreadyFriends) {
-
-                                        if (alreadyFriends) {
-                                            Toast.makeText(context, "You and " + friendsUsername + " are already friends", Toast.LENGTH_SHORT).show();
-                                            return;
-                                        }
-                                        //check adding user is not blocked by the recipient user
-                                        queryingDatabase.isUserBlockedBy(friendsUsername, new QueryingDatabase.OnCheckIfUserIsBlockedByListener() {
-                                            @Override
-                                            public void onSuccess(boolean blocked) {
-
-                                                if (blocked) {
-                                                    Toast.makeText(context, "You have been blocked by this user", Toast.LENGTH_SHORT).show();
-                                                    return;
-                                                }
-
-                                                //check if friend has already sent a friend request to the user. If so auto accept
-                                                queryingDatabase.getUsernamesUUID(friendsUsername, new QueryingDatabase.OnGetUUIDListener() {
-                                                    @Override
-                                                    public void onSuccess(final String friendsUUID) {
-                                                        checkReceivedFriendRequestFrom(friendsUUID, new OnCheckReceivedFriendRequestFromListener() {
+                                                //check to see if user is already friends with the user
+                                                mQueryingDatabase.isUserAlreadyFriendsWith(friendsUsername,
+                                                        new QueryingDatabase.OnCheckIfUserIsAlreadyFriendsWithListener() {
                                                             @Override
-                                                            public void onSuccess(boolean haveExistingFriendRequest) {
+                                                            public void onSuccess(boolean alreadyFriends) {
 
-                                                                if (haveExistingFriendRequest) {
-                                                                    Toast.makeText(context, "Friend request to " + friendsUsername + " was automatically accepted", Toast.LENGTH_SHORT).show();
-                                                                    acceptFriendRequest(friendsUUID, friendsUsername);
+                                                                if (alreadyFriends) {
+                                                                    Toast.makeText(mContext, "You and " +
+                                                                                    friendsUsername + " are already friends",
+                                                                            Toast.LENGTH_SHORT).show();
                                                                     return;
                                                                 }
-                                                                //if all is good add the user as a friend
-                                                                sendFriendRequest(friendsUsername, relationship, new OnCheckIfFriendRequestSentListener() {
-                                                                    @Override
-                                                                    public void onSuccess(boolean requestSentSuccessfully) {
-                                                                        if (requestSentSuccessfully) {
-                                                                            Toast.makeText(context, "Friend request to " + friendsUsername + " was sent successfully", Toast.LENGTH_SHORT).show();
-                                                                            listener.onSuccess(true);
-                                                                        } else {
-                                                                            Toast.makeText(context, "Friend request to " + friendsUsername + " failed", Toast.LENGTH_SHORT).show();
-                                                                            listener.onSuccess(false);
-                                                                        }
-                                                                    }
-                                                                });
+                                                                //check adding user is not blocked by the recipient user
+                                                                mQueryingDatabase.isUserBlockedBy(friendsUsername,
+                                                                        new QueryingDatabase.OnCheckIfUserIsBlockedByListener() {
+                                                                            @Override
+                                                                            public void onSuccess(boolean blocked) {
+
+                                                                                if (blocked) {
+                                                                                    Toast.makeText(mContext,
+                                                                                            "You have been blocked by this user",
+                                                                                            Toast.LENGTH_SHORT).show();
+                                                                                    return;
+                                                                                }
+
+                                                                                //check if friend has already sent a friend request to the user. If so auto accept
+                                                                                mQueryingDatabase.getUsernamesUUID(friendsUsername,
+                                                                                        new QueryingDatabase.OnGetUUIDListener() {
+                                                                                            @Override
+                                                                                            public void onSuccess(final String friendsUUID) {
+                                                                                                checkReceivedFriendRequestFrom(friendsUUID,
+                                                                                                        new OnCheckReceivedFriendRequestFromListener() {
+                                                                                                            @Override
+                                                                                                            public void onSuccess(boolean haveExistingFriendRequest) {
+
+                                                                                                                if (haveExistingFriendRequest) {
+                                                                                                                    Toast.makeText(mContext,
+                                                                                                                            "Friend request to " +
+                                                                                                                                    friendsUsername +
+                                                                                                                                    " was automatically accepted",
+                                                                                                                            Toast.LENGTH_SHORT).show();
+                                                                                                                    acceptFriendRequest(friendsUUID,
+                                                                                                                            friendsUsername);
+                                                                                                                    return;
+                                                                                                                }
+                                                                                                                //if all is good add the user as a friend
+                                                                                                                sendFriendRequest(friendsUsername,
+                                                                                                                        relationship,
+                                                                                                                        new OnCheckIfFriendRequestSentListener() {
+                                                                                                                            @Override
+                                                                                                                            public void onSuccess(boolean requestSentSuccessfully) {
+                                                                                                                                if (requestSentSuccessfully) {
+                                                                                                                                    Toast.makeText(mContext, "Friend request to " +
+                                                                                                                                                    friendsUsername + " was sent successfully",
+                                                                                                                                            Toast.LENGTH_SHORT).show();
+                                                                                                                                    listener.onSuccess(true);
+                                                                                                                                } else {
+                                                                                                                                    Toast.makeText(mContext, "Friend request to " +
+                                                                                                                                                    friendsUsername + " failed",
+                                                                                                                                            Toast.LENGTH_SHORT).show();
+                                                                                                                                    listener.onSuccess(false);
+                                                                                                                                }
+                                                                                                                            }
+                                                                                                                        });
+                                                                                                            }
+                                                                                                        });
+                                                                                            }
+                                                                                        });
+                                                                            }
+                                                                        });
                                                             }
                                                         });
-                                                    }
-                                                });
+                                            } else {
+                                                Toast.makeText(mContext, "Username cannot be found",
+                                                        Toast.LENGTH_SHORT).show();
                                             }
-                                        });
-                                    }
-                                });
-                            } else {
-                                Toast.makeText(context, "Username cannot be found", Toast.LENGTH_SHORT).show();
-                            }
+                                        }
+                                    });
                         }
-                    });
-                }
-            }
-        });
+                    }
+                });
 
     }
 
@@ -358,25 +408,26 @@ public class ManagingFriends {
     }
 
     public void addFriendAsAdmin(final String friendsUUID, OnAdminFriendAddedListener listener) {
-        String UUID = queryingDatabase.getCurrentUsersUUID();
+        String UUID = mQueryingDatabase.getCurrentUsersUUID();
 
         DatabaseReference databaseRef = mDatabase.getReference("userDetails");
         databaseRef.child(UUID + "/friends/" + friendsUUID + "/admin").setValue(true);
-        queryingDatabase.getCurrentUsersFullName(new QueryingDatabase.OnGetCurrentUsersFullNameListener() {
-            @Override
-            public void onSuccess(String fullName) {
-                databaseRef.child(friendsUUID + "/administering/" + UUID).setValue(fullName);
+        mQueryingDatabase.getCurrentUsersFullName(
+                new QueryingDatabase.OnGetCurrentUsersFullNameListener() {
+                    @Override
+                    public void onSuccess(String fullName) {
+                        databaseRef.child(friendsUUID + "/administering/" + UUID).setValue(fullName);
 
-                listener.onSuccess(true);
+                        listener.onSuccess(true);
 
-            }
-        });
+                    }
+                });
 
     }
 
 
     public void removeFriendAsAdmin(final String friendsUUID) {
-        String UUID = queryingDatabase.getCurrentUsersUUID();
+        String UUID = mQueryingDatabase.getCurrentUsersUUID();
 
         DatabaseReference databaseRef = mDatabase.getReference("userDetails");
         databaseRef.child(UUID + "/friends/" + friendsUUID + "/admin").removeValue();
