@@ -212,11 +212,6 @@ public class AddMessageToMediaActivity extends AppCompatActivity {
         intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, Locale.getDefault());
 
 
-        //todo:
-        //need to set a time limit
-
-        //increase the amount of time before stopping
-
         speechRecognizer.setRecognitionListener(new RecognitionListener() {
             @Override
             public void onReadyForSpeech(Bundle params) {

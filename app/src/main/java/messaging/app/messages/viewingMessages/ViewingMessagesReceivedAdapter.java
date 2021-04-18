@@ -141,8 +141,8 @@ public class ViewingMessagesReceivedAdapter extends RecyclerView.Adapter {
 
 
                                     //check if there is a text message to display
-                                    if (storyMessagesDataList.get(0).getmTextMessage().equals(null) ||
-                                            storyMessagesDataList.get(0).getmTextMessage().equals("")) {
+                                    if (storyMessagesDataList.get(0).getTextMessage().equals(null) ||
+                                            storyMessagesDataList.get(0).getTextMessage().equals("")) {
                                         intent = new Intent(mContext, ViewMediaMessageActivity.class);
                                     } else {
                                         intent = new Intent(mContext, ViewTextMessageActivity.class);
@@ -241,8 +241,8 @@ public class ViewingMessagesReceivedAdapter extends RecyclerView.Adapter {
                                                     Intent intent;
 
                                                     //check if there is a text message to display
-                                                    if (messageDataList.get(0).getmTextMessage().equals(null) ||
-                                                            messageDataList.get(0).getmTextMessage().equals("")) {
+                                                    if (messageDataList.get(0).getTextMessage().equals(null) ||
+                                                            messageDataList.get(0).getTextMessage().equals("")) {
                                                         intent = new Intent(mContext, ViewMediaMessageActivity.class);
                                                     } else {
                                                         intent = new Intent(mContext, ViewTextMessageActivity.class);

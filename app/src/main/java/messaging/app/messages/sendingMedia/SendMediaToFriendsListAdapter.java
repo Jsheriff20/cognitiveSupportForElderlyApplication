@@ -75,15 +75,15 @@ public class SendMediaToFriendsListAdapter extends
 
         AccountDetails currentListItem = mFriendsDetailsList.get(position);
         //provide the details of each view element for each friend row
-        holder.lblName.setText(currentListItem.getmFirstName() + " " + currentListItem.getmSurname());
-        holder.lblRelationship.setText(currentListItem.getmRelationship());
-        holder.UUID = currentListItem.getmUUID();
+        holder.lblName.setText(currentListItem.getFirstName() + " " + currentListItem.getSurname());
+        holder.lblRelationship.setText(currentListItem.getRelationship());
+        holder.UUID = currentListItem.getUUID();
         holder.profileImageRotation = mMediaManagement
-                .exifToDegrees(currentListItem.getmProfileImageRotation());
+                .exifToDegrees(currentListItem.getProfileImageRotation());
 
-        Log.d("test", "onBindViewHolder: " + currentListItem.getmProfileImageUrl());
-        if (currentListItem.getmProfileImageUrl() != null &&
-                !currentListItem.getmProfileImageUrl().equals("")) {
+        Log.d("test", "onBindViewHolder: " + currentListItem.getProfileImageUrl());
+        if (currentListItem.getProfileImageUrl() != null &&
+                !currentListItem.getProfileImageUrl().equals("")) {
             //create directories for files
             File[] mediaFolders = mMediaManagement.createMediaFolders();
             mImageFolder = mediaFolders[1];
@@ -92,7 +92,7 @@ public class SendMediaToFriendsListAdapter extends
 
                 mImageFilePath = mMediaManagement.createImageFileName(mImageFolder).getAbsolutePath();
                 try (BufferedInputStream inputStream = new BufferedInputStream(
-                        new URL(currentListItem.getmProfileImageUrl()).openStream());
+                        new URL(currentListItem.getProfileImageUrl()).openStream());
                      FileOutputStream fileOS = new FileOutputStream(mImageFilePath)) {
                     byte data[] = new byte[1024];
                     int byteContent;

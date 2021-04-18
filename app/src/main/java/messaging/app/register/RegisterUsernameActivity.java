@@ -16,8 +16,6 @@ import messaging.app.login.LoginActivity;
 import messaging.app.R;
 
 
-//TODO:
-//when user uploads or captures a photo the "Skip" button needs to change to "Register"
 public class RegisterUsernameActivity extends AppCompatActivity {
 
     EditText txtUsername;

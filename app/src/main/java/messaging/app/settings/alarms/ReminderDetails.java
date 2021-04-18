@@ -1,61 +1,61 @@
 package messaging.app.settings.alarms;
 
 public class ReminderDetails {
-    String mMedicationName;
-    String mFrequency;
-    String mTime;
-    String mReminderID;
-    int mIntentID;
+    String medicationName;
+    String frequency;
+    String time;
+    String reminderID;
+    int intentID;
 
     public ReminderDetails() {
     }
 
     public ReminderDetails(String medicationName, String frequency, String time, String reminderID,
                            int intentID) {
-        this.mMedicationName = medicationName;
-        this.mFrequency = frequency;
-        this.mTime = time;
-        this.mReminderID = reminderID;
-        this.mIntentID = intentID;
+        this.medicationName = medicationName;
+        this.frequency = frequency;
+        this.time = time;
+        this.reminderID = reminderID;
+        this.intentID = intentID;
     }
 
-    public String getmReminderID() {
-        return mReminderID;
+    public String getReminderID() {
+        return reminderID;
     }
 
-    public void setmReminderID(String mReminderID) {
-        this.mReminderID = mReminderID;
+    public void setReminderID(String reminderID) {
+        this.reminderID = reminderID;
     }
 
-    public int getmIntentID() {
-        return mIntentID;
+    public int getIntentID() {
+        return intentID;
     }
 
-    public void setmIntentID(int mIntentID) {
-        this.mIntentID = mIntentID;
+    public void setIntentID(int intentID) {
+        this.intentID = intentID;
     }
 
-    public String getmMedicationName() {
-        return mMedicationName;
+    public String getMedicationName() {
+        return medicationName;
     }
 
-    public void setmMedicationName(String mMedicationName) {
-        this.mMedicationName = mMedicationName;
+    public void setMedicationName(String medicationName) {
+        this.medicationName = medicationName;
     }
 
-    public String getmFrequency() {
-        return mFrequency;
+    public String getFrequency() {
+        return frequency;
     }
 
-    public void setmFrequency(String mFrequency) {
-        this.mFrequency = mFrequency;
+    public void setFrequency(String frequency) {
+        this.frequency = frequency;
     }
 
-    public String getmTime() {
-        return mTime;
+    public String getTime() {
+        return time;
     }
 
-    public void setmTime(String mTime) {
-        this.mTime = mTime;
+    public void setTime(String time) {
+        this.time = time;
     }
 }

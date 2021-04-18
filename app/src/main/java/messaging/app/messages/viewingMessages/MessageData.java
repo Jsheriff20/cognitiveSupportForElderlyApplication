@@ -4,14 +4,14 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 public class MessageData implements Parcelable {
-    String mTimeStamp;
-    String mFileExtension = null;
-    int mMediaMessageRotation;
-    int mDeviceOrientationMode;
-    String mMediaMessageUrl;
-    String mTextMessage = "";
-    String mFullName;
-    boolean mUnopened;
+    String timeStamp;
+    String fileExtension = null;
+    int mediaMessageRotation;
+    int deviceOrientationMode;
+    String mediaMessageUrl;
+    String textMessage = "";
+    String fullName;
+    boolean unopened;
 
     public MessageData() {
     }
@@ -19,29 +19,29 @@ public class MessageData implements Parcelable {
     public MessageData(String timeStamp, String fileExtension, int mediaMessageRotation,
                        int deviceOrientationMode, String mediaMessageUrl, String textMessage,
                        String fullName, boolean unopened) {
-        this.mTimeStamp = timeStamp;
-        this.mFileExtension = fileExtension;
-        this.mMediaMessageRotation = mediaMessageRotation;
-        this.mDeviceOrientationMode = deviceOrientationMode;
-        this.mMediaMessageUrl = mediaMessageUrl;
+        this.timeStamp = timeStamp;
+        this.fileExtension = fileExtension;
+        this.mediaMessageRotation = mediaMessageRotation;
+        this.deviceOrientationMode = deviceOrientationMode;
+        this.mediaMessageUrl = mediaMessageUrl;
         if (textMessage.length() <= 0) {
-            this.mTextMessage = "";
+            this.textMessage = "";
         } else {
-            this.mTextMessage = textMessage;
+            this.textMessage = textMessage;
         }
-        this.mUnopened = unopened;
-        this.mFullName = fullName;
+        this.unopened = unopened;
+        this.fullName = fullName;
     }
 
     protected MessageData(Parcel in) {
-        mTimeStamp = in.readString();
-        mFileExtension = in.readString();
-        mMediaMessageRotation = in.readInt();
-        mDeviceOrientationMode = in.readInt();
-        mMediaMessageUrl = in.readString();
-        mTextMessage = in.readString();
-        mFullName = in.readString();
-        mUnopened = in.readByte() != 0;
+        timeStamp = in.readString();
+        fileExtension = in.readString();
+        mediaMessageRotation = in.readInt();
+        deviceOrientationMode = in.readInt();
+        mediaMessageUrl = in.readString();
+        textMessage = in.readString();
+        fullName = in.readString();
+        unopened = in.readByte() != 0;
     }
 
     public static final Creator<MessageData> CREATOR = new Creator<MessageData>() {
@@ -56,68 +56,68 @@ public class MessageData implements Parcelable {
         }
     };
 
-    public String getmTimeStamp() {
-        return mTimeStamp;
+    public String getTimeStamp() {
+        return timeStamp;
     }
 
-    public String getmFullName() {
-        return mFullName;
+    public String getFullName() {
+        return fullName;
     }
 
-    public void setmFullName(String mFullName) {
-        this.mFullName = mFullName;
+    public void setFullName(String fullName) {
+        this.fullName = fullName;
     }
 
-    public void setmTimeStamp(String mTimeStamp) {
-        this.mTimeStamp = mTimeStamp;
+    public void setTimeStamp(String timeStamp) {
+        this.timeStamp = timeStamp;
     }
 
     public String getmFileExtension() {
-        return mFileExtension;
+        return fileExtension;
     }
 
     public void setmFileExtension(String mFileExtension) {
-        this.mFileExtension = mFileExtension;
+        this.fileExtension = mFileExtension;
     }
 
-    public int getmMediaMessageRotation() {
-        return mMediaMessageRotation;
+    public int getMediaMessageRotation() {
+        return mediaMessageRotation;
     }
 
-    public void setmMediaMessageRotation(int mMediaMessageRotation) {
-        this.mMediaMessageRotation = mMediaMessageRotation;
+    public void setMediaMessageRotation(int mediaMessageRotation) {
+        this.mediaMessageRotation = mediaMessageRotation;
     }
 
-    public int getmDeviceOrientationMode() {
-        return mDeviceOrientationMode;
+    public int getDeviceOrientationMode() {
+        return deviceOrientationMode;
     }
 
-    public void setmDeviceOrientationMode(int mDeviceOrientationMode) {
-        this.mDeviceOrientationMode = mDeviceOrientationMode;
+    public void setDeviceOrientationMode(int deviceOrientationMode) {
+        this.deviceOrientationMode = deviceOrientationMode;
     }
 
-    public String getmMediaMessageUrl() {
-        return mMediaMessageUrl;
+    public String getMediaMessageUrl() {
+        return mediaMessageUrl;
     }
 
-    public void setmMediaMessageUrl(String mMediaMessageUrl) {
-        this.mMediaMessageUrl = mMediaMessageUrl;
+    public void setMediaMessageUrl(String mediaMessageUrl) {
+        this.mediaMessageUrl = mediaMessageUrl;
     }
 
-    public String getmTextMessage() {
-        return mTextMessage;
+    public String getTextMessage() {
+        return textMessage;
     }
 
-    public void setmTextMessage(String mTextMessage) {
-        this.mTextMessage = mTextMessage;
+    public void setTextMessage(String textMessage) {
+        this.textMessage = textMessage;
     }
 
-    public boolean ismUnopened() {
-        return mUnopened;
+    public boolean isUnopened() {
+        return unopened;
     }
 
-    public void setmUnopened(boolean mUnopened) {
-        this.mUnopened = mUnopened;
+    public void setUnopened(boolean unopened) {
+        this.unopened = unopened;
     }
 
     @Override
@@ -127,13 +127,13 @@ public class MessageData implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(mTimeStamp);
-        dest.writeString(mFileExtension);
-        dest.writeInt(mMediaMessageRotation);
-        dest.writeInt(mDeviceOrientationMode);
-        dest.writeString(mMediaMessageUrl);
-        dest.writeString(mTextMessage);
-        dest.writeString(mFullName);
-        dest.writeByte((byte) (mUnopened ? 1 : 0));
+        dest.writeString(timeStamp);
+        dest.writeString(fileExtension);
+        dest.writeInt(mediaMessageRotation);
+        dest.writeInt(deviceOrientationMode);
+        dest.writeString(mediaMessageUrl);
+        dest.writeString(textMessage);
+        dest.writeString(fullName);
+        dest.writeByte((byte) (unopened ? 1 : 0));
     }
 }

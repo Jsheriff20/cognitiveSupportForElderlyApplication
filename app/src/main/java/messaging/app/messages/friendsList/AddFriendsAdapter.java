@@ -114,8 +114,8 @@ public class AddFriendsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                 sentFriendRequestsViewHolder.position = position;
                 FriendRequestHelper friendRequestHelper =
                         mSentFriendRequests.get(position).get(sentFriendRequestsViewHolder.UUID);
-                String username = friendRequestHelper.getmUsername();
-                String relationship = friendRequestHelper.getmRelationship();
+                String username = friendRequestHelper.getUsername();
+                String relationship = friendRequestHelper.getRelationship();
 
                 //display data
                 sentFriendRequestsViewHolder.lblSentFriendRequestUsername.setText(username);

@@ -1,11 +1,11 @@
 package messaging.app;
 
 public class UserHelperClass {
-    String mUsername;
-    String mFirstName;
-    String mSurname;
-    String mProfileImageUrl;
-    int mProfileImageRotation;
+    String username;
+    String firstName;
+    String surname;
+    String profileImageUrl;
+    int profileImageRotation;
 
 
     public UserHelperClass() {
@@ -13,50 +13,50 @@ public class UserHelperClass {
 
     public UserHelperClass(String username, String firstName, String surname,
                            String profileImageUrl, int profileImageRotation) {
-        this.mUsername = username;
-        this.mFirstName = firstName;
-        this.mSurname = surname;
-        this.mProfileImageUrl = profileImageUrl;
-        this.mProfileImageRotation = profileImageRotation;
+        this.username = username;
+        this.firstName = firstName;
+        this.surname = surname;
+        this.profileImageUrl = profileImageUrl;
+        this.profileImageRotation = profileImageRotation;
     }
 
-    public int getmProfileImageRotation() {
-        return mProfileImageRotation;
+    public int getProfileImageRotation() {
+        return profileImageRotation;
     }
 
-    public void setmProfileImageRotation(int mProfileImageRotation) {
-        this.mProfileImageRotation = mProfileImageRotation;
+    public void setProfileImageRotation(int profileImageRotation) {
+        this.profileImageRotation = profileImageRotation;
     }
 
-    public String getmFirstName() {
-        return mFirstName;
+    public String getFirstName() {
+        return firstName;
     }
 
-    public void setmFirstName(String mFirstName) {
-        this.mFirstName = mFirstName;
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
     }
 
-    public String getmUsername() {
-        return mUsername;
+    public String getUsername() {
+        return username;
     }
 
-    public void setmUsername(String mUsername) {
-        this.mUsername = mUsername;
+    public void setUsername(String username) {
+        this.username = username;
     }
 
-    public String getmSurname() {
-        return mSurname;
+    public String getSurname() {
+        return surname;
     }
 
-    public void setmSurname(String mSurname) {
-        this.mSurname = mSurname;
+    public void setSurname(String surname) {
+        this.surname = surname;
     }
 
-    public String getmProfileImageUrl() {
-        return mProfileImageUrl;
+    public String getProfileImageUrl() {
+        return profileImageUrl;
     }
 
-    public void setmProfileImageUrl(String mProfileImageUrl) {
-        this.mProfileImageUrl = mProfileImageUrl;
+    public void setProfileImageUrl(String profileImageUrl) {
+        this.profileImageUrl = profileImageUrl;
     }
 }

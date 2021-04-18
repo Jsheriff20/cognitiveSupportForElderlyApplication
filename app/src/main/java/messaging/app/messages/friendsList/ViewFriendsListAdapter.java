@@ -60,12 +60,12 @@ public class ViewFriendsListAdapter extends RecyclerView.Adapter<ViewFriendsList
 
         final AccountDetails friendsDetails = (AccountDetails) mFriendsDetailsList.get(position);
         //provide the details of each view element for each friend row
-        holder.lblName.setText(friendsDetails.getmFirstName() + " " + friendsDetails.getmSurname());
-        holder.lblRelationship.setText(friendsDetails.getmRelationship());
-        holder.UUID = friendsDetails.getmUUID();
-        holder.username = friendsDetails.getmUsername();
-        holder.profileImageRotation = mMediaManagement.exifToDegrees(friendsDetails.getmProfileImageRotation());
-        holder.profileImageUrl = friendsDetails.getmProfileImageUrl();
+        holder.lblName.setText(friendsDetails.getFirstName() + " " + friendsDetails.getSurname());
+        holder.lblRelationship.setText(friendsDetails.getRelationship());
+        holder.UUID = friendsDetails.getUUID();
+        holder.username = friendsDetails.getUsername();
+        holder.profileImageRotation = mMediaManagement.exifToDegrees(friendsDetails.getProfileImageRotation());
+        holder.profileImageUrl = friendsDetails.getProfileImageUrl();
 
 
         if (holder.profileImageUrl != null && !holder.profileImageUrl.equals("")) {

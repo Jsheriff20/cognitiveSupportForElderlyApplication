@@ -47,12 +47,12 @@ public class RemindersAdapter extends RecyclerView.Adapter<RemindersAdapter.View
     public void onBindViewHolder(@NonNull final ViewHolder holder, int position) {
 
         ReminderDetails reminderDetails = mReminderDetailsList.get(position);
-        holder.lblMedicationName.setText(reminderDetails.getmMedicationName());
-        holder.lblFrequency.setText(reminderDetails.getmFrequency());
-        holder.lblReminderTime.setText(reminderDetails.getmTime());
+        holder.lblMedicationName.setText(reminderDetails.getMedicationName());
+        holder.lblFrequency.setText(reminderDetails.getFrequency());
+        holder.lblReminderTime.setText(reminderDetails.getTime());
 
-        holder.reminderID = reminderDetails.getmReminderID();
-        holder.intentID = reminderDetails.getmIntentID();
+        holder.reminderID = reminderDetails.getReminderID();
+        holder.intentID = reminderDetails.getIntentID();
 
         holder.btnRemoveReminder.setOnClickListener(new View.OnClickListener() {
             @Override

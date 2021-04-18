@@ -26,7 +26,7 @@ public class PairGame8ButtonsActivity extends AppCompatActivity {
     Random mRand = new Random();
 
     Drawable mDefaultImage;
-    int mDelayTime = 4000;
+    int mDelayTime = 7000;
     boolean mSecondClick = false;
     int mPairsFound = 0;
     int mNumberCorrect = 0;

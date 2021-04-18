@@ -1,22 +1,22 @@
 package messaging.app.messages.friendsList;
 
 public class FriendRequestHelper {
-    private String mUsername;
-    private String mRelationship;
+    private String username;
+    private String relationship;
 
     public FriendRequestHelper(String username, String relationship) {
-        this.mUsername = username;
-        this.mRelationship = relationship;
+        this.username = username;
+        this.relationship = relationship;
     }
 
     public FriendRequestHelper() {
     }
 
-    public String getmUsername() {
-        return mUsername;
+    public String getUsername() {
+        return username;
     }
 
-    public String getmRelationship() {
-        return mRelationship;
+    public String getRelationship() {
+        return relationship;
     }
 }

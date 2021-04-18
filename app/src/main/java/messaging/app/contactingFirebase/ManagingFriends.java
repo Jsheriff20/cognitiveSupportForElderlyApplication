@@ -193,7 +193,7 @@ public class ManagingFriends {
                                     @Override
                                     public void onSuccess(AccountDetails accountDetails) {
                                         AccountDetails friendsDetails = accountDetails;
-                                        friendsDetails.setmRelationship(friendsRelationship);
+                                        friendsDetails.setRelationship(friendsRelationship);
 
                                         //add each other as a friend on each account
                                         DatabaseReference databaseRef = mDatabase.getReference("userDetails");

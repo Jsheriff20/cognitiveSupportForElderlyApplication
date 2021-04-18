@@ -59,21 +59,21 @@ public class LeaderBoardAdapter extends RecyclerView.Adapter<LeaderBoardAdapter.
     public void onBindViewHolder(@NonNull final ViewHolder holder, int position) {
 
         AccountsHighScores accountsHighScore = mAccountsHighScores.get(position);
-        holder.lblHighScoreFriendsName.setText(accountsHighScore.getmFullName());
+        holder.lblHighScoreFriendsName.setText(accountsHighScore.getFullName());
         if (mGamesType.equals("memory")) {
             String patternHighScore;
             String pairsHighScore;
 
-            if (accountsHighScore.getmPatternHighScore() == 0) {
+            if (accountsHighScore.getPatternHighScore() == 0) {
                 patternHighScore = "Not played";
             } else {
-                patternHighScore = String.valueOf(accountsHighScore.getmPatternHighScore());
+                patternHighScore = String.valueOf(accountsHighScore.getPatternHighScore());
             }
 
-            if (accountsHighScore.getmPairsHighScore() == 0) {
+            if (accountsHighScore.getPairsHighScore() == 0) {
                 pairsHighScore = "Not played";
             } else {
-                pairsHighScore = String.valueOf(accountsHighScore.getmPairsHighScore());
+                pairsHighScore = String.valueOf(accountsHighScore.getPairsHighScore());
             }
 
 
@@ -86,22 +86,22 @@ public class LeaderBoardAdapter extends RecyclerView.Adapter<LeaderBoardAdapter.
             String stoopTestHighScore;
             String gridReactionHighScore;
 
-            if (accountsHighScore.getmButtonChangeHighScore() == 0) {
+            if (accountsHighScore.getButtonChangeHighScore() == 0) {
                 buttonHighScore = "Not played";
             } else {
-                buttonHighScore = accountsHighScore.getmButtonChangeHighScore() + "ms";
+                buttonHighScore = accountsHighScore.getButtonChangeHighScore() + "ms";
             }
 
-            if (accountsHighScore.getmGridReactionHighScore() == 0) {
+            if (accountsHighScore.getGridReactionHighScore() == 0) {
                 gridReactionHighScore = "Not played";
             } else {
-                gridReactionHighScore = accountsHighScore.getmGridReactionHighScore() + "ms";
+                gridReactionHighScore = accountsHighScore.getGridReactionHighScore() + "ms";
             }
 
-            if (accountsHighScore.getmStoopTestHighScore() == 0) {
+            if (accountsHighScore.getStoopTestHighScore() == 0) {
                 stoopTestHighScore = "Not played";
             } else {
-                stoopTestHighScore = accountsHighScore.getmStoopTestHighScore() + "ms";
+                stoopTestHighScore = accountsHighScore.getStoopTestHighScore() + "ms";
             }
 
             holder.lblFriendsHighScore.setText(
@@ -111,8 +111,8 @@ public class LeaderBoardAdapter extends RecyclerView.Adapter<LeaderBoardAdapter.
         }
 
 
-        if (!accountsHighScore.getmProfileImageURL().equals(null) &&
-                !accountsHighScore.getmProfileImageURL().equals("")) {
+        if (!accountsHighScore.getProfileImageURL().equals(null) &&
+                !accountsHighScore.getProfileImageURL().equals("")) {
             //create directories for files
             File[] mediaFolders = mMediaManagement.createMediaFolders();
             mImageFolder = mediaFolders[1];
@@ -121,7 +121,7 @@ public class LeaderBoardAdapter extends RecyclerView.Adapter<LeaderBoardAdapter.
 
                 mImageFilePath = mMediaManagement.createImageFileName(mImageFolder).getAbsolutePath();
                 try (BufferedInputStream inputStream = new BufferedInputStream(
-                        new URL(accountsHighScore.getmProfileImageURL()).openStream());
+                        new URL(accountsHighScore.getProfileImageURL()).openStream());
                      FileOutputStream fileOS = new FileOutputStream(mImageFilePath)) {
                     byte data[] = new byte[1024];
                     int byteContent;

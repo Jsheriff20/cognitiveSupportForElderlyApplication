@@ -31,8 +31,6 @@ import messaging.app.messages.capturingMedia.CaptureActivity;
 import static android.widget.Toast.LENGTH_SHORT;
 
 
-//TODO:
-//when user uploads or captures a photo the "Skip" button needs to change to "Register"
 public class RegisterProfileImageActivity extends AppCompatActivity {
 
     private static final int REQUEST_EXTERNAL_STORAGE_PERMISSION_RESULT = 102;

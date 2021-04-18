@@ -289,7 +289,7 @@ public class QueryingDatabase {
                         for (DataSnapshot ds : snapshot.getChildren()) {
 
                             AccountDetails friendsDetails = getAccountDetailsFromSnapshot(ds);
-                            friendsDetails.setmUUID(ds.getKey());
+                            friendsDetails.setUUID(ds.getKey());
                             friendsDetailsList.add(friendsDetails);
                         }
                         listener.onSuccess(friendsDetailsList);
@@ -331,23 +331,23 @@ public class QueryingDatabase {
         for (DataSnapshot ds : snapshot.getChildren()) {
             switch (ds.getKey()) {
                 case "profileImageUrl":
-                    accountDetails.setmProfileImageUrl((String) ds.getValue());
+                    accountDetails.setProfileImageUrl((String) ds.getValue());
                     break;
                 case "profileImageRotation":
                     long rotation = (long) ds.getValue();
-                    accountDetails.setmProfileImageRotation((int) rotation);
+                    accountDetails.setProfileImageRotation((int) rotation);
                     break;
                 case "firstName":
-                    accountDetails.setmFirstName((String) ds.getValue());
+                    accountDetails.setFirstName((String) ds.getValue());
                     break;
                 case "surname":
-                    accountDetails.setmSurname((String) ds.getValue());
+                    accountDetails.setSurname((String) ds.getValue());
                     break;
                 case "relationship":
-                    accountDetails.setmRelationship((String) ds.getValue());
+                    accountDetails.setRelationship((String) ds.getValue());
                     break;
                 case "username":
-                    accountDetails.setmUsername((String) ds.getValue());
+                    accountDetails.setUsername((String) ds.getValue());
                     break;
                 default:
             }
@@ -496,33 +496,33 @@ public class QueryingDatabase {
                                         break;
                                     case "mediaMessageRotation":
                                         long rotation = (long) subDS.getValue();
-                                        messageData.setmMediaMessageRotation((int) rotation);
+                                        messageData.setMediaMessageRotation((int) rotation);
                                         break;
                                     case "mediaMessageUrl":
-                                        messageData.setmMediaMessageUrl((String) subDS.getValue());
+                                        messageData.setMediaMessageUrl((String) subDS.getValue());
                                         break;
                                     case "textMessage":
-                                        messageData.setmTextMessage((String) subDS.getValue());
+                                        messageData.setTextMessage((String) subDS.getValue());
                                         break;
                                     case "deviceOrientationMode":
                                         long deviceOrientationMode = (long) subDS.getValue();
-                                        messageData.setmDeviceOrientationMode((int) deviceOrientationMode);
+                                        messageData.setDeviceOrientationMode((int) deviceOrientationMode);
                                         break;
                                     case "unopened":
-                                        messageData.setmUnopened((boolean) subDS.getValue());
+                                        messageData.setUnopened((boolean) subDS.getValue());
                                         break;
                                 }
                             }
                             //if the count is more than one then it must be a message
                             if (dsSize > 0) {
-                                messageData.setmFullName(fullName);
-                                messageData.setmTimeStamp(ds.getKey());
+                                messageData.setFullName(fullName);
+                                messageData.setTimeStamp(ds.getKey());
                                 messageDataList.add(messageData);
                             }
                         }
 
                         for (MessageData data : messageDataList) {
-                            data.setmFullName(fullName);
+                            data.setFullName(fullName);
                         }
                         listener.onSuccess(messageDataList);
                     }
@@ -557,24 +557,24 @@ public class QueryingDatabase {
                                         break;
                                     case "mediaMessageRotation":
                                         long rotation = (long) subDS.getValue();
-                                        messageData.setmMediaMessageRotation((int) rotation);
+                                        messageData.setMediaMessageRotation((int) rotation);
                                         break;
                                     case "mediaMessageUrl":
-                                        messageData.setmMediaMessageUrl((String) subDS.getValue());
+                                        messageData.setMediaMessageUrl((String) subDS.getValue());
                                         break;
                                     case "textMessage":
-                                        messageData.setmTextMessage((String) subDS.getValue());
+                                        messageData.setTextMessage((String) subDS.getValue());
                                         break;
                                     case "unopened":
-                                        messageData.setmUnopened((boolean) subDS.getValue());
+                                        messageData.setUnopened((boolean) subDS.getValue());
                                         break;
                                     case "fullName":
-                                        messageData.setmFullName((String) subDS.getValue());
+                                        messageData.setFullName((String) subDS.getValue());
                                         break;
                                 }
                             }
 
-                            messageData.setmTimeStamp(ds.getKey());
+                            messageData.setTimeStamp(ds.getKey());
                             messageDataList.add(messageData);
                         }
 
@@ -785,22 +785,22 @@ public class QueryingDatabase {
 
                 for (DataSnapshot ds : snapshot.getChildren()) {
                     //get friends high scores
-                    accountsHighScore.setmUsersUUID(friendsUUID);
+                    accountsHighScore.setUsersUUID(friendsUUID);
                     switch (ds.getKey()) {
                         case "buttonChange":
-                            accountsHighScore.setmButtonChangeHighScore((Long) ds.getValue());
+                            accountsHighScore.setButtonChangeHighScore((Long) ds.getValue());
                             break;
                         case "gridReaction":
-                            accountsHighScore.setmGridReactionHighScore((Long) ds.getValue());
+                            accountsHighScore.setGridReactionHighScore((Long) ds.getValue());
                             break;
                         case "pairs":
-                            accountsHighScore.setmPairsHighScore((Long) ds.getValue());
+                            accountsHighScore.setPairsHighScore((Long) ds.getValue());
                             break;
                         case "pattern":
-                            accountsHighScore.setmPatternHighScore((Long) ds.getValue());
+                            accountsHighScore.setPatternHighScore((Long) ds.getValue());
                             break;
                         case "stroopTest":
-                            accountsHighScore.setmStoopTestHighScore((Long) ds.getValue());
+                            accountsHighScore.setStoopTestHighScore((Long) ds.getValue());
                             break;
                     }
                 }
@@ -809,9 +809,9 @@ public class QueryingDatabase {
                 String profileImageRotation = friendsMap.get("profileImageRotation");
                 String profileImageUrl = friendsMap.get("profileImageUrl");
 
-                accountsHighScore.setmFullName(fullName);
-                accountsHighScore.setmProfileImageRotation(profileImageRotation);
-                accountsHighScore.setmProfileImageURL(profileImageUrl);
+                accountsHighScore.setFullName(fullName);
+                accountsHighScore.setProfileImageRotation(profileImageRotation);
+                accountsHighScore.setProfileImageURL(profileImageUrl);
 
                 listener.onSuccess(accountsHighScore);
 
@@ -887,35 +887,35 @@ public class QueryingDatabase {
                     } else if (ds.getKey().equals("highScores")) {
                         for (DataSnapshot subDS : ds.getChildren()) {
                             //get the current users high scores
-                            currentAccountHighScore.setmUsersUUID(usersUUID);
+                            currentAccountHighScore.setUsersUUID(usersUUID);
                             switch (subDS.getKey()) {
                                 case "buttonChange":
                                     currentAccountHighScore
-                                            .setmButtonChangeHighScore((Long) subDS.getValue());
+                                            .setButtonChangeHighScore((Long) subDS.getValue());
                                     break;
                                 case "gridReaction":
                                     currentAccountHighScore
-                                            .setmGridReactionHighScore((Long) subDS.getValue());
+                                            .setGridReactionHighScore((Long) subDS.getValue());
                                     break;
                                 case "pairs":
                                     currentAccountHighScore
-                                            .setmPairsHighScore((Long) subDS.getValue());
+                                            .setPairsHighScore((Long) subDS.getValue());
                                     break;
                                 case "pattern":
                                     currentAccountHighScore
-                                            .setmPatternHighScore((Long) subDS.getValue());
+                                            .setPatternHighScore((Long) subDS.getValue());
                                     break;
                                 case "stroopTest":
                                     currentAccountHighScore
-                                            .setmStoopTestHighScore((Long) subDS.getValue());
+                                            .setStoopTestHighScore((Long) subDS.getValue());
                                     break;
                             }
                         }
 
-                        currentAccountHighScore.setmFullName("My Scores");
+                        currentAccountHighScore.setFullName("My Scores");
 
                     } else if (ds.getKey().equals("profileImageUrl")) {
-                        currentAccountHighScore.setmProfileImageURL((String) ds.getValue());
+                        currentAccountHighScore.setProfileImageURL((String) ds.getValue());
                     }
                 }
 
@@ -1176,21 +1176,21 @@ public class QueryingDatabase {
                 for (DataSnapshot reminder : snapshot.getChildren()) {
                     reminderDetails = new ReminderDetails();
 
-                    reminderDetails.setmReminderID((String) snapshot.getKey());
+                    reminderDetails.setReminderID((String) snapshot.getKey());
                     for (DataSnapshot details : reminder.getChildren()) {
                         switch (details.getKey()) {
                             case "medicationName":
-                                reminderDetails.setmMedicationName((String) details.getValue());
+                                reminderDetails.setMedicationName((String) details.getValue());
                                 break;
                             case "frequency":
-                                reminderDetails.setmFrequency((String) details.getValue());
+                                reminderDetails.setFrequency((String) details.getValue());
                                 break;
                             case "time":
-                                reminderDetails.setmTime((String) details.getValue());
+                                reminderDetails.setTime((String) details.getValue());
                                 break;
                             case "intentID":
                                 long longIntentID = (long) details.getValue();
-                                reminderDetails.setmIntentID((int) longIntentID);
+                                reminderDetails.setIntentID((int) longIntentID);
                                 break;
                         }
                     }

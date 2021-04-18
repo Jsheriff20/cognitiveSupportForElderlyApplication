@@ -25,7 +25,7 @@ public class PairGame6ButtonsActivity extends AppCompatActivity {
     Random mRand = new Random();
 
     Drawable mDefaultImage;
-    int mDelayTime = 2000;
+    int mDelayTime = 5000;
     boolean mSecondClick = false;
     int mPairsFound = 0;
     int mNumberCorrect = 0;

@@ -79,7 +79,7 @@ public class ViewMediaMessageActivity extends AppCompatActivity {
         mNumberOfMessages = mIntent.getIntExtra("numOfMessages", 0);
         mFriendsUUID = mIntent.getStringExtra("friendsUUID");
         mViewingType = mIntent.getStringExtra("viewingType");
-        mDeviceOrientationMode = mDisplayingMessage.getmDeviceOrientationMode();
+        mDeviceOrientationMode = mDisplayingMessage.getDeviceOrientationMode();
 
         mNewMessageNum = mMessageNum + 1;
         if (mNewMessageNum >= mNumberOfMessages) {
@@ -89,7 +89,7 @@ public class ViewMediaMessageActivity extends AppCompatActivity {
 
         lockOrientation(true);
 
-        mMessageUrl = mDisplayingMessage.getmMediaMessageUrl();
+        mMessageUrl = mDisplayingMessage.getMediaMessageUrl();
         String fileExtension = mDisplayingMessage.getmFileExtension();
 
         int SDK_INT = android.os.Build.VERSION.SDK_INT;
@@ -183,7 +183,7 @@ public class ViewMediaMessageActivity extends AppCompatActivity {
 
         lockOrientation(false);
         if (mViewingType.equals("directMessages")) {
-            mManagingMessages.deleteMessage(mDisplayingMessage.getmTimeStamp(), mFriendsUUID);
+            mManagingMessages.deleteMessage(mDisplayingMessage.getTimeStamp(), mFriendsUUID);
             mManagingMessages.logMediaMessageViewed(mMessageUrl);
         }
 
@@ -203,7 +203,7 @@ public class ViewMediaMessageActivity extends AppCompatActivity {
                 lockOrientation(false);
 
                 if (mViewingType.equals("directMessages")) {
-                    mManagingMessages.deleteMessage(mDisplayingMessage.getmTimeStamp(), mFriendsUUID);
+                    mManagingMessages.deleteMessage(mDisplayingMessage.getTimeStamp(), mFriendsUUID);
                     mManagingMessages.logMediaMessageViewed(mMessageUrl);
                 }
 
@@ -218,7 +218,7 @@ public class ViewMediaMessageActivity extends AppCompatActivity {
                     mIntent.putExtra("messageNum", mNewMessageNum);
 
                     //check to see if there is a text message
-                    if (tempMessageData.getmTextMessage().equals("")) {
+                    if (tempMessageData.getTextMessage().equals("")) {
                         newIntent = new Intent(ViewMediaMessageActivity.this,
                                 ViewMediaMessageActivity.class);
                         newIntent.putExtras(mIntent.getExtras());

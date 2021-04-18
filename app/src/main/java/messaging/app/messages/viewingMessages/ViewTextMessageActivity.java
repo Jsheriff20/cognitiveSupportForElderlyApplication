@@ -59,10 +59,10 @@ public class ViewTextMessageActivity extends AppCompatActivity {
 
 
         //display the "displayingMessage" data to the user
-        lblMessageFromName.setText(mDisplayingMessage.getmFullName());
-        lblDisplayingMessage.setText(mDisplayingMessage.getmTextMessage());
+        lblMessageFromName.setText(mDisplayingMessage.getFullName());
+        lblDisplayingMessage.setText(mDisplayingMessage.getTextMessage());
 
-        String formattedTimeAgo = mFormatting.howLongAgo(mDisplayingMessage.getmTimeStamp());
+        String formattedTimeAgo = mFormatting.howLongAgo(mDisplayingMessage.getTimeStamp());
         lblReceivedTime.setText(formattedTimeAgo + " Ago");
 
         setBtnViewMediaMessageOnClick();
